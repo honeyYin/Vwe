@@ -11,19 +11,17 @@ import javax.persistence.Id;
 
 import lombok.Getter;
 import lombok.Setter;
+
 /**
- * 分类
- * @author hzyinhonglian
+ * 评论表
+ * @author lya
  *
  */
 @Setter
 @Getter
-@Entity(name="Channel")
-public class Channel implements Serializable{
-	
+@Entity(name="Comment")
+public class PaperComment implements Serializable{
 	private static final long serialVersionUID = -1308795024262635691L;
-
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -34,31 +32,28 @@ public class Channel implements Serializable{
 	@Column	
 	private Date updateTime=new Date();
 	
-	@Column	
-	private String name;
+	/**
+	 * 会员id
+	 */
+	@Column(nullable=true)		
+	private Long userId;
 	
-	@Column	
-	private Long parentId = 0l;
-	
-	@Column	
-    private int disabled=0;//0激活 1未激活
-	
-	//是否发布
-	@Column
-	private int isDeploy=0;
-	
-	//排列优先级
-	@Column
-	private int priority=10;
-	
-	//栏目每页条数
-	@Column
-	private int pageSize=10;
-	
-	@Column
-	private String description;
-	
-	//栏目图片
-	@Column
-	private String titleImg;
+	/**
+	 * 评论文章id
+	 */
+	@Column(nullable=false)		
+	private Long paperId;
+
+	@Column(nullable=false)		
+	private String comment;
+	/**
+	 * 评论时间
+	 */
+	@Column(nullable=false)	
+	private Date commentTime;
+	/**
+	 * 父评论id，若为一级评论则为0
+	 */
+	@Column(nullable=true)
+	private Long parentId;
 }

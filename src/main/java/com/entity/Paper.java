@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.model.PregStage;
+
 import lombok.Getter;
 import lombok.Setter;
 /**
@@ -18,37 +20,29 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-@Entity
+@Entity(name="Paper")
 public class Paper  implements Serializable{
 	private static final long serialVersionUID = -1308795024262635691L;
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-
+	
 	@Column	
-	private Date createTime;
+	private Date createTime =new Date();
 	
 	@Column	
 	private Date updateTime=new Date();
-	
 	//发布时间
 	@Column
 	private Date auditTime;
 	
 	@Column(nullable = false)
 	private String title;
-	
-	//副标题
-	@Column	
-	private String secTitle;
-	
+
 	//简介
 	@Column	
 	private String description;
-	//内容
-	@Column	
-	private String content;
 	
 	@Column	
 	private String author="admin";
@@ -79,10 +73,21 @@ public class Paper  implements Serializable{
 	
 	//推荐孕周
 	@Column
+	private PregStage pregStage;
+	
+	
+	@Column
 	private Integer recPregWeeks;
 	
 	//所属医院
 	@Column
 	private String hospital;
 	
+	public void setPregStage(int stage){
+		this.pregStage = PregStage.valueOfCode(stage);
+	}
+	public PregStage getPregStage(){
+		return this.pregStage;
+		
+	}
 }

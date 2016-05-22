@@ -11,54 +11,34 @@ import javax.persistence.Id;
 
 import lombok.Getter;
 import lombok.Setter;
+
 /**
- * 分类
+ * 文章版块
  * @author hzyinhonglian
  *
  */
 @Setter
 @Getter
-@Entity(name="Channel")
-public class Channel implements Serializable{
-	
+@Entity(name="Section")
+public class PaperSection  implements Serializable{
 	private static final long serialVersionUID = -1308795024262635691L;
-
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
 	@Column	
-	private Date createTime;
+	private Date createTime=new Date();
 	
 	@Column	
 	private Date updateTime=new Date();
 	
-	@Column	
-	private String name;
+	/**
+	 * 版块标题
+	 */
+	@Column(nullable=false)		
+	private String title;
 	
-	@Column	
-	private Long parentId = 0l;
+	@Column(nullable = false)
+	private Long paperId;
 	
-	@Column	
-    private int disabled=0;//0激活 1未激活
-	
-	//是否发布
-	@Column
-	private int isDeploy=0;
-	
-	//排列优先级
-	@Column
-	private int priority=10;
-	
-	//栏目每页条数
-	@Column
-	private int pageSize=10;
-	
-	@Column
-	private String description;
-	
-	//栏目图片
-	@Column
-	private String titleImg;
 }

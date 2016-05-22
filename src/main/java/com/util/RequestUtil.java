@@ -45,6 +45,20 @@ public class RequestUtil {
 		
 		return result;
 	}
+	public static double paseDouble(String value){
+		double result = 0 ;
+		
+		if (StringUtils.isEmpty(value)) {
+			return result;
+		}
+		
+		try {
+			result = Double.parseDouble(value);
+		} catch (Exception e) {
+		}
+		
+		return result;
+	}
 	public static long[] longArrayValue(HttpServletRequest request, String name){
 		String[] ss = request.getParameterValues(name);
 		
@@ -73,6 +87,22 @@ public class RequestUtil {
 		for (int i = 0; i< length ; i++) {
 			
 			result[i] = paseInteger(ss[i]) ;
+		}
+		
+		return result;
+	}
+	public static double[] doubleArrayValue(HttpServletRequest request, String name){
+		String[] ss = request.getParameterValues(name);
+		
+		if (ss == null || ss.length < 1) {
+			return null;
+		}
+		int length = ss.length;
+		double[] result = new double[ss.length];
+		
+		for (int i = 0; i< length ; i++) {
+			
+			result[i] = paseDouble(ss[i]) ;
 		}
 		
 		return result;
@@ -109,7 +139,9 @@ public class RequestUtil {
 		}
 		return null;
 	}
-	
+	public static String[] stringArrayValue(HttpServletRequest request, String name){
+		return request.getParameterValues(name);
+	}
 	 public static void buildSeesion(User user,int loginFailFlag,HttpServletRequest req) {
 	        HttpSession session = req.getSession();
 	        user.setPassword(null);

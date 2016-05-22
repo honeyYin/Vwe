@@ -2,9 +2,13 @@ package com.model;
 
 import java.io.Serializable;
 import java.util.List;
+
+import javax.persistence.Column;
+
 import com.entity.Paper;
 import com.google.common.collect.Lists;
 import com.util.DateUtil;
+
 import lombok.Getter;
 import lombok.Setter;
 /**
@@ -29,8 +33,6 @@ public class PaperModel  implements Serializable{
 	
 	//简介
 	private String description;
-	//内容
-	private String content;
 	
 	private String author;
 	//点击量
@@ -50,24 +52,31 @@ public class PaperModel  implements Serializable{
 	//封面图url
 	private String titleImg;
 	
+	private Integer pregStage;
+	
+	private Integer recPregWeeks;
+	
+	//所属医院
+	private String hospital;	
 	PaperModel(){}
 	
-	PaperModel(Paper paper){
+	public PaperModel(Paper paper){
 		this.auditTime = DateUtil.dateToStr(paper.getAuditTime());
 		this.author = paper.getAuthor();
 		this.channelId =paper.getChannelId();
 		this.channelName = paper.getChannelName();
-		this.content = paper.getContent();
 		this.description = paper.getDescription();
 		this.disabled = paper.getDisabled();
 		this.title = paper.getTitle();
-		this.secTitle = paper.getSecTitle();
 		this.hasAudit = paper.isHasAudit();
 		this.isTop = paper.getIsTop();
 		this.id = paper.getId();
 		this.isRecom = paper.getIsRecom();
 		this.titleImg = paper.getTitleImg();
 		this.viewCount = paper.getViewCount();
+		this.pregStage = paper.getPregStage().getCode();
+		this.recPregWeeks = paper.getRecPregWeeks();
+		this.hospital = paper.getHospital();
 	}
 	public static List getPaperModels(List<Paper> papers){
 		List<PaperModel> results = Lists.newArrayList();

@@ -19,8 +19,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.dao.ChannelDao;
 import com.dao.PaperDao;
+import com.dao.PaperOutLinkDao;
+import com.dao.PaperParaDao;
+import com.dao.PaperSectionDao;
 import com.entity.Channel;
 import com.entity.Paper;
+import com.entity.PaperOutLink;
+import com.entity.PaperParagraph;
+import com.entity.PaperSection;
 import com.model.OperationResult;
 import com.model.PaperModel;
 import com.service.PaperService;
@@ -37,6 +43,15 @@ public class PaperController extends BaseController{
 	
 	@Autowired
 	private PaperDao paperDao;
+	
+	@Autowired
+	private PaperParaDao paraDao;
+	
+	@Autowired
+	private PaperSectionDao sectionDao;
+	
+	@Autowired
+	private PaperOutLinkDao outLinkDao;
 	
 	@Autowired
 	private PaperService paperService;
@@ -134,7 +149,9 @@ public class PaperController extends BaseController{
 					   Long channelId,
 					   Integer pageNo) {
 		Paper paper =  paserPaper(null,request);
-		paperDao.save(paper);
+		paper =paperDao.save(paper);
+		
+		savePaperSection(paper.getId(),request);
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 	}
 	@RequestMapping(method=RequestMethod.GET,value="toEdit") 
@@ -146,7 +163,7 @@ public class PaperController extends BaseController{
 		List<Channel> channels =channelDao.getRootCategory();
 		Paper paper = paperDao.find(paperId);
 		mav.addObject("channels",channels);
-		mav.addObject("paper", paper);
+		mav.addObject("paper", new PaperModel(paper));
 		mav.addObject("channelId",channelId);
 		mav.addObject("pageNo",pageNo==null?0:pageNo);
 		mav.setViewName("admin/paper/editPaper");
@@ -159,7 +176,9 @@ public class PaperController extends BaseController{
 					   Integer pageNo) {
 		Long paperId = RequestUtil.longvalue(request,"paperId");
 		Paper paper =  paserPaper(paperId,request);
-		paperDao.save(paper);
+		paper = paperDao.save(paper);
+
+		savePaperSection(paper.getId(),request);
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
 	}
@@ -327,15 +346,76 @@ public class PaperController extends BaseController{
 		paper.setChannelName(channel.getName());
 		paper.setTitle(RequestUtil.stringvalue(request, "title"));
 		paper.setAuthor(RequestUtil.stringvalue(request, "author"));
-		paper.setSecTitle(RequestUtil.stringvalue(request, "secTitle"));
 		paper.setDescription(RequestUtil.stringvalue(request, "description"));
-		paper.setContent(RequestUtil.stringvalue(request, "content"));
 		paper.setIsRecom(RequestUtil.intvalue(request, "isRecom"));
 		paper.setIsTop(RequestUtil.intvalue(request, "isTop"));
 		paper.setTitleImg(RequestUtil.stringvalue(request, "titleImg"));
+		paper.setPregStage(RequestUtil.intvalue(request, "pregStage"));
 		paper.setRecPregWeeks(RequestUtil.intvalue(request, "recPregWeeks"));
 		paper.setHospital(RequestUtil.stringvalue(request, "hospital"));
 		return paper;
+	}
+	/**
+	 * 保存版块信息
+	 * @param paperId
+	 * @param request
+	 */
+	private void savePaperSection(Long paperId,HttpServletRequest request){
+		for (int i = 1; i <= 10; i++) {
+			String sectionTitle = RequestUtil.stringvalue(request, "sectionTitle"+i);
+			if(StringUtils.isNotEmpty(sectionTitle)){
+				PaperSection section = new PaperSection();
+				section.setTitle(sectionTitle);
+				section.setPaperId(paperId);
+				section = sectionDao.save(section);
+				savePaperPara(paperId,section.getId(),i,request);
+			}
+			
+		}
+	}
+	/**
+	 * 保存小节
+	 * @param paperId
+	 * @param sectionId
+	 * @param request
+	 */
+	private void savePaperPara(Long paperId,Long sectionId,int orderId,HttpServletRequest request){
+		String [] paraTitle = RequestUtil.stringArrayValue(request, "paraTitle"+orderId);
+		String [] paraContent =  RequestUtil.stringArrayValue(request, "paraContent"+orderId);
+		String [] paraTitleImg =  RequestUtil.stringArrayValue(request, "paraTitleImg"+orderId);
+		for(int i=0;i<paraTitle.length;i++){
+			PaperParagraph para = new PaperParagraph();
+			para.setTitle(paraTitle[i]);
+			para.setContent(StringUtils.isEmpty(paraContent[i])?null:paraContent[i]);
+			para.setImgUrl(paraTitleImg[i]);
+			para.setPaperId(paperId);
+			para.setSectionId(sectionId);
+			para.setOrder(i+1);
+			paraDao.save(para);
+		}
+	}
+	/**
+	 * 保存区域跳转块
+	 * @param paperId
+	 * @param sectionId
+	 * @param request
+	 */
+	private void savePaperOutLink(Long paperId,Long sectionId,int orderId,HttpServletRequest request){
+		String [] outTitle = RequestUtil.stringArrayValue(request, "outTitle"+orderId);
+		String [] outSecTitle =  RequestUtil.stringArrayValue(request, "outSecTitle"+orderId);
+		double [] outPrize =  RequestUtil.doubleArrayValue(request, "outPrize"+orderId);
+		String [] outUrl =  RequestUtil.stringArrayValue(request, "outUrl"+orderId);
+		for(int i=0;i<outTitle.length;i++){
+			PaperOutLink link = new PaperOutLink();
+			link.setTitle(outTitle[i]);
+			link.setSecTitle(outSecTitle[i]);
+			link.setPrize(outPrize[i]);
+			link.setOuterUrl(outUrl[i]);
+			link.setPaperId(paperId);
+			link.setSectionId(sectionId);
+			outLinkDao.save(link);
+					
+		}
 	}
 	private String arrToStr(long[] ids){
 		StringBuffer stringBuffer = new StringBuffer();

@@ -49,6 +49,14 @@ public class HomeController extends BaseController{
 		
 		return "login";
 	}
+	/**
+	 * 登录接口
+	 * @param password
+	 * @param loginName
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping(method=RequestMethod.POST,value="toLogin") 
 	public String login(@RequestParam(value="password") String password,
 							 @RequestParam(value="loginName") String loginName,

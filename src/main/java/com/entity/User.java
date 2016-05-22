@@ -18,19 +18,20 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-@Entity
-public class User implements Serializable {
+@Entity(name="User")
+public class User  implements Serializable{
 
 	private static final long serialVersionUID = -1308795024262635690L;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-
+	
 	@Column	
 	private Date createTime;
-	@Column
-	private Date updateTime;
+	
+	@Column	
+	private Date updateTime=new Date();
+	
 	@Column	
 	private String loginName;
 	@Column	
