@@ -369,6 +369,7 @@ public class PaperController extends BaseController{
 				section.setPaperId(paperId);
 				section = sectionDao.save(section);
 				savePaperPara(paperId,section.getId(),i,request);
+				savePaperOutLink(paperId,section.getId(),i,request);
 			}
 			
 		}
@@ -380,17 +381,20 @@ public class PaperController extends BaseController{
 	 * @param request
 	 */
 	private void savePaperPara(Long paperId,Long sectionId,int orderId,HttpServletRequest request){
-		String [] paraTitle = RequestUtil.stringArrayValue(request, "paraTitle"+orderId);
-		String [] paraContent =  RequestUtil.stringArrayValue(request, "paraContent"+orderId);
-		String [] paraTitleImg =  RequestUtil.stringArrayValue(request, "paraTitleImg"+orderId);
-		for(int i=0;i<paraTitle.length;i++){
+		for(int i=1;i<=15;i++){
+			String paraTitle = RequestUtil.stringvalue(request, "paraTitle"+orderId+"-"+i);
+			if(StringUtils.isEmpty(paraTitle)){
+				continue;
+			}
 			PaperParagraph para = new PaperParagraph();
-			para.setTitle(paraTitle[i]);
-			para.setContent(StringUtils.isEmpty(paraContent[i])?null:paraContent[i]);
-			para.setImgUrl(paraTitleImg[i]);
+			para.setCreateTime(new Date());
+			para.setUpdateTime(new Date());
+			para.setTitle(paraTitle);
+			para.setContent(RequestUtil.stringvalue(request, "paraContent"+orderId+"-"+i));
+			para.setImgUrl(RequestUtil.stringvalue(request, "paraTitleImg"+orderId+"-"+i));
 			para.setPaperId(paperId);
 			para.setSectionId(sectionId);
-			para.setOrder(i+1);
+			para.setOrderNum(i);
 			paraDao.save(para);
 		}
 	}
@@ -401,20 +405,20 @@ public class PaperController extends BaseController{
 	 * @param request
 	 */
 	private void savePaperOutLink(Long paperId,Long sectionId,int orderId,HttpServletRequest request){
-		String [] outTitle = RequestUtil.stringArrayValue(request, "outTitle"+orderId);
-		String [] outSecTitle =  RequestUtil.stringArrayValue(request, "outSecTitle"+orderId);
-		double [] outPrize =  RequestUtil.doubleArrayValue(request, "outPrize"+orderId);
-		String [] outUrl =  RequestUtil.stringArrayValue(request, "outUrl"+orderId);
-		for(int i=0;i<outTitle.length;i++){
+		for(int i=1;i<=15;i++){
+			String outTitle = RequestUtil.stringvalue(request, "outTitle"+orderId+"-"+i);
+			if(StringUtils.isEmpty(outTitle)){
+				continue;
+			}
 			PaperOutLink link = new PaperOutLink();
-			link.setTitle(outTitle[i]);
-			link.setSecTitle(outSecTitle[i]);
-			link.setPrize(outPrize[i]);
-			link.setOuterUrl(outUrl[i]);
+			link.setTitle(outTitle);
+			link.setSecTitle(RequestUtil.stringvalue(request, "outSecTitle"+orderId+"-"+i));
+			link.setPrize(RequestUtil.doublevalue(request, "outPrize"+orderId+"-"+i));
+			link.setOuterUrl(RequestUtil.stringvalue(request, "outUrl"+orderId+"-"+i));
 			link.setPaperId(paperId);
 			link.setSectionId(sectionId);
+			link.setOrderNum(i);
 			outLinkDao.save(link);
-					
 		}
 	}
 	private String arrToStr(long[] ids){

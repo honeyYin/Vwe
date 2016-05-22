@@ -35,24 +35,30 @@ function addNewPara(parentId){  //传入数据编号即可
 	  var divName='div-para'+parentId+"-"+paraId;//div容器的名称
 	  var paraName = "小节"+parentId+"-"+paraId;
 	  
-	  var divHtml ="<table width=\"100%\"  cellpadding=\"2\" cellspacing=\"1\" border=\"0\" id='"+divName+"'><tr><td width='10%'  class='pn-flabel pn-flabel-h'>"+paraName+":</td>"+
+
+	  var oDiv=document.createElement("div");
+	  oDiv.id = divName;
+	  
+	  var divHtml ="<table width=\"100%\"  cellpadding=\"2\" cellspacing=\"1\" border=\"0\"><tr><td width='10%'  class='pn-flabel pn-flabel-h'>"+paraName+":</td>"+
 			"<td colspan='3' width='90%' class='pn-fcontent'></td></tr><tr>"+
 			"<td width='10%'  class='pn-flabel pn-flabel-h'><span class='pn-frequired'>*</span>小节标题:</td>"+
 			"<td colspan='3' width='90%' class='pn-fcontent'>"+
-			"<input id='paraTitle"+parentId+"-"+paraId+"'  type='text' maxlength='150' name='paraTitle"+parentId+"' class='required' size='70' maxlength='150'/>"+
+			"<input id='paraTitle"+parentId+"-"+paraId+"'  type='text' maxlength='150' name='paraTitle"+parentId+"-"+paraId+"' class='required' size='70' maxlength='150'/>"+
 			"<input type='button' value='删除'  onclick='javascript:deleteElement("+parentId+","+paraId+",\"para\")'/> &nbsp; "+
 			"</td></tr><tr ><td width='10%' class='pn-flabel pn-flabel-h'>小节正文:</td>"+
 			"<td colspan='3' width='90%' class='pn-fcontent'>"+
-			"	<textarea  id='paraContent"+parentId+"-"+paraId+"' name='paraContent"+parentId+"' cols='70' rows='10'></textarea>"+
+			"	<textarea  id='paraContent"+parentId+"-"+paraId+"' name='paraContent"+parentId+"-"+paraId+"' cols='70' rows='10'></textarea>"+
 			"</td></tr><tr  > <td width='10%' class='pn-flabel'>小节配图:</td>"+
 			 "<td colspan='1' width='40%' class='pn-fcontent'>"+
 			 "       <input class='button'  type='button' id='paraBtnUploadFile"+parentId+"-"+paraId+"' value='上传图片' onclick=\"javascript:uploanFile('paraBtnUploadFile"+parentId+"-"+paraId+"','paraPic"+parentId+"-"+paraId+"','paraTitleImg"+parentId+"-"+paraId+"')\"/>"+
-			"       <input type='hidden' id='paraTitleImg"+parentId+"-"+paraId+"' name='paraTitleImg"+parentId+"' value=\"\"/>"+
+			"       <input type='hidden' id='paraTitleImg"+parentId+"-"+paraId+"' name='paraTitleImg"+parentId+"-"+paraId+"' value=\"\"/>"+
 			 "       <span class='pn-fhelp' id='paraPic"+parentId+"-"+paraId+"'>无图片</span> </td></tr></table>";
-	  var content = parent.innerHTML;
-	  var text = parent.innerText;
-	  alert(content); alert(text);
-	  parent.innerHTML =content+divHtml;
+//	  var content = parent.innerHTML;
+//	  parent.innerHTML =content+divHtml;
+
+	  oDiv.innerHTML = divHtml;
+	  parent.appendChild(oDiv);
+	  
 	  arrPara[parentId-1] = paraId+1;
 }
 function addNewOutLink(parentId){
@@ -62,23 +68,29 @@ function addNewOutLink(parentId){
 	  var divName='div-outLink'+parentId+"-"+outlinkId;//div容器的名称
 	  var outLinkName = "跳转区域"+parentId+"-"+outlinkId;
 	  
-	  var divHtml ="<table width=\"100%\"  cellpadding=\"2\" cellspacing=\"1\" border=\"0\" id='"+divName+"'><tr><td width='10%'  class='pn-flabel pn-flabel-h'>"+outLinkName+":</td>"+
+	  var oDiv=document.createElement("div");
+	  oDiv.id = divName;
+	  
+	  var divHtml ="<table width=\"100%\"  cellpadding=\"2\" cellspacing=\"1\" border=\"0\" ><tr><td width='10%'  class='pn-flabel pn-flabel-h'>"+outLinkName+":</td>"+
 		"<td colspan='3' width='90%' class='pn-fcontent'></td></tr><tr >"+
 		"<td width='10%'  class='pn-flabel pn-flabel-h'><span class='pn-frequired'>*</span>标题:</td>"+
 		"<td colspan='3' width='90%' class='pn-fcontent'>"+
-		"<input id='outTitle"+parentId+"-"+outlinkId+"'  type='text' maxlength='150' name='outTitle"+parentId+"' class='required' size='70' />"+
+		"<input id='outTitle"+parentId+"-"+outlinkId+"'  type='text' maxlength='150' name='outTitle"+parentId+"-"+outlinkId+"' class='required' size='70' />"+
 		"<input type='button' value='删除' onclick='javascript:deleteElement("+parentId+","+outlinkId+",\"outLink\")'/> &nbsp; </td></tr><tr>"+
 		"<td width='10%' class='pn-flabel pn-flabel-h'>副标题:</td>"+
 		"<td colspan='3' width='90%' class='pn-fcontent'>"+
-		"	<input id='outSecTitle"+parentId+"-"+outlinkId+"'  type='text' maxlength='150' name='outSecTitle"+parentId+"' class='required' size='70' />"+
+		"	<input id='outSecTitle"+parentId+"-"+outlinkId+"'  type='text' maxlength='150' name='outSecTitle"+parentId+"-"+outlinkId+"' class='required' size='70' />"+
 		"</td></tr><tr><td width='10%' class='pn-flabel pn-flabel-h'>金额:</td>"+
 		"<td colspan='3' width='90%' class='pn-fcontent'>"+
-		"	<input id='outPrize"+parentId+"-"+outlinkId+"'  type='text' maxlength='50' name='outPrize"+parentId+"' class='required' size='20' />"+
+		"	<input id='outPrize"+parentId+"-"+outlinkId+"'  type='text' maxlength='50' name='outPrize"+parentId+"-"+outlinkId+"' class='required' size='20' />"+
 		"</td></tr><tr ><td width='10%' class='pn-flabel pn-flabel-h'>链接:</td>"+
 		"<td colspan='3' width='90%' class='pn-fcontent'>"+
-		"	<input id='outUrl"+parentId+"-"+outlinkId+"'  type='text' maxlength='150' name='outUrl"+parentId+"' class='required' size='70' /></td></tr></div></table>";
-	  var content = parent.innerHTML;
-	  parent.innerHTML =content+divHtml;
+		"	<input id='outUrl"+parentId+"-"+outlinkId+"'  type='text' maxlength='150' name='outUrl"+parentId+"-"+outlinkId+"' class='required' size='70' /></td></tr></div></table>";
+//	  var content = parent.innerHTML;
+//	  parent.innerHTML =content+divHtml;
+	  oDiv.innerHTML = divHtml;
+	  parent.appendChild(oDiv);
+	  
 	  arrOutLink[parentId-1] = outlinkId+1;
 
 }

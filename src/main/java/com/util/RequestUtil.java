@@ -1,9 +1,12 @@
 package com.util;
 
 import java.io.UnsupportedEncodingException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang3.StringUtils;
+
 import com.entity.User;
 
 
@@ -124,13 +127,32 @@ public class RequestUtil {
 		return result;
 		
 	}
-	
+	public static double doublevalue(HttpServletRequest request, String name){
+		String temp = request.getParameter(name);
+		
+		double result = 0 ;
+		
+		if (StringUtils.isEmpty(temp)) {
+			return result;
+		}
+		
+		try {
+			result = Double.parseDouble(temp);
+		} catch (Exception e) {
+		}
+		
+		return result;
+		
+	}
 	public static String stringvalue(HttpServletRequest request, String name) {
 		try {
 			String trString = request.getCharacterEncoding();
 			if(StringUtils.isNotEmpty(trString) && trString.equals("UTF-8")){
 				return request.getParameter(name);
 			}else{
+				if(StringUtils.isEmpty(request.getParameter(name))){
+					return "";
+				}
 				return new String(request.getParameter(name).getBytes("ISO8859-1"),"UTF-8");
 			}
 			
@@ -140,6 +162,12 @@ public class RequestUtil {
 		return null;
 	}
 	public static String[] stringArrayValue(HttpServletRequest request, String name){
+		try {
+			request.setCharacterEncoding("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return request.getParameterValues(name);
 	}
 	 public static void buildSeesion(User user,int loginFailFlag,HttpServletRequest req) {

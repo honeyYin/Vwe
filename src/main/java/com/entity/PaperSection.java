@@ -19,7 +19,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-@Entity(name="Section")
+@Entity(name="PaperSection")
 public class PaperSection  implements Serializable{
 	private static final long serialVersionUID = -1308795024262635691L;
 	@Id

@@ -20,7 +20,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-@Entity(name="Paragraph")
+@Entity(name="PaperParagraph")
 public class PaperParagraph implements Serializable{
 	
 	private static final long serialVersionUID = -1308795024262635691L;
@@ -57,7 +57,8 @@ public class PaperParagraph implements Serializable{
 	 * 排序
 	 */
 	@Column
-	private Integer order;
+	private Integer orderNum;
+	
 	/**
 	 * 所属版块id
 	 */

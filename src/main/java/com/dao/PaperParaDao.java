@@ -3,9 +3,9 @@ package com.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import com.entity.PaperParagraph;
-import com.entity.PaperSection;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +19,7 @@ public class PaperParaDao {
 	public PaperParagraph find(Long id) {
 		return entityManager.find(PaperParagraph.class, id);
 	}
+	
 	@Transactional
 	public PaperParagraph save(PaperParagraph paper) {
 		if (paper.getId() == null) {

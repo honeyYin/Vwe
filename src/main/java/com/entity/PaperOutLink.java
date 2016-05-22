@@ -19,7 +19,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-@Entity(name="OutLink")
+@Entity(name="PaperOutLink")
 public class PaperOutLink implements Serializable{
 	
 	private static final long serialVersionUID = -1308795024262635691L;
@@ -50,4 +50,9 @@ public class PaperOutLink implements Serializable{
 	
 	@Column	
 	private Long paperId;
+	/**
+	 * 排序
+	 */
+	@Column
+	private Integer orderNum;
 }
