@@ -2,6 +2,7 @@ package com.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,5 +26,12 @@ public class PaperSectionDao {
 		} else {
 			return entityManager.merge(paper);
 		}		
+	}
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public int delete(Long id) {
+		Query query = entityManager.createQuery("update PaperSection p set p.disabled = 1,p.updateTime = CURRENT_TIMESTAMP() where p.id = ?1");
+		query.setParameter(1, id);
+		return query.executeUpdate();
 	}
 }

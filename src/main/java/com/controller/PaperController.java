@@ -182,7 +182,24 @@ public class PaperController extends BaseController{
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
 	}
-	
+	@RequestMapping(method=RequestMethod.POST,value="deleteSection") 
+	public String deleteSection(@RequestParam("sectionId") Long sectionId) {
+		sectionDao.delete(sectionId);
+		return "succ";
+		
+	}
+	@RequestMapping(method=RequestMethod.POST,value="deletePara") 
+	public String deletePara(@RequestParam("paraId") Long paraId) {
+		paraDao.delete(paraId);
+		return "succ";
+		
+	}
+	@RequestMapping(method=RequestMethod.POST,value="deleteOutLink") 
+	public String deleteOutLink(@RequestParam("outLinkId") Long outLinkId) {
+		outLinkDao.delete(outLinkId);
+		return "succ";
+		
+	}
 	@RequestMapping(method=RequestMethod.GET,value="delete") 
 	public String delete(@RequestParam("paperId") Long paperId,
 						   Long channelId,
@@ -362,9 +379,14 @@ public class PaperController extends BaseController{
 	 */
 	private void savePaperSection(Long paperId,HttpServletRequest request){
 		for (int i = 1; i <= 10; i++) {
+			Long sectionId = RequestUtil.longvalue(request, "sectionId"+i);
 			String sectionTitle = RequestUtil.stringvalue(request, "sectionTitle"+i);
 			if(StringUtils.isNotEmpty(sectionTitle)){
-				PaperSection section = new PaperSection();
+				PaperSection section =null;
+				if(sectionId != null){
+					section = sectionDao.find(sectionId);
+				}
+				section = section==null?new PaperSection():section;
 				section.setTitle(sectionTitle);
 				section.setPaperId(paperId);
 				section = sectionDao.save(section);
@@ -382,11 +404,16 @@ public class PaperController extends BaseController{
 	 */
 	private void savePaperPara(Long paperId,Long sectionId,int orderId,HttpServletRequest request){
 		for(int i=1;i<=15;i++){
+			Long paraId = RequestUtil.longvalue(request, "paraId"+i);
 			String paraTitle = RequestUtil.stringvalue(request, "paraTitle"+orderId+"-"+i);
 			if(StringUtils.isEmpty(paraTitle)){
 				continue;
 			}
-			PaperParagraph para = new PaperParagraph();
+			PaperParagraph para =null;
+			if(paraId != null){
+				para = paraDao.find(paraId);
+			}
+			para = para==null?new PaperParagraph():para;
 			para.setCreateTime(new Date());
 			para.setUpdateTime(new Date());
 			para.setTitle(paraTitle);
@@ -406,11 +433,17 @@ public class PaperController extends BaseController{
 	 */
 	private void savePaperOutLink(Long paperId,Long sectionId,int orderId,HttpServletRequest request){
 		for(int i=1;i<=15;i++){
+			Long outLinkId = RequestUtil.longvalue(request, "outLinkId"+i);
+
 			String outTitle = RequestUtil.stringvalue(request, "outTitle"+orderId+"-"+i);
 			if(StringUtils.isEmpty(outTitle)){
 				continue;
 			}
-			PaperOutLink link = new PaperOutLink();
+			PaperOutLink link = null;
+			if(outLinkId != null){
+				link = outLinkDao.find(outLinkId); 
+			}
+			link =(link==null)?new PaperOutLink():link;
 			link.setTitle(outTitle);
 			link.setSecTitle(RequestUtil.stringvalue(request, "outSecTitle"+orderId+"-"+i));
 			link.setPrize(RequestUtil.doublevalue(request, "outPrize"+orderId+"-"+i));

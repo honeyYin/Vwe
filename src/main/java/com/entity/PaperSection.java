@@ -40,5 +40,8 @@ public class PaperSection  implements Serializable{
 	
 	@Column(nullable = false)
 	private Long paperId;
+	//是否删除
+	@Column	
+	private int disabled=0;
 	
 }

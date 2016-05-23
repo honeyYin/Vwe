@@ -56,4 +56,7 @@ public class PaperComment implements Serializable{
 	 */
 	@Column(nullable=true)
 	private Long parentId;
+	//是否删除
+	@Column	
+	private int disabled=0;
 }

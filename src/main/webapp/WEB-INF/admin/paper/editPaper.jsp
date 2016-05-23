@@ -4,6 +4,12 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 request.setCharacterEncoding("UTF-8");
+int i = 1;
+
+int [] j = new Array(){1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+
+int [] k = new Array(){1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -19,14 +25,14 @@ request.setCharacterEncoding("UTF-8");
 <script type="text/javascript" src="<%=basePath%>res/tycms/js/addNews.js"></script>
 <script type="text/javascript" src="<%=basePath%>res/common/js/AjaxUpload.js"></script>
 <!-- 添加页面元素 -->
-<script type="text/javascript" src="<%=basePath%>res/common/js/addElement.js"></script>
+<script type="text/javascript" src="<%=basePath%>res/common/js/updateElement.js"></script>
 <!-- 富文本编辑器 -->
 <link rel="stylesheet" href="<%=basePath%>res/thirdparty/kindeditor/themes/default/default.css"/>
 <script charset="utf-8" src="<%=basePath%>res/thirdparty/kindeditor/kindeditor.js"></script>
 <script charset="utf-8" src="<%=basePath%>res/thirdparty/kindeditor/lang/zh_CN.js"></script>
 <script>
 //判断标题是否为空，不为空则提交表单
-KindEditor.ready(function(K) {
+<%-- KindEditor.ready(function(K) {
 
 	var editor1 = K.create('#content', {
 
@@ -39,7 +45,7 @@ KindEditor.ready(function(K) {
 	allowFileManager : true
 	})
 
-});
+}); --%>
 function callupdateNewsAction(){
 	var paperId = $('#paperId')[0].value;
 	var title = $('#title')[0].value;
@@ -190,7 +196,6 @@ function showrecPreg(){
 </c:choose>
 </td>
 </tr>
-
 <tr id="tr-hospital">
 <td width="10%" class="pn-flabel pn-flabel-h">所属医院:</td><td colspan="1" width="40%" class="pn-fcontent">
 <input id ="hospital" type="text" maxlength="100" name="hospital" value = "${paper.hospital}"/>
@@ -199,8 +204,8 @@ function showrecPreg(){
 <tr id="tr-titleImg">
  	<td width="10%" class="pn-flabel">标题图片:</td>
  	<td colspan="1" width="40%" class="pn-fcontent">
-       	<input class="button"  type="button" id="btnUploadFile" value="上传图片" />
-        <input type="hidden" id="titleImg" name="titleImg" value="${paper.titleImg} }"/>
+       	<input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg')"/>
+        <input type="hidden" id="titleImg" name="titleImg" value="${paper.titleImg}"/>
         <span class="pn-fhelp" id="pic">无图片</span>
  	</td>
 </tr>
@@ -214,8 +219,101 @@ function showrecPreg(){
 
 </table>
 <!-- 版块区域 -->
-<c:forEach items="${channels}" var="item">
-                 	   		
+<c:forEach items="${sections}" var="section">
+
+  <div id="div-section<%=i%>">
+  	<input type="hidden" id = "sectionId<%=i%>" name = "sectionId<%=i%>" value = "${section.id}" />
+  	<table  width="100%"  cellpadding="2" cellspacing="1" border="0">
+  	<tr>
+	<td width="10%"  class="pn-flabel pn-flabel-h">版块<%=i%>:</td>
+	<td colspan="3" width="90%" class="pn-fcontent">
+		<input type="button" value="添加小节"  onclick="javascript:addNewPara(<%=i%>)" /> &nbsp; 
+		<input type="button" value="添加区域跳转块"  onclick="javascript:addNewOutLink(<%=i%>)" /> &nbsp; 
+	</td>
+	</tr>
+	<tr>
+	<td width="10%"  class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>版块标题:</td>
+	<td colspan="3" width="90%" class="pn-fcontent">
+	<input id="sectionTitle<%=i%>"  type="text" maxlength="150" name="sectionTitle<%=i%>" class="required" size="70" value="${section.title }"/>
+	<input type="button" value="删除"  onclick="javascript:deleteElementAndDB('div-content','div-section<%=i%>','section',${section.id})"/> &nbsp; 
+	</td>
+	</tr>
+  	</table> 
+  	<c:forEach items="${section.paras}" var="para">
+  	<div id="div-para<%=i%>-<%=j[i]%>">
+  	<input type="hidden" id = "paraId<%=i%>-<%=j[i]%>" name = "paraId<%=i%>-<%=j[i]%>" value ="${para.id}" />
+  	<table  width="100%"  cellpadding="2" cellspacing="1" border="0">
+  		<tr>
+		<td width="10%"  class="pn-flabel pn-flabel-h">小节<%=i%>-<%=j[i]%>:</td>
+		<td colspan="3" width="90%" class="pn-fcontent">
+		</td>
+		</tr>
+		<tr>
+		<td width="10%"  class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>小节标题:</td>
+		<td colspan="3" width="90%" class="pn-fcontent">
+		<input id="paraTitle<%=i%>-<%=j[i]%>"  type="text" maxlength="150" name="paraTitle<%=i%>-<%=j[i]%>" class="required" size="70" value="${para.title }"/>
+		<input type="button" value="删除"  onclick="javascript:deleteElementAndDB(<%=i%>,<%=j[i]%>,'para',${para.id})"/> &nbsp; 
+		</td>
+		</tr>
+		<tr >
+		<td width="10%" class="pn-flabel pn-flabel-h">小节正文:</td>
+		<td colspan="3" width="90%" class="pn-fcontent">
+			<textarea  id="paraContent<%=i%>-<%=j[i]%>" name="paraContent<%=i%>-<%=j[i]%>" cols="70" rows="10">${para.content}</textarea>
+		</td>
+		</tr>
+		<tr  >
+		 <td width="10%" class="pn-flabel">小节配图:</td>
+		 <td colspan="1" width="40%" class="pn-fcontent">
+		        <input class="button"  type="button" id="paraBtnUploadFile<%=i%>-<%=j[i]%>" value="上传图片" onclick="javascript:uploanFile('paraBtnUploadFile<%=i%>-<%=j[i]%>','paraPic<%=i%>-<%=j[i]%>','paraTitleImg<%=i%>-<%=j[i]%>')"/>
+		        <input type="hidden" id="paraTitleImg<%=i%>-<%=j[i]%>" name="paraTitleImg<%=i%>-<%=j[i]%>" value="${para.imgUrl }"/>
+		        <span class="pn-fhelp" id="paraPic<%=i%>-<%=j[i]%>">无图片</span>
+		 </td>
+		</tr>
+  	</table>
+  	</div>
+  	
+<% j[i] = j[i]+1 %> 
+  	</c:forEach>
+  	<c:forEach items="${section.outLinks}" var="outLink">
+  	<div id="div-outLink<%=i%>-<%=k[i]%>">
+  	<input type="hidden" id = "outLinkId<%=i%>-<%=k[i]%>" name = "outLinkId<%=i%>-<%=k[i]%>" value = "${outLink.id}" />
+  	<table  width="100%"  cellpadding="2" cellspacing="1" border="0">
+  		<tr>
+		<td width="10%"  class="pn-flabel pn-flabel-h">跳转区域<%=i%>-<%=k[i]%>:</td>
+		<td colspan="3" width="90%" class="pn-fcontent">
+		</td>
+		</tr>
+		<tr >
+		<td width="10%"  class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>标题:</td>
+		<td colspan="3" width="90%" class="pn-fcontent">
+		<input id="outTitle<%=i%>-<%=k[i]%>"  type="text" maxlength="150" name="outTitle<%=i%>-<%=k[i]%>" class="required" size="70" value="${outLink.title }" />
+		<input type="button" value="删除" onclick="javascript:deleteElementAndDB(<%=i%>,<%=k[i]%>,'outLink',${outLink.id})"/> &nbsp; 
+		</td>
+		</tr>
+		<tr>
+		<td width="10%" class="pn-flabel pn-flabel-h">副标题:</td>
+		<td colspan="3" width="90%" class="pn-fcontent">
+			<input id="outSecTitle<%=i%>-<%=k[i]%>"  type="text" maxlength="150" name="outSecTitle<%=i%>-<%=k[i]%>" class="required" size="70" value="${outLink.secTitle }" />
+		</td>
+		</tr>
+		<tr>
+		<td width="10%" class="pn-flabel pn-flabel-h">金额:</td>
+		<td colspan="3" width="90%" class="pn-fcontent">
+			<input id="outPrize<%=i%>-<%=k[i]%>"  type="text" maxlength="50" name="outPrize<%=i%>-<%=k[i]%>" class="required" size="20" value="${outLink.prize }" />
+		</td>
+		</tr>
+		<tr >
+		<td width="10%" class="pn-flabel pn-flabel-h">链接:</td>
+		<td colspan="3" width="90%" class="pn-fcontent">
+			<input id="outUrl<%=i%>-<%=k[i]%>"  type="text" maxlength="150" name="outUrl<%=i%>-<%=k[i]%>" class="required" size="70" value="${outLink.outerUrl }" />
+		</td>
+		</tr>
+  	</table>
+  	</div>
+<% k[i] = k[i]+1 %>   
+  	</c:forEach>   
+  </div> 
+ <% i = i+1 %>         	   		
 </c:forEach>
 </div>
 <!-- 文章正文区域end -->
@@ -231,12 +329,8 @@ function showrecPreg(){
 </form>
 </div>
 <script type="text/javascript">
-	function cutpres(msg)
-	{
-		var start = msg.indexOf("{");
-		return msg.substr(start).replace("</pre>", "");
-	}
-	var button = document.getElementById("btnUploadFile"); 
+function uploanFile(buttonId,picId,titleImgId){
+	var button = document.getElementById(buttonId); 
 	var ajaxUploadImage = new AjaxUpload(button,{
 	
 		action: '<%=basePath%>upload',
@@ -266,14 +360,18 @@ function showrecPreg(){
 				alert("文件大于1M");
 			}else{
 				
-				document.getElementById("pic").innerHTML = "<img height ='50' width = '150' src = '<%=basePath%>" + msg + "'/>";
-				document.getElementById("titleImg").value = msg;
-				//console.log(msg);
+				document.getElementById(picId).innerHTML = "<img height ='50' width = '150' src = '<%=basePath%>" + msg + "'/>";
+				document.getElementById(titleImgId).value = msg;
 			}
 		
 			this.enable();
 	}
 	});
+}
+
+var sectionId = <%=i%>;
+var arrPara =<%=j%>;
+var arrOutLink = <%=k%>;
 </script>
 </body>
 </html>

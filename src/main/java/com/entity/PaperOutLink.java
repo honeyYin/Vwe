@@ -55,4 +55,7 @@ public class PaperOutLink implements Serializable{
 	 */
 	@Column
 	private Integer orderNum;
+	//是否删除
+	@Column	
+	private int disabled=0;
 }

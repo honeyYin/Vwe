@@ -1,7 +1,4 @@
 
-var sectionId = 1;
-var arrPara = new Array(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1);
-var arrOutLink = new Array(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1);
 
 function getE(v){return document.getElementById(v);}  
 
@@ -116,3 +113,50 @@ function deleteElement(parentId,deleId,deleType){
 	}
 	 
 }
+function deleteElementAndDB(parentId,deleId,deleType,dbId){
+	if(deleType == 'section'){
+		 var parent=getE(parentId);
+		 parent.removeChild(getE(deleId)); 
+//		 sectionId = sectionId-1;
+		 
+		 var par_data="sectionId="+dbId;
+			$.ajax({ 
+				 type: "POST", 
+				 url: "<%=basePath%>/paper/deleteSection",  
+				 data: par_data, 
+				 success: function(message){ 
+					//alert(message);
+			}});
+	}else if(deleType == 'para'){
+		 var parent=getE('div-section'+parentId);
+		 var dele ='div-para'+parentId+"-"+deleId;//div容器的名称
+		 parent.removeChild(getE(dele));
+//		 arrPara[parentId-1] =  arrPara[parentId-1]-1;
+		//删除数据库中的数据
+			var par_data="paraId="+dbId;
+			$.ajax({ 
+				 type: "POST", 
+				 url: "<%=basePath%>/paper/deletePara",  
+				 data: par_data, 
+				 success: function(message){ 
+					//alert(message);
+			}});		 
+	}else if(deleType == 'outLink'){
+		var parent=getE('div-section'+parentId);
+		var dele ='div-outLink'+parentId+"-"+deleId;//div容器的名称
+		parent.removeChild(getE(dele));
+//		arrOutLink[parentId-1] = arrOutLink[parentId-1]-1;
+		//删除数据库中的数据
+		var par_data="outLinkId="+dbId;
+		$.ajax({ 
+			 type: "POST", 
+			 url: "<%=basePath%>/paper/deleteOutLink",  
+			 data: par_data, 
+			 success: function(message){ 
+				//alert(message);
+		}});
+	}else{
+		
+	}
+}
+

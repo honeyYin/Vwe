@@ -29,4 +29,11 @@ public class PaperParaDao {
 			return entityManager.merge(paper);
 		}		
 	}
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public int delete(Long id) {
+		Query query = entityManager.createQuery("update PaperParagraph p set p.disabled = 1,p.updateTime = CURRENT_TIMESTAMP() where p.id = ?1");
+		query.setParameter(1, id);
+		return query.executeUpdate();
+	}
 }
