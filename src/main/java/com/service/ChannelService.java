@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.dao.ChannelDao;
 import com.entity.Channel;
 import com.model.ChannelModel;
+import com.model.converter.ChannelConverter;
 
 @Service
 public class ChannelService {

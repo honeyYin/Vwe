@@ -17,7 +17,7 @@ import com.entity.PaperSection;
 @Setter
 @Getter
 public class PaperSectionModel {
-	
+	private Long id;
 	/**
 	 * 版块标题
 	 */

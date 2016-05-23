@@ -84,14 +84,33 @@ h1{text-align:center;font-size:18px;}
 	<h1 align="center">${paper.title}</h1>
 	<p class="info">
 		发布者: ${paper.author}
-		&nbsp; 点击: ${paper.viewCount}
+		&nbsp;${paper.viewCount}人已读
 		<c:if test="${paper.hasAudit == true}">
 		&nbsp; 发布时间:  ${paper.auditTime}	
 		</c:if>	
 	</p>
-	<div>
-		
-	</div>
+<div>
+<p>&nbsp;&nbsp;${paper.description}</p>
+		<!-- 版块区域 -->
+<c:forEach items="${paper.sections}" var="section">
+	<h1>---------${section.title}-----------</h1>
+  	<c:forEach items="${section.paras}" var="para">
+  	<div >
+		<h1>---------${para.title}-----------</h1>
+		<p>${para.content }</p>
+		<img src="<%=basePath%>${para.imgUrl}"  width="850" height= "450"/>
+  	</div>
+  	</c:forEach>
+  	<c:forEach items="${section.outLinks}" var="outLink">
+  	<div >
+		<h1>---------${outLink.title}-----------</h1><br />
+		<label >${outLink.secTitle }</label>
+		<label >人民币${outLink.prize }元</label>
+		<a src="${outLink.outerUrl}">详情</a>
+  	</div>
+  	</c:forEach>   
+</c:forEach>
+</div>
 </div>
 </div>
 </body>

@@ -196,6 +196,7 @@ public class PaperService {
 			List<PaperSectionModel> sectionModels = Lists.newArrayList();
 			for(PaperSection section :sections){
 				PaperSectionModel sectionModel = new PaperSectionModel();
+				sectionModel.setId(section.getId());
 				sectionModel.setPaperId(section.getPaperId());
 				sectionModel.setOrderNum(section.getOrderNum());
 				sectionModel.setTitle(section.getTitle());
@@ -226,13 +227,17 @@ public class PaperService {
 	public List<PaperTitleImgModel> getPaperTitleImgs(HttpServletRequest request) {
 		List<Paper> papers = paperDao.getPaperByPage(3,0);
 		List<PaperTitleImgModel> modelsLists = Lists.newArrayList();
-		
+
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 		if(!CollectionUtils.isEmpty(papers)){
 			for(Paper item: papers){
 				PaperTitleImgModel model = new PaperTitleImgModel();
 				model.setPaperId(item.getId());
-				model.setTitleImg(request.getRealPath("/")+item.getTitleImg());
-				model.setPaperUrl(request.getRealPath("/")+"paperDetail?paperId="+item.getId());
+				model.setTitleImg(basePath+item.getTitleImg());
+				
+				model.setPaperUrl(basePath+"paperDetail?paperId="+item.getId());
+				modelsLists.add(model);
 			}
 		}
 		return modelsLists;

@@ -6,9 +6,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 request.setCharacterEncoding("UTF-8");
 int i = 1;
 
-int [] j = new int[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+int [] j = new int[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
-int [] k = new int[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+int [] k = new int[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -52,7 +52,7 @@ function callupdateNewsAction(){
     re = /\d*/i; //\d表示数字,*表示匹配多个数字
     r = recPregWeeks.match(re);
     
-	if(title!=null && title!=""){
+	if(title==null || title==""){
 		alert("标题不能为空");
 	}else if(pregStage == 2 && (r != recPregWeeks || recPregWeeks < 0 || recPregWeeks > 40)){
 		alert("孕周填写不合法");
@@ -201,7 +201,15 @@ function showrecPreg(){
  	<td width="10%" class="pn-flabel">标题图片:</td>
  	<td colspan="1" width="40%" class="pn-fcontent">
        	<input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg')"/>
-        <input type="hidden" id="titleImg" name="titleImg" value="${paper.titleImg}"/>
+        <input type="hidden" id="titleImg" name="titleImg" value="<%=basePath %>${paper.titleImg}"/>
+        <c:choose>
+		        	<c:when test = "${paper.titleImg ==null || paper.titleImg== ''}">
+		        		<span class="pn-fhelp" id="pic">无图片</span>
+		        	</c:when>
+		        	<c:otherwise>
+		        		<span class="pn-fhelp" id="pic"><img height ="50" width = "150" src = "<%=basePath%>${paper.titleImg}"/></span>
+		        	</c:otherwise>
+		</c:choose>
         <span class="pn-fhelp" id="pic">无图片</span>
  	</td>
 </tr>
@@ -215,7 +223,7 @@ function showrecPreg(){
 
 </table>
 <!-- 版块区域 -->
-<c:forEach items="${sections}" var="section">
+<c:forEach items="${paper.sections}" var="section">
 
   <div id="div-section<%=i%>">
   	<input type="hidden" id = "sectionId<%=i%>" name = "sectionId<%=i%>" value = "${section.id}" />
@@ -261,8 +269,16 @@ function showrecPreg(){
 		 <td width="10%" class="pn-flabel">小节配图:</td>
 		 <td colspan="1" width="40%" class="pn-fcontent">
 		        <input class="button"  type="button" id="paraBtnUploadFile<%=i%>-<%=j[i]%>" value="上传图片" onclick="javascript:uploanFile('paraBtnUploadFile<%=i%>-<%=j[i]%>','paraPic<%=i%>-<%=j[i]%>','paraTitleImg<%=i%>-<%=j[i]%>')"/>
-		        <input type="hidden" id="paraTitleImg<%=i%>-<%=j[i]%>" name="paraTitleImg<%=i%>-<%=j[i]%>" value="${para.imgUrl }"/>
-		        <span class="pn-fhelp" id="paraPic<%=i%>-<%=j[i]%>">无图片</span>
+		        <input type="hidden" id="paraTitleImg<%=i%>-<%=j[i]%>" name="paraTitleImg<%=i%>-<%=j[i]%>" value="<%=basePath %>${para.imgUrl }"/>
+		        <c:choose>
+		        	<c:when test = "${para.imgUrl == null || para.imgUrl == ''}">
+		        		<span class="pn-fhelp" id="paraPic<%=i%>-<%=j[i]%>">无图片</span>
+		        	</c:when>
+		        	<c:otherwise>
+		        		<span class="pn-fhelp" id="paraPic<%=i%>-<%=j[i]%>"><img height ="50" width = "150" src = "<%=basePath%>${para.imgUrl}"/></span>
+		        	</c:otherwise>
+		        </c:choose>
+		        
 		 </td>
 		</tr>
   	</table>

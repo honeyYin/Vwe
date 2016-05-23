@@ -28,6 +28,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 
 <div >
+
 </div> 
 
 <!--content --> 
@@ -43,7 +44,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div id="article">
 	<p align="left">${paper.description}</p>
 	<br/>
-	<p align="left"></p>
+<div>
+		<!-- 版块区域 -->
+<c:forEach items="${paper.sections}" var="section">
+	<h1>---------${section.title}-----------</h1>
+  	<c:forEach items="${section.paras}" var="para">
+  	<div >
+		<h1>---------${para.title}-----------</h1>
+		<p>${para.content }</p>
+		<img src="<%=basePath%>${para.imgUrl}"  width="850" height= "450"/>
+  	</div>
+  	</c:forEach>
+  	<c:forEach items="${section.outLinks}" var="outLink">
+  	<div >
+		<h1>---------${outLink.title}-----------</h1><br />
+		<label >${outLink.secTitle }</label>
+		<label >人民币${outLink.prize }元</label>
+		<a src="${outLink.outerUrl}">详情</a>
+  	</div>
+  	</c:forEach>   
+</c:forEach>
+</div>
 	</div>
 	
 	<ul id="news_nav">

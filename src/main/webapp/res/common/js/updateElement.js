@@ -28,7 +28,7 @@ function addNewSection(parentId){//传入元素id
 function addNewPara(parentId){  //传入数据编号即可
 	  
 	  var parent=getE('div-section'+parentId);//获取父元素
-	  var paraId =arrPara[parentId-1];
+	  var paraId =arrPara[parentId];
 	  var divName='div-para'+parentId+"-"+paraId;//div容器的名称
 	  var paraName = "小节"+parentId+"-"+paraId;
 	  
@@ -61,7 +61,7 @@ function addNewPara(parentId){  //传入数据编号即可
 function addNewOutLink(parentId){
 
 	  var parent=getE('div-section'+parentId);//获取父元素
-	  var outlinkId = arrOutLink[parentId-1];
+	  var outlinkId = arrOutLink[parentId];
 	  var divName='div-outLink'+parentId+"-"+outlinkId;//div容器的名称
 	  var outLinkName = "跳转区域"+parentId+"-"+outlinkId;
 	  

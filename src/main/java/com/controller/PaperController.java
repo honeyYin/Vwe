@@ -3,8 +3,12 @@ package com.controller;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -28,6 +32,7 @@ import com.entity.PaperOutLink;
 import com.entity.PaperParagraph;
 import com.entity.PaperSection;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.model.OperationResult;
 import com.model.PaperModel;
 import com.service.PaperService;
@@ -342,17 +347,21 @@ public class PaperController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping(method=RequestMethod.GET,value="paperTitleImgs")
-	public String fpaperTitleImgs(HttpServletRequest request,Model model){
+	public String fpaperTitleImgs(HttpServletRequest request,
+								  Model model,
+								  HttpServletResponse response){
+		Map<String, Object> result = Maps.newHashMap();
+
 		try{
-			model.addAttribute("status", 0);
-			model.addAttribute("msg", "succ");
-			model.addAttribute("papers",paperService.getPaperTitleImgs(request));
+			result.put("status", 0);
+			result.put("msg", "succ");
+			result.put("papers",paperService.getPaperTitleImgs(request));
 		}catch(Exception ex){
-			model.addAttribute("status", -1);//0标识成功，-1标识失败
-			model.addAttribute("msg", "fail");
-			model.addAttribute("papers", Lists.newArrayList());
+			result.put("status", -1);//0标识成功，-1标识失败
+			result.put("msg", "fail");
+			result.put("papers", Lists.newArrayList());
 		}
-		return "json";
+		return render(JSONObject.fromObject(result).toString(),"application/json; charset=utf-8",response);
 	}
 	/**
 	 * 
@@ -364,7 +373,10 @@ public class PaperController extends BaseController{
 	 */
 	@RequestMapping(method=RequestMethod.GET,value="paperDetail")
 	public String fpaperDetail(@RequestParam("paperId") Long paperId,
-							   Model model){
+							   Model model,
+							   HttpServletResponse response){
+		Map<String, Object> result = Maps.newHashMap();
+
 		try{
 			//修改点击量
 			paperService.addViewCount(paperId);
@@ -375,17 +387,17 @@ public class PaperController extends BaseController{
 			List<Paper> recList = paperDao.getRecPaperByCategory(paper.getChannelId(),paper.getId(),5, 0);
 			
 	
-			model.addAttribute("status", 0);//0标识成功，-1标识失败
-			model.addAttribute("msg", "succ");
-			model.addAttribute("paper", paperService.getPaperModel(paper));
-			model.addAttribute("recList", recList);
+			result.put("status", 0);//0标识成功，-1标识失败
+			result.put("msg", "succ");
+			result.put("paper", paperService.getPaperModel(paper));
+			result.put("recList", recList);
 		}catch(Exception ex){
-			model.addAttribute("status", -1);//0标识成功，-1标识失败
-			model.addAttribute("msg", "fail");
-			model.addAttribute("paper", null);
-			model.addAttribute("recList", Lists.newArrayList());
+			result.put("status", -1);//0标识成功，-1标识失败
+			result.put("msg", "fail");
+			result.put("paper", null);
+			result.put("recList", Lists.newArrayList());
 		}
-		return "json";
+		return render(JSONObject.fromObject(result).toString(),"application/json; charset=utf-8",response);
 	}
 
 	//=====================私有方法====================================

@@ -1,4 +1,4 @@
-package com.service;
+package com.model.converter;
 
 import com.entity.Channel;
 import com.model.ChannelModel;
