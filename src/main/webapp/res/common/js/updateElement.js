@@ -120,12 +120,13 @@ function deleteElementAndDB(parentId,deleId,deleType,dbId){
 //		 sectionId = sectionId-1;
 		 
 		 var par_data="sectionId="+dbId;
+		 alert(par_data);
 			$.ajax({ 
-				 type: "POST", 
-				 url: "<%=basePath%>/paper/deleteSection",  
+				 type: "GET", 
+				 url: "paper/deleteSection",  
 				 data: par_data, 
 				 success: function(message){ 
-					//alert(message);
+//					alert(message);
 			}});
 	}else if(deleType == 'para'){
 		 var parent=getE('div-section'+parentId);
@@ -135,8 +136,8 @@ function deleteElementAndDB(parentId,deleId,deleType,dbId){
 		//删除数据库中的数据
 			var par_data="paraId="+dbId;
 			$.ajax({ 
-				 type: "POST", 
-				 url: "<%=basePath%>/paper/deletePara",  
+				 type: "GET", 
+				 url: "paper/deletePara",  
 				 data: par_data, 
 				 success: function(message){ 
 					//alert(message);
@@ -149,8 +150,8 @@ function deleteElementAndDB(parentId,deleId,deleType,dbId){
 		//删除数据库中的数据
 		var par_data="outLinkId="+dbId;
 		$.ajax({ 
-			 type: "POST", 
-			 url: "<%=basePath%>/paper/deleteOutLink",  
+			 type: "GET", 
+			 url: "paper/deleteOutLink",  
 			 data: par_data, 
 			 success: function(message){ 
 				//alert(message);

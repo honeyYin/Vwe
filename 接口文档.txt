@@ -1,0 +1,152 @@
+推荐三篇文章头图接口：
+入参：无
+返回结果：
+
+{
+    "status": 0， //0表示成功；-1表示失败
+    "msg": "succ",
+    "papers": [
+        {
+            "paperId": 11, //文章id
+            "paperUrl": p://localhost:8080/Vwe/paperDetail?paperId=11",  //文章访问的地址
+            "titleImg": "http://localhost:8080/Vwe/res/upload/20160523/Lighthouse.jpg"  //头图地址
+        },
+        {
+            "paperId": 2,
+            "paperUrl": "http://localhost:8080/Vwe/paperDetail?paperId=2",
+            "titleImg": "http://localhost:8080/Vwe/res/upload/20160523/Lighthouse.jpg"
+        }
+    ]
+}
+
+文章详情接口：
+入参：paperId  ：Long型
+返回结果：
+{
+    "status": 0,
+    "msg": "succ",
+    "paper": {
+        "author": "地方",  //作者
+        "channelId": 1,   //栏目id
+        "channelName": "专题栏目",  //栏目名称
+        "description": "官方",  //文章描述
+        "hospital": "",  //医院
+        "id": 11,  //文章id
+        "isTop": 0,  //是否置顶
+        "pregStage": "0-40周",  //孕周级别
+        "recPregWeeks": 0,  //孕周
+        "title": "吧",  //标题
+        "titleImg": "",  //文章头图
+        "viewCount": 5,   //点击量
+        "sections": [    //包含的版块list
+            {
+                "id": 10,  版块id
+                "title": "版块1",  //版块标题
+                "outLinks": [  //版块包含的跳转区域块
+                    {
+                        "id": 1,
+                        "outerUrl": "http://www.baidu.com",  //跳转链接
+                        "paperId": 11,
+                        "prize": 12.2,  //价格
+                        "secTitle": "水电费",  //副标题
+                        "sectionId": 10,   
+                        "title": "区域1"    //标题
+                    }
+                ],              
+                "paras": [   //版块包含的小节
+                    {
+                        "content": "地方地方的",  //小节正文
+                        "id": 4,
+                        "imgUrl": "res/upload/20160522/Jellyfish.jpg",  //配图地址
+                        "paperId": 11,
+                        "sectionId": 10,
+                        "title": "小节1", //小节标题
+                    }
+                    {
+                        "content": "的风格",
+                        "disabled": 0,
+                        "id": 5,
+                        "imgUrl": "res/upload/20160522/Koala.jpg",
+                        "orderNum": 2,
+                        "paperId": 11,
+                        "sectionId": 10,
+                        "title": "小节2"
+                    },
+                    {
+                        "content": "爸爸",
+                        "disabled": 0,
+                        "id": 6,
+                        "imgUrl": "",
+                        "orderNum": 3,
+                        "paperId": 11,
+                        "sectionId": 10,
+                        "title": "小节3"
+                    }
+                ]
+            },
+            {
+                "id": 11,
+                "orderNum": 2,
+                "outLinks": [],
+                "paperId": 11,
+                "title": "版块2",
+                "paras": [
+                    {
+                        "content": "的淡淡的淡淡的",
+                        "disabled": 0,
+                        "id": 7,
+                        "imgUrl": "res/upload/20160523/Lighthouse.jpg",
+                        "orderNum": 1,
+                        "paperId": 11,
+                        "sectionId": 11,
+                        "title": "小节2-1"
+                    }
+                ]
+            }
+        ]
+    },
+    "recList": [
+        {
+            "author": "admin",
+            "channelId": 1,
+            "channelName": "专题栏目",
+            "description": "这里看韩剧",
+            "hospital": "",
+            "id": 2,
+            "isTop": 0,
+            "pregStage": "P_ST_40",
+            "recPregWeeks": 12,
+            "title": "标题1",
+            "titleImg": "res/upload/20160523/Lighthouse.jpg",
+            "viewCount": 1
+        },
+        {
+            "author": "",
+            "channelId": 1,
+            "channelName": "专题栏目",
+            "description": "的风格",
+            "hospital": "",
+            "id": 9,
+            "isTop": 0,
+            "pregStage": "P_ALL",
+            "recPregWeeks": 0,
+            "title": "的风格",
+            "titleImg": "",
+            "viewCount": 0
+        },
+        {
+            "author": "的",
+            "channelId": 1,
+            "channelName": "专题栏目",
+            "description": "都是",
+            "hospital": "",
+            "id": 8,
+            "isTop": 0,
+            "pregStage": "P_ALL",
+            "recPregWeeks": 0,
+            "title": "梵蒂冈",
+            "titleImg": "",
+            "viewCount": 0
+        }
+    ]
+}

@@ -189,23 +189,22 @@ public class PaperController extends BaseController{
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
 	}
-	@RequestMapping(method=RequestMethod.POST,value="deleteSection") 
-	public String deleteSection(@RequestParam("sectionId") Long sectionId) {
+	@RequestMapping(method=RequestMethod.GET,value="deleteSection") 
+	public String deleteSection(@RequestParam("sectionId") Long sectionId,HttpServletResponse response) {
 		sectionDao.delete(sectionId);
-		return "succ";
+		return render("succ","text/html",response);		
 		
 	}
-	@RequestMapping(method=RequestMethod.POST,value="deletePara") 
-	public String deletePara(@RequestParam("paraId") Long paraId) {
+	@RequestMapping(method=RequestMethod.GET,value="deletePara") 
+	public String deletePara(@RequestParam("paraId") Long paraId,HttpServletResponse response) {
 		paraDao.delete(paraId);
-		return "succ";
+		return render("succ","text/html",response);		
 		
 	}
-	@RequestMapping(method=RequestMethod.POST,value="deleteOutLink") 
-	public String deleteOutLink(@RequestParam("outLinkId") Long outLinkId) {
+	@RequestMapping(method=RequestMethod.GET,value="deleteOutLink") 
+	public String deleteOutLink(@RequestParam("outLinkId") Long outLinkId,HttpServletResponse response) {
 		outLinkDao.delete(outLinkId);
-		return "succ";
-		
+		return render("succ","text/html",response);		
 	}
 	@RequestMapping(method=RequestMethod.GET,value="delete") 
 	public String delete(@RequestParam("paperId") Long paperId,
@@ -469,7 +468,7 @@ public class PaperController extends BaseController{
 	private void savePaperPara(Long paperId,Long sectionId,int orderId,HttpServletRequest request){
 		int orderNum =1;
 		for(int i=1;i<=15;i++){
-			Long paraId = RequestUtil.longvalue(request, "paraId"+i);
+			Long paraId = RequestUtil.longvalue(request, "paraId"+orderId+"-"+i);
 			String paraTitle = RequestUtil.stringvalue(request, "paraTitle"+orderId+"-"+i);
 			if(StringUtils.isEmpty(paraTitle)){
 				continue;
@@ -499,7 +498,7 @@ public class PaperController extends BaseController{
 	private void savePaperOutLink(Long paperId,Long sectionId,int orderId,HttpServletRequest request){
 		int orderNum =1;
 		for(int i=1;i<=15;i++){
-			Long outLinkId = RequestUtil.longvalue(request, "outLinkId"+i);
+			Long outLinkId = RequestUtil.longvalue(request, "outLinkId"+orderId+"-"+i);
 
 			String outTitle = RequestUtil.stringvalue(request, "outTitle"+orderId+"-"+i);
 			if(StringUtils.isEmpty(outTitle)){
