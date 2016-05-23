@@ -426,7 +426,11 @@ public class PaperController extends BaseController{
 		paper.setDescription(RequestUtil.stringvalue(request, "description"));
 		paper.setIsRecom(RequestUtil.intvalue(request, "isRecom"));
 		paper.setIsTop(RequestUtil.intvalue(request, "isTop"));
-		paper.setTitleImg(RequestUtil.stringvalue(request, "titleImg"));
+		String titleImg = RequestUtil.stringvalue(request, "titleImg");
+		int index = titleImg.indexOf("res");
+		if(index != -1){
+			paper.setTitleImg(titleImg.substring(index));
+		}
 		paper.setPregStage(RequestUtil.intvalue(request, "pregStage"));
 		paper.setRecPregWeeks(RequestUtil.intvalue(request, "recPregWeeks"));
 		paper.setHospital(RequestUtil.stringvalue(request, "hospital"));
@@ -482,7 +486,13 @@ public class PaperController extends BaseController{
 			para.setUpdateTime(new Date());
 			para.setTitle(paraTitle);
 			para.setContent(RequestUtil.stringvalue(request, "paraContent"+orderId+"-"+i));
-			para.setImgUrl(RequestUtil.stringvalue(request, "paraTitleImg"+orderId+"-"+i));
+
+			String titleImg = RequestUtil.stringvalue(request, "paraTitleImg"+orderId+"-"+i);
+			int index = titleImg.indexOf("res");
+			if(index !=-1){
+				para.setImgUrl(titleImg.substring(index));
+			}
+			
 			para.setPaperId(paperId);
 			para.setSectionId(sectionId);
 			para.setOrderNum(orderNum++);

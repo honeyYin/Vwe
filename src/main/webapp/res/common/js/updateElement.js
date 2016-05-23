@@ -120,10 +120,9 @@ function deleteElementAndDB(parentId,deleId,deleType,dbId){
 //		 sectionId = sectionId-1;
 		 
 		 var par_data="sectionId="+dbId;
-		 alert(par_data);
 			$.ajax({ 
 				 type: "GET", 
-				 url: "paper/deleteSection",  
+				 url: "deleteSection",  
 				 data: par_data, 
 				 success: function(message){ 
 //					alert(message);
@@ -137,7 +136,7 @@ function deleteElementAndDB(parentId,deleId,deleType,dbId){
 			var par_data="paraId="+dbId;
 			$.ajax({ 
 				 type: "GET", 
-				 url: "paper/deletePara",  
+				 url: "deletePara",  
 				 data: par_data, 
 				 success: function(message){ 
 					//alert(message);
@@ -151,7 +150,7 @@ function deleteElementAndDB(parentId,deleId,deleType,dbId){
 		var par_data="outLinkId="+dbId;
 		$.ajax({ 
 			 type: "GET", 
-			 url: "paper/deleteOutLink",  
+			 url: "deleteOutLink",  
 			 data: par_data, 
 			 success: function(message){ 
 				//alert(message);
