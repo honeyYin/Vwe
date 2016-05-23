@@ -25,7 +25,8 @@ public class LoanAccessSecurityFilter extends GenericFilterBean {
 	
 	private RequestMatcher requiresAuthenticationRequestMatcher = null;
 	
-	private List noFilterURLs = Lists.newArrayList("/login","/toLogin","/logout","/paper/viewPaper","/paper/viewPaperList");
+	private List noFilterURLs = Lists.newArrayList("/login","/toLogin","/logout","/paper/viewPaper",
+			"/paper/viewPaperList","/paper/paperTitleImgs","/paper/paperDetail");
     
 	private List noFilterPrefix = Lists.newArrayList("/res");
     

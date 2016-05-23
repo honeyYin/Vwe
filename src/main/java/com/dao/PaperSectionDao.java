@@ -1,5 +1,7 @@
 package com.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -7,6 +9,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.entity.Paper;
 import com.entity.PaperSection;
 
 @Repository
@@ -34,4 +37,12 @@ public class PaperSectionDao {
 		query.setParameter(1, id);
 		return query.executeUpdate();
 	}
+
+	@SuppressWarnings("unchecked")
+	public List<PaperSection> getSecitonByPaper(Long paperId) {
+		Query query =  entityManager.createQuery("select p from PaperSection p where p.disabled = 0 and p.paperId = ?1 ORDER BY p.orderNum ASC ");
+		query.setParameter(1, paperId);
+		return query.getResultList();
+	}
+	
 }

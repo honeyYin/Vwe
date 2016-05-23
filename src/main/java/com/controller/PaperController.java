@@ -27,6 +27,7 @@ import com.entity.Paper;
 import com.entity.PaperOutLink;
 import com.entity.PaperParagraph;
 import com.entity.PaperSection;
+import com.google.common.collect.Lists;
 import com.model.OperationResult;
 import com.model.PaperModel;
 import com.service.PaperService;
@@ -123,7 +124,7 @@ public class PaperController extends BaseController{
 		ModelAndView mav = new ModelAndView();
 		
 		Paper paper = paperDao.find(paperId);
-		mav.addObject("paper",paper);
+		mav.addObject("paper",paperService.getPaperModel(paper));
 		mav.addObject("channelId",channelId);
 		mav.addObject("pageNo",pageNo==null?0:pageNo);
 		mav.setViewName("admin/paper/paper");
@@ -162,8 +163,9 @@ public class PaperController extends BaseController{
 		//查询父级栏目
 		List<Channel> channels =channelDao.getRootCategory();
 		Paper paper = paperDao.find(paperId);
+		
 		mav.addObject("channels",channels);
-		mav.addObject("paper", new PaperModel(paper));
+		mav.addObject("paper",paperService.getPaperModel(paper));
 		mav.addObject("channelId",channelId);
 		mav.addObject("pageNo",pageNo==null?0:pageNo);
 		mav.setViewName("admin/paper/editPaper");
@@ -280,37 +282,29 @@ public class PaperController extends BaseController{
 	public String main(){
 		return "admin/paper/main";
 	}
+//===================前端===============================================	
 	/**
-	 * ---------前端显示--------------
+	 *文章预览
 	 * @param paperId
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping(method=RequestMethod.GET,value="viewPaper")
 	public ModelAndView fviewPaper(HttpServletRequest request,
-									@RequestParam("paperId") Long paperId,
-									Long channelId,
-									Integer pageNo){
-		//向数据库查询对应新闻的内容
-		Paper paper = paperDao.find(paperId);
-		List<Paper> rePapers = paperDao.getPaperByCategory(paper.getChannelId(),5, 0);
-		Iterator<Paper> iterator = rePapers.iterator();
-		while (iterator.hasNext()) {
-			Paper temp = iterator.next();
-			if(temp.getId()==paperId){
-				iterator.remove();
-			}
-		}
+									@RequestParam("paperId") Long paperId){
 		//修改点击量
 		paperService.addViewCount(paperId);
+		//向数据库查询对应新闻的内容
+		Paper paper = paperDao.find(paperId);
+		List<Paper> rePapers = paperDao.getRecPaperByCategory(paper.getChannelId(),paper.getId(),5, 0);
+		
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("paper", paper);
+		mav.addObject("paper", paperService.getPaperModel(paper));
 		mav.addObject("rePapers", rePapers);
-		mav.addObject("channelId",channelId==null?paper.getChannelId():channelId);
-		mav.addObject("pageNo",pageNo==null?0:pageNo+1);
 		mav.setViewName("forecontent");
 		return mav;
 	}
+	
 	@RequestMapping(method=RequestMethod.GET,value="viewPaperList")
 	public ModelAndView fviewPaperList(Long channelId,
 							 Integer pageNo) {
@@ -340,6 +334,61 @@ public class PaperController extends BaseController{
 		return mav;
 		
 	}
+	
+	//=====================接口调用===========================
+	/**
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(method=RequestMethod.GET,value="paperTitleImgs")
+	public String fpaperTitleImgs(HttpServletRequest request,Model model){
+		try{
+			model.addAttribute("status", 0);
+			model.addAttribute("msg", "succ");
+			model.addAttribute("papers",paperService.getPaperTitleImgs(request));
+		}catch(Exception ex){
+			model.addAttribute("status", -1);//0标识成功，-1标识失败
+			model.addAttribute("msg", "fail");
+			model.addAttribute("papers", Lists.newArrayList());
+		}
+		return "json";
+	}
+	/**
+	 * 
+	 * @param request
+	 * @param paperId
+	 * @param channelId
+	 * @param pageNo
+	 * @return
+	 */
+	@RequestMapping(method=RequestMethod.GET,value="paperDetail")
+	public String fpaperDetail(@RequestParam("paperId") Long paperId,
+							   Model model){
+		try{
+			//修改点击量
+			paperService.addViewCount(paperId);
+
+			//向数据库查询对应新闻的内容
+			Paper paper = paperDao.find(paperId);
+			
+			List<Paper> recList = paperDao.getRecPaperByCategory(paper.getChannelId(),paper.getId(),5, 0);
+			
+	
+			model.addAttribute("status", 0);//0标识成功，-1标识失败
+			model.addAttribute("msg", "succ");
+			model.addAttribute("paper", paperService.getPaperModel(paper));
+			model.addAttribute("recList", recList);
+		}catch(Exception ex){
+			model.addAttribute("status", -1);//0标识成功，-1标识失败
+			model.addAttribute("msg", "fail");
+			model.addAttribute("paper", null);
+			model.addAttribute("recList", Lists.newArrayList());
+		}
+		return "json";
+	}
+
+	//=====================私有方法====================================
 	//从request中获取paper对象
 	private Paper paserPaper(Long paperId,HttpServletRequest request){
 		Paper paper;
@@ -371,13 +420,14 @@ public class PaperController extends BaseController{
 		paper.setRecPregWeeks(RequestUtil.intvalue(request, "recPregWeeks"));
 		paper.setHospital(RequestUtil.stringvalue(request, "hospital"));
 		return paper;
-	}
+	}			
 	/**
 	 * 保存版块信息
 	 * @param paperId
 	 * @param request
 	 */
 	private void savePaperSection(Long paperId,HttpServletRequest request){
+		int orderNum =1;
 		for (int i = 1; i <= 10; i++) {
 			Long sectionId = RequestUtil.longvalue(request, "sectionId"+i);
 			String sectionTitle = RequestUtil.stringvalue(request, "sectionTitle"+i);
@@ -389,6 +439,7 @@ public class PaperController extends BaseController{
 				section = section==null?new PaperSection():section;
 				section.setTitle(sectionTitle);
 				section.setPaperId(paperId);
+				section.setOrderNum(orderNum++);
 				section = sectionDao.save(section);
 				savePaperPara(paperId,section.getId(),i,request);
 				savePaperOutLink(paperId,section.getId(),i,request);
@@ -396,6 +447,7 @@ public class PaperController extends BaseController{
 			
 		}
 	}
+	
 	/**
 	 * 保存小节
 	 * @param paperId
@@ -403,6 +455,7 @@ public class PaperController extends BaseController{
 	 * @param request
 	 */
 	private void savePaperPara(Long paperId,Long sectionId,int orderId,HttpServletRequest request){
+		int orderNum =1;
 		for(int i=1;i<=15;i++){
 			Long paraId = RequestUtil.longvalue(request, "paraId"+i);
 			String paraTitle = RequestUtil.stringvalue(request, "paraTitle"+orderId+"-"+i);
@@ -421,7 +474,7 @@ public class PaperController extends BaseController{
 			para.setImgUrl(RequestUtil.stringvalue(request, "paraTitleImg"+orderId+"-"+i));
 			para.setPaperId(paperId);
 			para.setSectionId(sectionId);
-			para.setOrderNum(i);
+			para.setOrderNum(orderNum++);
 			paraDao.save(para);
 		}
 	}
@@ -432,6 +485,7 @@ public class PaperController extends BaseController{
 	 * @param request
 	 */
 	private void savePaperOutLink(Long paperId,Long sectionId,int orderId,HttpServletRequest request){
+		int orderNum =1;
 		for(int i=1;i<=15;i++){
 			Long outLinkId = RequestUtil.longvalue(request, "outLinkId"+i);
 
@@ -450,7 +504,7 @@ public class PaperController extends BaseController{
 			link.setOuterUrl(RequestUtil.stringvalue(request, "outUrl"+orderId+"-"+i));
 			link.setPaperId(paperId);
 			link.setSectionId(sectionId);
-			link.setOrderNum(i);
+			link.setOrderNum(orderNum++);
 			outLinkDao.save(link);
 		}
 	}

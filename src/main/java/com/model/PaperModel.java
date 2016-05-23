@@ -3,14 +3,13 @@ package com.model;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Column;
-
-import com.entity.Paper;
-import com.google.common.collect.Lists;
-import com.util.DateUtil;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import com.entity.Paper;
+import com.entity.PaperSection;
+import com.google.common.collect.Lists;
+import com.util.DateUtil;
 /**
  * 文章
  * @author hzyinhonglian
@@ -58,6 +57,9 @@ public class PaperModel  implements Serializable{
 	
 	//所属医院
 	private String hospital;	
+	
+	private List<PaperSectionModel> sections;
+	
 	PaperModel(){}
 	
 	public PaperModel(Paper paper){

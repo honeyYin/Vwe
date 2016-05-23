@@ -43,11 +43,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div id="article">
 	<p align="left">${paper.description}</p>
 	<br/>
-	<p align="left">${paper.content}</p>
+	<p align="left"></p>
 	</div>
 	
 	<ul id="news_nav">
-	    <li><a href="<%=request.getContextPath()%>/paper/viewPaperList?channelId=${channelId}">返回专题</a></li>
 		<c:forEach items ="${rePapers}" var="v_repaper">
 	        <li><a href="<%=request.getContextPath()%>/paper/viewPaper?paperId=${v_repaper.id}">${v_repaper.title}</a> </li>
 	    </c:forEach>

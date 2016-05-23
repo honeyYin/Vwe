@@ -44,4 +44,10 @@ public class PaperSection  implements Serializable{
 	@Column	
 	private int disabled=0;
 	
+	/**
+	 * 顺序
+	 */
+	@Column
+	private int orderNum;
+	
 }

@@ -6,9 +6,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 request.setCharacterEncoding("UTF-8");
 int i = 1;
 
-int [] j = new Array(){1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+int [] j = new int[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
-int [] k = new Array(){1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+int [] k = new int[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -19,10 +19,6 @@ int [] k = new Array(){1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 <link href="<%=basePath%>res/common/css/admin.css" rel="stylesheet" type="text/css"/>
 <link href="<%=basePath%>res/common/css/theme.css" rel="stylesheet" type="text/css"/>
 <script src="<%=basePath%>res/common/js/jquery.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" href="<%=basePath%>res/thirdparty/ueditor/themes/default/ueditor.css" />
-<script type="text/javascript" src="<%=basePath%>res/thirdparty/ueditor/editor_config.js"></script>
-<script type="text/javascript" src="<%=basePath%>res/thirdparty/ueditor/editor_all.js"></script>	
-<script type="text/javascript" src="<%=basePath%>res/tycms/js/addNews.js"></script>
 <script type="text/javascript" src="<%=basePath%>res/common/js/AjaxUpload.js"></script>
 <!-- 添加页面元素 -->
 <script type="text/javascript" src="<%=basePath%>res/common/js/updateElement.js"></script>
@@ -272,7 +268,7 @@ function showrecPreg(){
   	</table>
   	</div>
   	
-<% j[i] = j[i]+1 %> 
+<% j[i] = j[i]+1 ;%> 
   	</c:forEach>
   	<c:forEach items="${section.outLinks}" var="outLink">
   	<div id="div-outLink<%=i%>-<%=k[i]%>">
@@ -310,10 +306,10 @@ function showrecPreg(){
 		</tr>
   	</table>
   	</div>
-<% k[i] = k[i]+1 %>   
+<% k[i] = k[i]+1; %>   
   	</c:forEach>   
   </div> 
- <% i = i+1 %>         	   		
+ <% i = i+1; %>         	   		
 </c:forEach>
 </div>
 <!-- 文章正文区域end -->
@@ -325,7 +321,6 @@ function showrecPreg(){
 	<input type="reset" value="重置" class="reset"/>
 </td>
 </tr>
-</table>
 </form>
 </div>
 <script type="text/javascript">
@@ -370,8 +365,16 @@ function uploanFile(buttonId,picId,titleImgId){
 }
 
 var sectionId = <%=i%>;
-var arrPara =<%=j%>;
-var arrOutLink = <%=k%>;
+var arrPara =new Array(<%=j.length%>);
+var arrOutLink = new Array(<%=k.length%>);
+<%
+	for(int t = 0;t<j.length;t++){
+%>		
+arrPara[<%=t%>] = <%=j[t]%>;
+arrOutLink[<%=t%>] = <%=k[t]%>;
+<%
+	}
+%>
 </script>
 </body>
 </html>

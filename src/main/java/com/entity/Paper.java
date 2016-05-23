@@ -82,6 +82,9 @@ public class Paper  implements Serializable{
 	//所属医院
 	@Column
 	private String hospital;
+	//顺序
+//	@Column 
+//	private Integer orderNum=20;
 	
 	public void setPregStage(int stage){
 		this.pregStage = PregStage.valueOfCode(stage);

@@ -90,7 +90,7 @@ h1{text-align:center;font-size:18px;}
 		</c:if>	
 	</p>
 	<div>
-		${paper.content}
+		
 	</div>
 </div>
 </div>

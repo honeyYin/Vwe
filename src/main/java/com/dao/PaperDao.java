@@ -59,6 +59,15 @@ public class PaperDao {
 		return query.getResultList();
 	}
 	@SuppressWarnings("unchecked")
+	public List<Paper> getRecPaperByCategory(long cateId,long paperId,int limit,int offset) {
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.channelId = ?1 and p.id != ?2 ORDER BY p.hasAudit DESC,p.isRecom DESC,p.isTop DESC,p.updateTime DESC ");
+		query.setParameter(1, cateId);
+		query.setParameter(2, paperId);
+		query.setFirstResult(offset);//设置查询结果的开始记录数
+		query.setMaxResults(limit);
+		return query.getResultList();
+	}
+	@SuppressWarnings("unchecked")
 	public List<Paper> getfPaperByPage(int limit,int offset) {
 		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true ORDER BY p.hasAudit DESC,p.isRecom DESC,p.isTop DESC,p.updateTime DESC ");
 		query.setFirstResult(offset);//设置查询结果的开始记录数

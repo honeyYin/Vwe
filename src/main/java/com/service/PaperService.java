@@ -2,19 +2,38 @@ package com.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.dao.PaperDao;
+import com.dao.PaperOutLinkDao;
+import com.dao.PaperParaDao;
+import com.dao.PaperSectionDao;
 import com.entity.Paper;
+import com.entity.PaperSection;
+import com.google.common.collect.Lists;
 import com.model.OperationResult;
+import com.model.PaperModel;
+import com.model.PaperSectionModel;
+import com.model.PaperTitleImgModel;
 
 @Service
 public class PaperService {
 	
 	@Autowired
 	private PaperDao paperDao;
+	@Autowired
+	private PaperParaDao paraDao;
+	
+	@Autowired
+	private PaperSectionDao sectionDao;
+	
+	@Autowired
+	private PaperOutLinkDao outLinkDao;
 
 	@Autowired
 	private ChannelService channelService;
@@ -164,5 +183,58 @@ public class PaperService {
 			count = 0l;
 		}
 		return paperDao.updateViewCount(paperId, ++count)>0;
+	}
+	
+	public PaperModel getPaperModel(Paper paper){
+		if(paper == null){
+			return null;
+		}
+		PaperModel model = new PaperModel(paper);
+		List<PaperSection> sections = sectionDao.getSecitonByPaper(paper.getId());
+		
+		if(!CollectionUtils.isEmpty(sections)){
+			List<PaperSectionModel> sectionModels = Lists.newArrayList();
+			for(PaperSection section :sections){
+				PaperSectionModel sectionModel = new PaperSectionModel();
+				sectionModel.setPaperId(section.getPaperId());
+				sectionModel.setOrderNum(section.getOrderNum());
+				sectionModel.setTitle(section.getTitle());
+				sectionModel.setParas(paraDao.getParaBySection(section.getId()));
+				sectionModel.setOutLinks(outLinkDao.getOutLinkBySection(section.getId()));
+				sectionModels.add(sectionModel);
+			}
+			
+			model.setSections(sectionModels);
+		}
+		return model;
+	}
+	 public List<PaperModel> getPaperModels(List<Paper> papers){
+		 if(CollectionUtils.isEmpty(papers)){
+			 return Lists.newArrayList();
+		 }
+		 List<PaperModel> result = Lists.newArrayList();
+		 for(Paper item:papers){
+			 PaperModel model = getPaperModel(item);
+			 result.add(model);
+		 }
+		 return result;
+	 }
+	 /**
+	  * 获取推荐的三篇文章头图
+	  * @return
+	  */
+	public List<PaperTitleImgModel> getPaperTitleImgs(HttpServletRequest request) {
+		List<Paper> papers = paperDao.getPaperByPage(3,0);
+		List<PaperTitleImgModel> modelsLists = Lists.newArrayList();
+		
+		if(!CollectionUtils.isEmpty(papers)){
+			for(Paper item: papers){
+				PaperTitleImgModel model = new PaperTitleImgModel();
+				model.setPaperId(item.getId());
+				model.setTitleImg(request.getRealPath("/")+item.getTitleImg());
+				model.setPaperUrl(request.getRealPath("/")+"paperDetail?paperId="+item.getId());
+			}
+		}
+		return modelsLists;
 	}
 }
