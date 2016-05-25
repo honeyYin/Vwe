@@ -56,9 +56,9 @@ function callAddNewsAction(){
 function showrecPreg(){
 	var pregStage = document.getElementById("pregStage").value;
 	if(pregStage == 2){
-		document.getElementById("recPregWeeks").style.display="";
+		document.getElementById("div_recPreg").style.display="";
 	}else{
-		document.getElementById("recPregWeeks").style.display="none";
+		document.getElementById("div_recPreg").style.display="none";
 	}
       
 }
@@ -146,7 +146,10 @@ function showrecPreg(){
 	<option value="1" >40周以上</option>
 	<option value="2" >0-40周</option>
 </select>
-<input id ="recPregWeeks" style="display:none" type="text" maxlength="6" name="recPregWeeks" value = "0-40之间的数字" />
+<div id = "div_recPreg" style="display:none">
+<input id ="recPregWeeks"  type="text" maxlength="6" name="recPregWeeks" value = "" />
+<span class="pn-fhelp" id="pic">0-40之间的数字</span>
+</div>
 </td>
 
 </tr>

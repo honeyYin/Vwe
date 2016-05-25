@@ -64,9 +64,9 @@ function callupdateNewsAction(){
 function showrecPreg(){
 	var pregStage = document.getElementById("pregStage").value;
 	if(pregStage == 2){
-		document.getElementById("recPregWeeks").style.display="";
+		document.getElementById("div_recPreg").style.display="";
 	}else{
-		document.getElementById("recPregWeeks").style.display="none";
+		document.getElementById("div_recPreg").style.display="none";
 	}
       
 }
@@ -184,10 +184,16 @@ function showrecPreg(){
 </select>
 <c:choose>
 	<c:when test="${paper.pregStage==2}">
+		<div id = "div_recPreg">
 			<input id ="recPregWeeks" type="text" maxlength="20" name="recPregWeeks" value="${paper.recPregWeeks}"/>
+			<span class="pn-fhelp" id="pic">0-40之间的数字</span>
+		</div>
 	</c:when>
 	<c:otherwise>
-			<input id ="recPregWeeks" style="display:none" type="text" maxlength="20" name="recPregWeeks" value="${paper.recPregWeeks}"/>
+		<div id = "div_recPreg" style="display:none" >
+			<input id ="recPregWeeks" type="text" maxlength="20" name="recPregWeeks" value="${paper.recPregWeeks}"/>
+			<span class="pn-fhelp" id="pic">0-40之间的数字</span>
+		</div>
 	</c:otherwise>
 </c:choose>
 </td>

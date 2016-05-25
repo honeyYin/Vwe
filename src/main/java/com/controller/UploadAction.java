@@ -2,6 +2,7 @@ package com.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,22 +23,25 @@ public class UploadAction extends BaseController{
 	public String upload(HttpServletRequest request,
 						 @RequestParam(value = "filedata", required = false) MultipartFile file,
 						 Model model) {
-        //  获得第1张图片（根据前台的name名称得到上传的文件）   
-        String titleImg = "{size}";
-        if(!(file.getOriginalFilename() ==null || "".equals(file.getOriginalFilename()))) {  
-        	
-    		String savePath = request.getRealPath("/");
-    		String mk = "res/upload/" + UploadUtil.retDateStringMk();
-    		
-    		titleImg = this.getFile(file,savePath,mk);  
-    		titleImg = mk+"/"+titleImg;
-//    		titleImg = savePath+mk+"/"+titleImg;
-    		System.out.println(titleImg);
-        }  
-       
+		 String titleImg = "{size}";
+		try{
+	        //  获得第1张图片（根据前台的name名称得到上传的文件）   
+	        if(!(file.getOriginalFilename() ==null || "".equals(file.getOriginalFilename()))) {  
+	        	
+	    		String savePath = request.getRealPath("/");
+	    		String mk = "res/upload/" + UploadUtil.retDateStringMk();
+	    		
+	    		titleImg = this.getFile(file,savePath,mk);  
+	    		titleImg = mk+"/"+titleImg;
+	//    		titleImg = savePath+mk+"/"+titleImg;
+	    		System.out.println(titleImg);
+	        }  
+		}catch(Exception ex){
+			
+		}
 		return "{"+titleImg+"}";
 	}
-	private String getFile(MultipartFile imgFile,String path,String mk) {  
+	private String getFile(MultipartFile imgFile,String path,String mk) throws UnsupportedEncodingException {  
 	        String fileName = imgFile.getOriginalFilename();  
 	        //获取上传文件类型的扩展名,先得到.的位置，再截取从.的下一个位置到文件的最后，最后得到扩展名  
 	         String ext = fileName.substring(fileName.lastIndexOf(".")+1,fileName.length());  
@@ -45,6 +49,8 @@ public class UploadAction extends BaseController{
 	         ext = ext.toLowerCase();  
 	         //创建目录
 	         UploadUtil.mkDirectory(path+mk);
+	         
+	         fileName = new String (fileName.getBytes("ISO8859-1"),"UTF-8");
 	         
 	         File firstFolder = new File(path+mk);     
 	         firstFolder.mkdir();  
