@@ -45,4 +45,11 @@ public class PaperParaDao {
 		query.setParameter(1, sectionId);
 		return query.getResultList();
 	}
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public int deleteImg(Long id) {
+		Query query = entityManager.createQuery("update PaperParagraph p set p.imgUrl = null,p.updateTime = CURRENT_TIMESTAMP() where p.id = ?1");
+		query.setParameter(1, id);
+		return query.executeUpdate();
+	}
 }

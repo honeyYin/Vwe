@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.util.DateUtil;
+import com.util.StringUtil;
 import com.util.UploadUtil;
 
 @Controller
@@ -42,15 +44,16 @@ public class UploadAction extends BaseController{
 		return "{"+titleImg+"}";
 	}
 	private String getFile(MultipartFile imgFile,String path,String mk) throws UnsupportedEncodingException {  
-	        String fileName = imgFile.getOriginalFilename();  
+	        String orFileName = imgFile.getOriginalFilename();  
+//	        fileName = new String (fileName.getBytes("ISO8859-1"),"UTF-8");
 	        //获取上传文件类型的扩展名,先得到.的位置，再截取从.的下一个位置到文件的最后，最后得到扩展名  
-	         String ext = fileName.substring(fileName.lastIndexOf(".")+1,fileName.length());  
+	         String ext = orFileName.substring(orFileName.lastIndexOf(".")+1,orFileName.length());  
 	         //对扩展名进行小写转换  
 	         ext = ext.toLowerCase();  
+
+			 String fileName = DateUtil.getStringDateShort2()+StringUtil.getRandomStringWithNum(6)+"."+ext;
 	         //创建目录
 	         UploadUtil.mkDirectory(path+mk);
-	         
-	         fileName = new String (fileName.getBytes("ISO8859-1"),"UTF-8");
 	         
 	         File firstFolder = new File(path+mk);     
 	         firstFolder.mkdir();  

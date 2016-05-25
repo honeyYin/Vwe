@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.constant.PaperElementEnum;
 import com.dao.ChannelDao;
 import com.dao.PaperDao;
 import com.dao.PaperOutLinkDao;
@@ -189,19 +190,19 @@ public class PaperController extends BaseController{
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
 	}
-	@RequestMapping(method=RequestMethod.GET,value="deleteSection") 
+	@RequestMapping(method=RequestMethod.POST,value="deleteSection") 
 	public String deleteSection(@RequestParam("sectionId") Long sectionId,HttpServletResponse response) {
 		sectionDao.delete(sectionId);
 		return render("succ","text/html",response);		
 		
 	}
-	@RequestMapping(method=RequestMethod.GET,value="deletePara") 
+	@RequestMapping(method=RequestMethod.POST,value="deletePara") 
 	public String deletePara(@RequestParam("paraId") Long paraId,HttpServletResponse response) {
 		paraDao.delete(paraId);
 		return render("succ","text/html",response);		
 		
 	}
-	@RequestMapping(method=RequestMethod.GET,value="deleteOutLink") 
+	@RequestMapping(method=RequestMethod.POST,value="deleteOutLink") 
 	public String deleteOutLink(@RequestParam("outLinkId") Long outLinkId,HttpServletResponse response) {
 		outLinkDao.delete(outLinkId);
 		return render("succ","text/html",response);		
@@ -212,6 +213,32 @@ public class PaperController extends BaseController{
 						   Integer pageNo) {
 		paperDao.delete(paperId);
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
+		
+	}
+	@RequestMapping(method=RequestMethod.POST,value="deleteImg") 
+	public String deleteImg(@RequestParam("id") Long id,
+							@RequestParam("type") String type,
+							HttpServletResponse response) {
+		int result = 0;
+		try{
+			switch (PaperElementEnum.valueOfName(type)) {
+			case PAPER:
+				result = paperDao.deleteImg(id);
+				break;
+			case PARA:
+				result = paraDao.deleteImg(id);
+				break;
+			default:
+				break;
+			}
+		}catch (Exception e) {
+			System.out.println(e);
+			return render("fail","text/html",response);	
+		}
+		if(result<=0){
+			return render("fail","text/html",response);	
+		}
+		return render("succ","text/html",response);	
 		
 	}
 	@RequestMapping(method=RequestMethod.POST,value="batchDelete") 

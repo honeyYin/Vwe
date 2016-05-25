@@ -50,6 +50,8 @@ public class PaperModel  implements Serializable{
 	private int disabled=0;
 	//封面图url
 	private String titleImg;
+
+	private Integer pregStageCode;
 	
 	private String pregStage;
 	
@@ -76,6 +78,7 @@ public class PaperModel  implements Serializable{
 		this.isRecom = paper.getIsRecom();
 		this.titleImg = paper.getTitleImg();
 		this.viewCount = paper.getViewCount();
+		this.pregStageCode = paper.getPregStage().getCode();
 		this.pregStage = paper.getPregStage().getName();
 		this.recPregWeeks = paper.getRecPregWeeks();
 		this.hospital = paper.getHospital();

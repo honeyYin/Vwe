@@ -16,6 +16,7 @@ request.setCharacterEncoding("UTF-8");
 <script type="text/javascript" src="<%=basePath%>res/common/js/AjaxUpload.js"></script>
 <!-- 添加页面元素 -->
 <script type="text/javascript" src="<%=basePath%>res/common/js/addElement.js"></script>
+<script type="text/javascript" src="<%=basePath%>res/common/js/paperCommon.js"></script>
 <!-- 富文本编辑器 -->
 <link rel="stylesheet" href="<%=basePath%>res/thirdparty/kindeditor/themes/default/default.css"/>
 <script charset="utf-8" src="<%=basePath%>res/thirdparty/kindeditor/kindeditor.js"></script>
@@ -148,7 +149,7 @@ function showrecPreg(){
 </select>
 <div id = "div_recPreg" style="display:none">
 <input id ="recPregWeeks"  type="text" maxlength="6" name="recPregWeeks" value = "" />
-<span class="pn-fhelp" id="pic">0-40之间的数字</span>
+<span class="pn-fhelp">0-40之间的数字</span>
 </div>
 </td>
 
@@ -161,9 +162,9 @@ function showrecPreg(){
 <tr id="tr-titleImg" >
  <td width="10%" class="pn-flabel">标题图片:</td>
  <td colspan="1" width="40%" class="pn-fcontent">
-        <input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg')"/>
+        <input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg','picDelet','paper','')"/>
         <input type="hidden" id="titleImg" name="titleImg" value=""/>
-        <span class="pn-fhelp" id="pic">无图片</span>
+        <span class="pn-fhelp" id="pic">无图片</span><span id = "picDelet" ></span>
  </td>
 </tr>
 
@@ -275,7 +276,7 @@ function showrecPreg(){
 </div>
 
 <script type="text/javascript">
-	function uploanFile(buttonId,picId,titleImgId){
+	function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
 		var button = document.getElementById(buttonId); 
 		var ajaxUploadImage = new AjaxUpload(button,{
 		
@@ -307,6 +308,7 @@ function showrecPreg(){
 				}else{
 					document.getElementById(picId).innerHTML = "<img height ='50' width = '150' src = '<%=basePath%>" + msg + "'/>";
 					document.getElementById(titleImgId).value = msg;
+					document.getElementById(spanId).innerHTML="<a href=\"javascript:deleteImg('"+type+"','"+deleId+"','"+picId+"','"+titleImgId+"','"+spanId+"')\">删除</a>";
 				}
 			
 				this.enable();

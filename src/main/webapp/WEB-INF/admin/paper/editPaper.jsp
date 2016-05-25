@@ -22,6 +22,7 @@ int [] k = new int[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 <script type="text/javascript" src="<%=basePath%>res/common/js/AjaxUpload.js"></script>
 <!-- 添加页面元素 -->
 <script type="text/javascript" src="<%=basePath%>res/common/js/updateElement.js"></script>
+<script type="text/javascript" src="<%=basePath%>res/common/js/paperCommon.js"></script>
 <!-- 富文本编辑器 -->
 <link rel="stylesheet" href="<%=basePath%>res/thirdparty/kindeditor/themes/default/default.css"/>
 <script charset="utf-8" src="<%=basePath%>res/thirdparty/kindeditor/kindeditor.js"></script>
@@ -165,12 +166,12 @@ function showrecPreg(){
 <td colspan="1" width="10%" class="pn-fcontent">
 <select  id="pregStage" name="pregStage" onclick="showrecPreg()">
 <c:choose>
-	<c:when test="${paper.pregStage==1}">
+	<c:when test="${paper.pregStageCode==1}">
 			<option value="0" >全孕周</option>
 			<option value="1" selected>40周以上</option>
 			<option value="2" >0-40周</option>
 	</c:when>
-	<c:when test="${paper.pregStage==2}">
+	<c:when test="${paper.pregStageCode==2}">
 			<option value="0" >全孕周</option>
 			<option value="1" >40周以上</option>
 			<option value="2" selected>0-40周</option>
@@ -183,16 +184,16 @@ function showrecPreg(){
 </c:choose>
 </select>
 <c:choose>
-	<c:when test="${paper.pregStage==2}">
+	<c:when test="${paper.pregStageCode==2}">
 		<div id = "div_recPreg">
 			<input id ="recPregWeeks" type="text" maxlength="20" name="recPregWeeks" value="${paper.recPregWeeks}"/>
-			<span class="pn-fhelp" id="pic">0-40之间的数字</span>
+			<span class="pn-fhelp">0-40之间的数字</span>
 		</div>
 	</c:when>
 	<c:otherwise>
 		<div id = "div_recPreg" style="display:none" >
 			<input id ="recPregWeeks" type="text" maxlength="20" name="recPregWeeks" value="${paper.recPregWeeks}"/>
-			<span class="pn-fhelp" id="pic">0-40之间的数字</span>
+			<span class="pn-fhelp">0-40之间的数字</span>
 		</div>
 	</c:otherwise>
 </c:choose>
@@ -206,17 +207,19 @@ function showrecPreg(){
 <tr id="tr-titleImg">
  	<td width="10%" class="pn-flabel">标题图片:</td>
  	<td colspan="1" width="40%" class="pn-fcontent">
-       	<input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg')"/>
+       	<input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg','picDelet','paper',${paper.id})"/>
         <input type="hidden" id="titleImg" name="titleImg" value="<%=basePath %>${paper.titleImg}"/>
+       <span class="pn-fhelp" id="pic">
         <c:choose>
 		        	<c:when test = "${paper.titleImg ==null || paper.titleImg== ''}">
-		        		<span class="pn-fhelp" id="pic">无图片</span>
+		        		无图片<span id = "picDelet" ></span>
 		        	</c:when>
 		        	<c:otherwise>
-		        		<span class="pn-fhelp" id="pic"><img height ="50" width = "150" src = "<%=basePath%>${paper.titleImg}"/></span>
+		        		<img height ="50" width = "150" src = "<%=basePath%>${paper.titleImg}"/>
+		        		<span id = "picDelet"><a href="javascript:deleteImg('paper',${paper.id},'pic','titleImg','picDelet')">删除</a></span>
 		        	</c:otherwise>
 		</c:choose>
-        <span class="pn-fhelp" id="pic">无图片</span>
+		</span>
  	</td>
 </tr>
 <!-- 版块区域start -->
@@ -274,14 +277,15 @@ function showrecPreg(){
 		<tr  >
 		 <td width="10%" class="pn-flabel">小节配图:</td>
 		 <td colspan="1" width="40%" class="pn-fcontent">
-		        <input class="button"  type="button" id="paraBtnUploadFile<%=i%>-<%=j[i]%>" value="上传图片" onclick="javascript:uploanFile('paraBtnUploadFile<%=i%>-<%=j[i]%>','paraPic<%=i%>-<%=j[i]%>','paraTitleImg<%=i%>-<%=j[i]%>')"/>
+		        <input class="button"  type="button" id="paraBtnUploadFile<%=i%>-<%=j[i]%>" value="上传图片" onclick="javascript:uploanFile('paraBtnUploadFile<%=i%>-<%=j[i]%>','paraPic<%=i%>-<%=j[i]%>','paraTitleImg<%=i%>-<%=j[i]%>','paraPicDele<%=i%>-<%=j[i]%>','para',${para.id })"/>
 		        <input type="hidden" id="paraTitleImg<%=i%>-<%=j[i]%>" name="paraTitleImg<%=i%>-<%=j[i]%>" value="<%=basePath %>${para.imgUrl }"/>
 		        <c:choose>
 		        	<c:when test = "${para.imgUrl == null || para.imgUrl == ''}">
-		        		<span class="pn-fhelp" id="paraPic<%=i%>-<%=j[i]%>">无图片</span>
+		        		<span class="pn-fhelp" id="paraPic<%=i%>-<%=j[i]%>">无图片</span><span id = "paraPicDele<%=i%>-<%=j[i]%>"></span>
 		        	</c:when>
 		        	<c:otherwise>
 		        		<span class="pn-fhelp" id="paraPic<%=i%>-<%=j[i]%>"><img height ="50" width = "150" src = "<%=basePath%>${para.imgUrl}"/></span>
+		        		<span id = "paraPicDele<%=i%>-<%=j[i]%>"><a href="javascript:deleteImg('para',${para.id},'paraPic<%=i%>-<%=j[i]%>','paraTitleImg<%=i%>-<%=j[i]%>','paraPicDele<%=i%>-<%=j[i]%>')">删除</a></span>
 		        	</c:otherwise>
 		        </c:choose>
 		        
@@ -346,7 +350,7 @@ function showrecPreg(){
 </form>
 </div>
 <script type="text/javascript">
-function uploanFile(buttonId,picId,titleImgId){
+function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
 	var button = document.getElementById(buttonId); 
 	var ajaxUploadImage = new AjaxUpload(button,{
 	
@@ -376,9 +380,9 @@ function uploanFile(buttonId,picId,titleImgId){
 			if(msg=="size"){
 				alert("文件大于1M");
 			}else{
-				
 				document.getElementById(picId).innerHTML = "<img height ='50' width = '150' src = '<%=basePath%>" + msg + "'/>";
 				document.getElementById(titleImgId).value = msg;
+				document.getElementById(spanId).innerHTML="<a href=\"javascript:deleteImg('"+type+"','"+deleId+"','"+picId+"','"+titleImgId+"','"+spanId+"')\">删除</a>";
 			}
 		
 			this.enable();

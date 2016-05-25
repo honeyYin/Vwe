@@ -158,5 +158,12 @@ public class PaperDao {
 		Query query =  entityManager.createQuery(string);
 		return (Long)query.getSingleResult();
 	}
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public int deleteImg(Long id) {
+		Query query = entityManager.createQuery("update Paper p set p.titleImg = null,p.updateTime = CURRENT_TIMESTAMP() where p.id = ?1");
+		query.setParameter(1, id);
+		return query.executeUpdate();
+	}
 	
 }

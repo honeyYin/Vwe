@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.model.PregStage;
+import com.constant.PregStageEnum;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -73,7 +73,7 @@ public class Paper  implements Serializable{
 	
 	//推荐孕周
 	@Column
-	private PregStage pregStage;
+	private PregStageEnum pregStage;
 	
 	
 	@Column
@@ -87,9 +87,9 @@ public class Paper  implements Serializable{
 //	private Integer orderNum=20;
 	
 	public void setPregStage(int stage){
-		this.pregStage = PregStage.valueOfCode(stage);
+		this.pregStage = PregStageEnum.valueOfCode(stage);
 	}
-	public PregStage getPregStage(){
+	public PregStageEnum getPregStage(){
 		return this.pregStage;
 		
 	}

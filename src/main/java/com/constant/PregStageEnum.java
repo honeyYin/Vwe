@@ -1,17 +1,17 @@
-package com.model;
+package com.constant;
 
-public enum PregStage {
-	P_ALL(0,""),  //全孕周
-	P_LT_40(1,""),  //40周以上
-	P_ST_40(2,"");  //0-4周
+public enum PregStageEnum {
+	P_ALL(0,"全孕周"),  //全孕周
+	P_LT_40(1,"40周以上"),  //40周以上
+	P_ST_40(2,"0-40周");  //0-4周
 	
 	
 	private int code;
 	private String name;
 	
-	PregStage(){}
+	PregStageEnum(){}
 
-	PregStage(int code,String name){
+	PregStageEnum(int code,String name){
 		this.code = code;
 		this.name = name;
 	}
@@ -31,8 +31,8 @@ public enum PregStage {
 		this.name = name;
 	}
 	
-	public static PregStage valueOfCode(int code){
-		for(PregStage item: PregStage.values()){
+	public static PregStageEnum valueOfCode(int code){
+		for(PregStageEnum item: PregStageEnum.values()){
 			if(item.getCode() == code){
 				return item;
 			}

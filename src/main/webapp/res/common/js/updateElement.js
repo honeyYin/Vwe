@@ -47,9 +47,10 @@ function addNewPara(parentId){  //传入数据编号即可
 			"	<textarea  id='paraContent"+parentId+"-"+paraId+"' name='paraContent"+parentId+"-"+paraId+"' cols='70' rows='10'></textarea>"+
 			"</td></tr><tr  > <td width='10%' class='pn-flabel'>小节配图:</td>"+
 			 "<td colspan='1' width='40%' class='pn-fcontent'>"+
-			 "       <input class='button'  type='button' id='paraBtnUploadFile"+parentId+"-"+paraId+"' value='上传图片' onclick=\"javascript:uploanFile('paraBtnUploadFile"+parentId+"-"+paraId+"','paraPic"+parentId+"-"+paraId+"','paraTitleImg"+parentId+"-"+paraId+"')\"/>"+
+			 "       <input class='button'  type='button' id='paraBtnUploadFile"+parentId+"-"+paraId+"' value='上传图片' onclick=\"javascript:uploanFile('paraBtnUploadFile"+parentId+"-"+paraId+"'," +
+			 		"'paraPic"+parentId+"-"+paraId+"','paraTitleImg"+parentId+"-"+paraId+"','paraPicDele"+parentId+"-"+paraId+"','para','-1')\"/>"+
 			"       <input type='hidden' id='paraTitleImg"+parentId+"-"+paraId+"' name='paraTitleImg"+parentId+"-"+paraId+"' value=\"\"/>"+
-			 "       <span class='pn-fhelp' id='paraPic"+parentId+"-"+paraId+"'>无图片</span> </td></tr></table>";
+			 "       <span class='pn-fhelp' id='paraPic"+parentId+"-"+paraId+"'>无图片</span> <span id = 'paraPicDele"+parentId+"-"+paraId+"'></span></td></tr></table>";
 //	  var content = parent.innerHTML;
 //	  parent.innerHTML =content+divHtml;
 
@@ -121,7 +122,7 @@ function deleteElementAndDB(parentId,deleId,deleType,dbId){
 		 
 		 var par_data="sectionId="+dbId;
 			$.ajax({ 
-				 type: "GET", 
+				 type: "POST", 
 				 url: "deleteSection",  
 				 data: par_data, 
 				 success: function(message){ 
@@ -135,7 +136,7 @@ function deleteElementAndDB(parentId,deleId,deleType,dbId){
 		//删除数据库中的数据
 			var par_data="paraId="+dbId;
 			$.ajax({ 
-				 type: "GET", 
+				 type: "POST", 
 				 url: "deletePara",  
 				 data: par_data, 
 				 success: function(message){ 
@@ -149,7 +150,7 @@ function deleteElementAndDB(parentId,deleId,deleType,dbId){
 		//删除数据库中的数据
 		var par_data="outLinkId="+dbId;
 		$.ajax({ 
-			 type: "GET", 
+			 type: "POST", 
 			 url: "deleteOutLink",  
 			 data: par_data, 
 			 success: function(message){ 
