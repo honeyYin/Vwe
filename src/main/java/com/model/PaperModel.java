@@ -50,6 +50,12 @@ public class PaperModel  implements Serializable{
 	private int disabled=0;
 	//封面图url
 	private String titleImg;
+	
+	private Integer imgHeight;
+	
+	private Integer imgWidth;
+	//图片宽高比
+	private String imgUrlRatio;
 
 	private Integer pregStageCode;
 	

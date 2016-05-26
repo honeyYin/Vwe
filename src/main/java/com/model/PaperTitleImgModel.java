@@ -23,5 +23,5 @@ public class PaperTitleImgModel {
 	
 	private Integer imgWidth;
 	
-	private String imgRatio;
+	private String imgUrlRatio;
 }

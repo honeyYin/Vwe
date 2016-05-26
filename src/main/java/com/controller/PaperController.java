@@ -1,5 +1,6 @@
 package com.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -428,7 +429,7 @@ public class PaperController extends BaseController{
 
 	//=====================私有方法====================================
 	//从request中获取paper对象
-	private Paper paserPaper(Long paperId,HttpServletRequest request){
+	private Paper paserPaper(Long paperId,HttpServletRequest request) {
 		Paper paper;
 		if(paperId != null){
 			paper = paperDao.find(paperId);
@@ -447,6 +448,7 @@ public class PaperController extends BaseController{
 		}
 		paper.setUpdateTime(new Date());
 		paper.setChannelId(RequestUtil.longvalue(request, "channelId"));
+
 		paper.setChannelName(channel.getName());
 		paper.setTitle(RequestUtil.stringvalue(request, "title"));
 		paper.setAuthor(RequestUtil.stringvalue(request, "author"));

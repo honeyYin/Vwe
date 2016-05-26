@@ -31,7 +31,7 @@ public class UploadAction extends BaseController{
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-	private static final DecimalFormat   df   =new   java.text.DecimalFormat("0.##");
+	private static final DecimalFormat   df   =new   java.text.DecimalFormat("0.0000");
 	@Autowired
 	private PaperImageDao imageDao;
 	

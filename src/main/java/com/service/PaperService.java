@@ -16,10 +16,12 @@ import com.dao.PaperParaDao;
 import com.dao.PaperSectionDao;
 import com.entity.Paper;
 import com.entity.PaperImage;
+import com.entity.PaperParagraph;
 import com.entity.PaperSection;
 import com.google.common.collect.Lists;
 import com.model.OperationResult;
 import com.model.PaperModel;
+import com.model.PaperParagraphModel;
 import com.model.PaperSectionModel;
 import com.model.PaperTitleImgModel;
 
@@ -196,6 +198,14 @@ public class PaperService {
 			return null;
 		}
 		PaperModel model = new PaperModel(paper);
+		if(StringUtils.isNotEmpty(model.getTitleImg())){
+			List<PaperImage> images = imageDao.findByUrl(model.getTitleImg());
+			if(!CollectionUtils.isEmpty(images)){
+				model.setImgHeight(images.get(0).getHeight());
+				model.setImgWidth(images.get(0).getWidth());
+				model.setImgUrlRatio(images.get(0).getRatio()); 
+			}
+		}
 		List<PaperSection> sections = sectionDao.getSecitonByPaper(paper.getId());
 		
 		if(!CollectionUtils.isEmpty(sections)){
@@ -206,7 +216,7 @@ public class PaperService {
 				sectionModel.setPaperId(section.getPaperId());
 				sectionModel.setOrderNum(section.getOrderNum());
 				sectionModel.setTitle(section.getTitle());
-				sectionModel.setParas(paraDao.getParaBySection(section.getId()));
+				sectionModel.setParas(getParaModels(paraDao.getParaBySection(section.getId())));
 				sectionModel.setOutLinks(outLinkDao.getOutLinkBySection(section.getId()));
 				sectionModels.add(sectionModel);
 			}
@@ -214,6 +224,25 @@ public class PaperService {
 			model.setSections(sectionModels);
 		}
 		return model;
+	}
+	public List<PaperParagraphModel> getParaModels(List<PaperParagraph> paras){
+		if(CollectionUtils.isEmpty(paras)){
+			return Lists.newArrayList();
+		}
+		 List<PaperParagraphModel>  results = Lists.newArrayList();
+		for(PaperParagraph item:paras){
+			PaperParagraphModel model = new PaperParagraphModel(item);
+			if(StringUtils.isNotEmpty(model.getImgUrl())){
+				List<PaperImage> images = imageDao.findByUrl(model.getImgUrl());
+				if(!CollectionUtils.isEmpty(images)){
+					model.setImgHeight(images.get(0).getHeight());
+					model.setImgWidth(images.get(0).getWidth());
+					model.setImgUrlRatio(images.get(0).getRatio()); 
+				}
+				results.add(model);
+			}
+		}
+		return results;
 	}
 	 public List<PaperModel> getPaperModels(List<Paper> papers){
 		 if(CollectionUtils.isEmpty(papers)){
@@ -247,7 +276,7 @@ public class PaperService {
 					if(!CollectionUtils.isEmpty(images)){
 						model.setImgHeight(images.get(0).getHeight());
 						model.setImgWidth(images.get(0).getWidth());
-						model.setImgRatio(images.get(0).getRatio()); 
+						model.setImgUrlRatio(images.get(0).getRatio()); 
 					}
 				}
 				

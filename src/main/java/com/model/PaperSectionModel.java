@@ -27,7 +27,7 @@ public class PaperSectionModel {
 	
 	private int orderNum;
 
-	private List<PaperParagraph> paras;
+	private List<PaperParagraphModel> paras;
 	
 	private List<PaperOutLink> outLinks;
 	

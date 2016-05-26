@@ -6,7 +6,7 @@
     "papers": [
         {
             "imgHeight": 162,  //高度
-            "imgRatio": "1.2",//宽高比
+            "imgUrlRatio": "1.2222",//宽高比
             "imgWidth": 195, //宽度
             "paperId": 18,
             "paperUrl": "http://localhost:8080/Vwe/paperDetail?paperId=18",   //paper访问的url
@@ -14,7 +14,7 @@
         },
         {
             "imgHeight": 162,
-            "imgRatio": "1.2",
+            "imgRatio": "1.2222",
             "imgWidth": 195,
             "paperId": 15,
             "paperUrl": "http://localhost:8080/Vwe/paperDetail?paperId=15",
@@ -42,6 +42,9 @@
         "recPregWeeks": 0,  //孕周
         "title": "吧",  //标题
         "titleImg": "",  //文章头图
+	"imgHeight": 162,  //高度
+        "imgUrlRatio": "1.2",//宽高比
+        "imgWidth": 195, //宽度
         "viewCount": 5,   //点击量
         "sections": [    //包含的版块list
             {
@@ -63,6 +66,9 @@
                         "content": "地方地方的",  //小节正文
                         "id": 4,
                         "imgUrl": "res/upload/20160522/Jellyfish.jpg",  //配图地址
+			"imgHeight": 162,  //高度
+            		"imgUrlRatio": "1.2222",//宽高比
+            		"imgWidth": 195, //宽度
                         "paperId": 11,
                         "sectionId": 10,
                         "title": "小节1", //小节标题
@@ -101,6 +107,9 @@
                         "disabled": 0,
                         "id": 7,
                         "imgUrl": "res/upload/20160523/Lighthouse.jpg",
+			"imgHeight": 162,  //高度
+            		"imgUrlRatio": "1.2222",//宽高比
+            		"imgWidth": 195, //宽度
                         "orderNum": 1,
                         "paperId": 11,
                         "sectionId": 11,
