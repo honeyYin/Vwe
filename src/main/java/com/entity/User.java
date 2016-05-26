@@ -27,7 +27,7 @@ public class User  implements Serializable{
 	private Long id;
 	
 	@Column	
-	private Date createTime;
+	private Date createTime=new Date();
 	
 	@Column	
 	private Date updateTime=new Date();

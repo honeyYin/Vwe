@@ -1,7 +1,6 @@
 package com.controller;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +64,7 @@ public class PaperController extends BaseController{
 	
 	@Autowired
 	private ChannelDao channelDao;
+	
 	/**
 	 * 分页获取文章列表
 	 * @param pageNo

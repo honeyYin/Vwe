@@ -18,4 +18,10 @@ public class PaperTitleImgModel {
 	
 	//访问文章详情的url
 	private String paperUrl;
+	
+	private Integer imgHeight;
+	
+	private Integer imgWidth;
+	
+	private String imgRatio;
 }

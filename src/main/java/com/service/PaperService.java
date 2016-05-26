@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.dao.PaperDao;
+import com.dao.PaperImageDao;
 import com.dao.PaperOutLinkDao;
 import com.dao.PaperParaDao;
 import com.dao.PaperSectionDao;
 import com.entity.Paper;
+import com.entity.PaperImage;
 import com.entity.PaperSection;
 import com.google.common.collect.Lists;
 import com.model.OperationResult;
@@ -37,6 +39,10 @@ public class PaperService {
 
 	@Autowired
 	private ChannelService channelService;
+	
+	@Autowired
+	private PaperImageDao imageDao;
+	
 	private static final int CURRENT_PAGE_SIZE = 10;
 	
 	/**
@@ -225,18 +231,26 @@ public class PaperService {
 	  * @return
 	  */
 	public List<PaperTitleImgModel> getPaperTitleImgs(HttpServletRequest request) {
-		List<Paper> papers = paperDao.getPaperByPage(3,0);
+		List<Paper> papers = paperDao.fgetPaperByPage(3,0);
 		List<PaperTitleImgModel> modelsLists = Lists.newArrayList();
 
-String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+		String path = request.getContextPath();
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 		if(!CollectionUtils.isEmpty(papers)){
 			for(Paper item: papers){
 				PaperTitleImgModel model = new PaperTitleImgModel();
 				model.setPaperId(item.getId());
 				model.setTitleImg(basePath+item.getTitleImg());
-				
 				model.setPaperUrl(basePath+"paperDetail?paperId="+item.getId());
+				if(StringUtils.isNotEmpty(item.getTitleImg())){
+					List<PaperImage> images = imageDao.findByUrl(item.getTitleImg());
+					if(!CollectionUtils.isEmpty(images)){
+						model.setImgHeight(images.get(0).getHeight());
+						model.setImgWidth(images.get(0).getWidth());
+						model.setImgRatio(images.get(0).getRatio()); 
+					}
+				}
+				
 				modelsLists.add(model);
 			}
 		}

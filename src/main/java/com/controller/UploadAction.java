@@ -1,11 +1,18 @@
 package com.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dao.PaperImageDao;
+import com.entity.PaperImage;
 import com.util.DateUtil;
 import com.util.StringUtil;
 import com.util.UploadUtil;
@@ -20,6 +29,11 @@ import com.util.UploadUtil;
 @Controller
 public class UploadAction extends BaseController{
 	
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+	private static final DecimalFormat   df   =new   java.text.DecimalFormat("0.##");
+	@Autowired
+	private PaperImageDao imageDao;
 	
 	@RequestMapping(value="/upload",method={RequestMethod.POST})
 	public String upload(HttpServletRequest request,
@@ -50,7 +64,6 @@ public class UploadAction extends BaseController{
 	         String ext = orFileName.substring(orFileName.lastIndexOf(".")+1,orFileName.length());  
 	         //对扩展名进行小写转换  
 	         ext = ext.toLowerCase();  
-
 			 String fileName = DateUtil.getStringDateShort2()+StringUtil.getRandomStringWithNum(6)+"."+ext;
 	         //创建目录
 	         UploadUtil.mkDirectory(path+mk);
@@ -59,7 +72,9 @@ public class UploadAction extends BaseController{
 	         firstFolder.mkdir();  
 	         File file = new File(firstFolder,fileName);   
              try {  
-                imgFile.transferTo(file);                   //保存上传的文件 ,目录不存在时
+                imgFile.transferTo(file);   //保存上传的文件 ,目录不存在时
+	              //获取宽高
+	   	         getFileLH(file,mk+"/"+fileName);
             } catch (IllegalStateException e) {  
                 e.printStackTrace();  
             } catch (IOException e) {  
@@ -67,4 +82,27 @@ public class UploadAction extends BaseController{
             }      
 	         return fileName;  
 	 }  
+	
+	@SuppressWarnings("unchecked")
+	private void getFileLH(File imgFile,String fileName){
+		try{
+         	 ImageInputStream imagein= ImageIO.createImageInputStream(imgFile);
+         	 BufferedImage bufferedImg = ImageIO.read(imagein);
+         	 int imgWidth = bufferedImg.getWidth();
+         	 int imgHeight = bufferedImg.getHeight();
+         	 
+         	 PaperImage entity = new PaperImage();
+         	 entity.setImgUrl(fileName);
+         	 entity.setHeight(imgHeight);
+         	 entity.setWidth(imgWidth);
+         	 double ratio  = (double)imgWidth/imgHeight;
+         	 entity.setRatio(df.format(ratio));
+         	 entity.setSize(imgFile.length());
+         	 imageDao.save(entity);
+		}catch(Exception e){
+         		e.printStackTrace();
+         		logger.warn("record img size error",e);
+        }
+	}
+	
 }

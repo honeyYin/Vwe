@@ -11,16 +11,11 @@ import javax.persistence.Id;
 
 import lombok.Getter;
 import lombok.Setter;
-/**
- * 分类
- * @author hzyinhonglian
- *
- */
+
 @Setter
 @Getter
-@Entity(name="Channel")
-public class Channel implements Serializable{
-	
+@Entity(name="PaperImage")
+public class PaperImage implements Serializable{
 	private static final long serialVersionUID = -1308795024262635691L;
 
 	
@@ -35,30 +30,23 @@ public class Channel implements Serializable{
 	private Date updateTime=new Date();
 	
 	@Column	
-	private String name;
-	
-	@Column	
-	private Long parentId = 0l;
-	
-	@Column	
-    private int disabled=0;//0激活 1未激活
-	
-	//是否发布
-	@Column
-	private int isDeploy=0;
-	
-	//排列优先级
-	@Column
-	private int priority=10;
-	
-	//栏目每页条数
-	@Column
-	private int pageSize=10;
+	private String imgUrl;
 	
 	@Column
-	private String description;
+	private Integer width;
 	
-	//栏目图片
 	@Column
-	private String titleImg;
+	private Integer height;
+
+	/*b
+	 * 
+	 */
+	@Column
+	private Long size;
+	
+	/**
+	 * 宽/高比
+	 */
+	@Column
+	private String ratio;
 }

@@ -1,22 +1,27 @@
 推荐三篇文章头图接口：
 入参：无
 返回结果：
-
 {
-    "status": 0， //0表示成功；-1表示失败
-    "msg": "succ",
+    "status": 0,  //0表示成功，-1表示失败
     "papers": [
         {
-            "paperId": 11, //文章id
-            "paperUrl": p://localhost:8080/Vwe/paperDetail?paperId=11",  //文章访问的地址
-            "titleImg": "http://localhost:8080/Vwe/res/upload/20160523/Lighthouse.jpg"  //头图地址
+            "imgHeight": 162,  //高度
+            "imgRatio": "1.2",//宽高比
+            "imgWidth": 195, //宽度
+            "paperId": 18,
+            "paperUrl": "http://localhost:8080/Vwe/paperDetail?paperId=18",   //paper访问的url
+            "titleImg": "http://localhost:8080/Vwe/res/upload/20160526/20160526s6K9Gk.png"  //img地址
         },
         {
-            "paperId": 2,
-            "paperUrl": "http://localhost:8080/Vwe/paperDetail?paperId=2",
-            "titleImg": "http://localhost:8080/Vwe/res/upload/20160523/Lighthouse.jpg"
+            "imgHeight": 162,
+            "imgRatio": "1.2",
+            "imgWidth": 195,
+            "paperId": 15,
+            "paperUrl": "http://localhost:8080/Vwe/paperDetail?paperId=15",
+            "titleImg": "http://localhost:8080/Vwe/res/upload/20160515/c3.png"
         }
-    ]
+    ],
+    "msg": "succ"
 }
 
 文章详情接口：
