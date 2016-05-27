@@ -27,7 +27,7 @@ public class ChannelDao {
 	
 	@SuppressWarnings("unchecked")
 	public List<Channel> getRootCategory(){
-		return entityManager.createQuery("select p from Channel p where p.disabled = 0 and p.parentId =0").getResultList();
+		return entityManager.createQuery("select p from Channel p where p.disabled = 0 and p.parentId =0 ORDER BY p.priority ASC").getResultList();
 	}
 	@SuppressWarnings("unchecked")
 	public List<Channel> getCategoriesByParent(Long parentId){

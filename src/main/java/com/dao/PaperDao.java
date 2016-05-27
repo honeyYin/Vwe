@@ -27,64 +27,57 @@ public class PaperDao {
 		return (Long)query.getSingleResult();
 	}
 	@SuppressWarnings("unchecked")
+	public Long fgetAllPageSize(){
+		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.hasAudit = true");
+		return (Long)query.getSingleResult();
+	}
+	@SuppressWarnings("unchecked")
 	public Long getCategoryPageSize(long cateId){
 		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.channelId = ?1");
 		query.setParameter(1, cateId);
 		return (Long)query.getSingleResult();
 	}
 	@SuppressWarnings("unchecked")
-	public Long getfAllPageSize(){
-		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.hasAudit = true");
-		return (Long)query.getSingleResult();
-	}
-	@SuppressWarnings("unchecked")
-	public Long getfCategoryPageSize(long cateId){
+	public Long fgetCategoryPageSize(long cateId){
 		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.hasAudit = true and p.channelId = ?1");
 		query.setParameter(1, cateId);
 		return (Long)query.getSingleResult();
 	}
 	@SuppressWarnings("unchecked")
 	public List<Paper> getPaperByPage(int limit,int offset) {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 ORDER BY p.hasAudit DESC,p.isTop DESC,p.updateTime DESC ");
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 ORDER BY p.hasAudit DESC,p.isTop DESC,p.priority ASC,p.updateTime DESC ");
 		query.setFirstResult(offset);//设置查询结果的开始记录数
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}
 	@SuppressWarnings("unchecked")
 	public List<Paper> fgetPaperByPage(int limit,int offset) {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true ORDER BY p.hasAudit DESC,p.isTop DESC,p.updateTime DESC ");
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true ORDER BY p.isTop DESC,p.priority ASC,p.updateTime DESC  ");
 		query.setFirstResult(offset);//设置查询结果的开始记录数
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}
 	@SuppressWarnings("unchecked")
 	public List<Paper> getPaperByCategory(long cateId,int limit,int offset) {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.channelId = ?1 ORDER BY p.hasAudit DESC,p.isTop DESC,p.updateTime DESC ");
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.channelId = ?1 ORDER BY p.hasAudit DESC,p.isTop DESC,p.priority ASC,p.updateTime DESC ");
 		query.setParameter(1, cateId);
 		query.setFirstResult(offset);//设置查询结果的开始记录数
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}
 	@SuppressWarnings("unchecked")
-	public List<Paper> getRecPaperByCategory(long cateId,long paperId,int limit,int offset) {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.channelId = ?1 and p.id != ?2 ORDER BY p.hasAudit DESC,p.isTop DESC,p.updateTime DESC ");
+	public List<Paper> fgetPaperByCategory(long cateId,int limit,int offset) {
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true and p.channelId = ?1 ORDER BY p.isTop DESC,p.priority ASC,p.updateTime DESC  ");
+		query.setParameter(1, cateId);
+		query.setFirstResult(offset);//设置查询结果的开始记录数
+		query.setMaxResults(limit);
+		return query.getResultList();
+	}
+	@SuppressWarnings("unchecked")
+	public List<Paper> fgetRecPaperByCategory(long cateId,long paperId,int limit,int offset) {
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true and p.channelId = ?1 and p.id != ?2 ORDER BY p.isTop DESC,p.priority ASC,p.updateTime DESC ");
 		query.setParameter(1, cateId);
 		query.setParameter(2, paperId);
-		query.setFirstResult(offset);//设置查询结果的开始记录数
-		query.setMaxResults(limit);
-		return query.getResultList();
-	}
-	@SuppressWarnings("unchecked")
-	public List<Paper> getfPaperByPage(int limit,int offset) {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true ORDER BY p.hasAudit DESC,p.isTop DESC,p.updateTime DESC ");
-		query.setFirstResult(offset);//设置查询结果的开始记录数
-		query.setMaxResults(limit);
-		return query.getResultList();
-	}
-	@SuppressWarnings("unchecked")
-	public List<Paper> getfPaperByCategory(long cateId,int limit,int offset) {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true and p.channelId = ?1 ORDER BY p.hasAudit DESC,p.isTop DESC,p.updateTime DESC ");
-		query.setParameter(1, cateId);
 		query.setFirstResult(offset);//设置查询结果的开始记录数
 		query.setMaxResults(limit);
 		return query.getResultList();
@@ -144,14 +137,14 @@ public class PaperDao {
 		Query query = entityManager.createQuery(sqlString);
 		return query.executeUpdate();
 	}
-	@Transactional
+	/*@Transactional
 	@SuppressWarnings("unchecked")
 	public int updateRecom(Long id,int isRecom) {
 		Query query = entityManager.createQuery("update Paper p set p.isRecom = ?1,p.updateTime = CURRENT_TIMESTAMP() where p.id = ?2");
 		query.setParameter(1, isRecom);
 		query.setParameter(2, id);
 		return query.executeUpdate();
-	}
+	}*/
 
 	@SuppressWarnings("unchecked")
 	public List<Paper> getPaperByCondition(String string, int limit, int offset) {
@@ -172,5 +165,18 @@ public class PaperDao {
 		query.setParameter(1, id);
 		return query.executeUpdate();
 	}
-	
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public int higherPriority(Long id) {
+		Query query = entityManager.createQuery("update Paper p set p.priority = (case when p.priority <=1 then 1 WHEN p.priority >1 THEN (p.priority-1) END) ,p.updateTime = CURRENT_TIMESTAMP() where p.id = ?1");
+		query.setParameter(1, id);
+		return query.executeUpdate();
+	}
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public int lowerPriority(Long id) {
+		Query query = entityManager.createQuery("update Paper p set p.priority = p.priority +1 ,p.updateTime = CURRENT_TIMESTAMP() where p.id = ?1");
+		query.setParameter(1, id);
+		return query.executeUpdate();
+	}
 }
