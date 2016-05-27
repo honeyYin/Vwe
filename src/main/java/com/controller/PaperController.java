@@ -156,7 +156,7 @@ public class PaperController extends BaseController{
 					   Long channelId,
 					   Integer pageNo) {
 		Paper paper =  paserPaper(null,request);
-		paper =paperDao.save(paper);
+		paper =paperService.savePaper(paper);
 		
 		savePaperSection(paper.getId(),request);
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
@@ -213,7 +213,6 @@ public class PaperController extends BaseController{
 						   Integer pageNo) {
 		paperDao.delete(paperId);
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
-		
 	}
 	@RequestMapping(method=RequestMethod.POST,value="deleteImg") 
 	public String deleteImg(@RequestParam("id") Long id,
@@ -292,14 +291,21 @@ public class PaperController extends BaseController{
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
 	}
-	@RequestMapping(method=RequestMethod.GET,value="updateRecom") 
-	public String updateRecom(@RequestParam("paperId") Long paperId,
-						    @RequestParam("isRecom") int isRecom,
+	@RequestMapping(method=RequestMethod.GET,value="updatePrior") 
+	public String updatePrior(@RequestParam("paperId") Long paperId,
+						    @RequestParam("type") Integer type,
 						    Long channelId,
 						    Integer pageNo) {
-		paperDao.updateRecom(paperId, isRecom);
-		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
+		//上移
+		if(type == 1){
+			paperDao.higherPriority(paperId);
+		}
+		//下移
+		if(type == -1){
+			paperDao.lowerPriority(paperId);
+		}
 		
+		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 	}
 	@RequestMapping(method=RequestMethod.GET,value="left")
 	public ModelAndView left(Model model){
@@ -327,7 +333,7 @@ public class PaperController extends BaseController{
 		paperService.addViewCount(paperId);
 		//向数据库查询对应新闻的内容
 		Paper paper = paperDao.find(paperId);
-		List<Paper> rePapers = paperDao.getRecPaperByCategory(paper.getChannelId(),paper.getId(),5, 0);
+		List<Paper> rePapers = paperDao.fgetRecPaperByCategory(paper.getChannelId(),paper.getId(),5, 0);
 		
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("paper", paperService.getPaperModel(paper));
@@ -410,7 +416,7 @@ public class PaperController extends BaseController{
 			//向数据库查询对应新闻的内容
 			Paper paper = paperDao.find(paperId);
 			
-			List<Paper> recList = paperDao.getRecPaperByCategory(paper.getChannelId(),paper.getId(),5, 0);
+			List<Paper> recList = paperDao.fgetRecPaperByCategory(paper.getChannelId(),paper.getId(),5, 0);
 			
 	
 			result.put("status", 0);//0标识成功，-1标识失败

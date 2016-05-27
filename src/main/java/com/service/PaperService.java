@@ -45,6 +45,12 @@ public class PaperService {
 	
 	private static final int CURRENT_PAGE_SIZE = 10;
 	
+	public Paper savePaper(Paper paper){
+		Paper entity = paperDao.save(paper);
+		entity.setPriority(entity.getId());
+		entity =paperDao.save(entity);
+		return entity;
+	}
 	/**
 	 * 分页获取数据
 	 * @param cateId
@@ -67,9 +73,9 @@ public class PaperService {
 		int offset = pageNo * limit;
 		List<Paper> papers = null;
 		if(cateId == null || cateId == 0){
-			papers = paperDao.getfPaperByPage(limit,offset);
+			papers = paperDao.fgetPaperByPage(limit,offset);
 		}else{
-			papers = paperDao.getfPaperByCategory(cateId,limit,offset);
+			papers = paperDao.fgetPaperByCategory(cateId,limit,offset);
 		}
 		return papers;
 	}
@@ -99,14 +105,14 @@ public class PaperService {
 		Long total = 0l;
 		if(cateId ==null || cateId == 0){
 			if(front){
-				total = paperDao.getfAllPageSize();
+				total = paperDao.fgetAllPageSize();
 			}else{
 				total = paperDao.getAllPageSize();
 			}
 			
 		}else{
 			if(front){
-				total = paperDao.getfCategoryPageSize(cateId);
+				total = paperDao.fgetCategoryPageSize(cateId);
 			}else{
 				total = paperDao.getCategoryPageSize(cateId);
 			}

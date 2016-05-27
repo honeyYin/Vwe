@@ -83,8 +83,8 @@ public class Paper  implements Serializable{
 	@Column
 	private String hospital;
 	//顺序
-//	@Column 
-//	private Integer orderNum=20;
+	@Column
+	private Long priority;
 	
 	public void setPregStage(int stage){
 		this.pregStage = PregStageEnum.valueOfCode(stage);

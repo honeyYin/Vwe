@@ -171,6 +171,8 @@ request.setCharacterEncoding("UTF-8");
 	<td align="center">
 		<a href="<%=basePath%>paper/detail?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">查看</a>
 		 | <a href="<%=basePath%>paper/toEdit?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">修改</a> 
+		 | <a href="<%=basePath%>paper/updatePrior?type=1&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">上移</a> 
+		 | <a href="<%=basePath%>paper/updatePrior?type=-1&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">下移</a> 
 		 | <a href="<%=basePath%>paper/delete?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt" onclick="return confirm('您确定要删除吗？');">删除</a>
 		 | 
 		<c:choose>
