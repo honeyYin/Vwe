@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import com.entity.Paper;
-import com.entity.PaperSection;
 import com.google.common.collect.Lists;
 import com.util.DateUtil;
 /**
@@ -44,8 +43,6 @@ public class PaperModel  implements Serializable{
 	private boolean hasAudit=false;
 	//是否置顶
 	private int isTop=0;
-	//是否推荐
-	private int isRecom=0;
 	//是否删除
 	private int disabled=0;
 	//封面图url
@@ -81,7 +78,6 @@ public class PaperModel  implements Serializable{
 		this.hasAudit = paper.isHasAudit();
 		this.isTop = paper.getIsTop();
 		this.id = paper.getId();
-		this.isRecom = paper.getIsRecom();
 		this.titleImg = paper.getTitleImg();
 		this.viewCount = paper.getViewCount();
 		this.pregStageCode = paper.getPregStage().getCode();

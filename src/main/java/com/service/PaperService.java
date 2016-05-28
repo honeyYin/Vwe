@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.functors.IfClosure;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -203,6 +204,7 @@ public class PaperService {
 		if(paper == null){
 			return null;
 		}
+		
 		PaperModel model = new PaperModel(paper);
 		if(StringUtils.isNotEmpty(model.getTitleImg())){
 			List<PaperImage> images = imageDao.findByUrl(model.getTitleImg());
@@ -245,8 +247,8 @@ public class PaperService {
 					model.setImgWidth(images.get(0).getWidth());
 					model.setImgUrlRatio(images.get(0).getRatio()); 
 				}
-				results.add(model);
 			}
+			results.add(model);
 		}
 		return results;
 	}
@@ -275,9 +277,9 @@ public class PaperService {
 			for(Paper item: papers){
 				PaperTitleImgModel model = new PaperTitleImgModel();
 				model.setPaperId(item.getId());
-				model.setTitleImg(basePath+item.getTitleImg());
 				model.setPaperUrl(basePath+"paperDetail?paperId="+item.getId());
 				if(StringUtils.isNotEmpty(item.getTitleImg())){
+					model.setTitleImg(basePath+item.getTitleImg());
 					List<PaperImage> images = imageDao.findByUrl(item.getTitleImg());
 					if(!CollectionUtils.isEmpty(images)){
 						model.setImgHeight(images.get(0).getHeight());
@@ -290,5 +292,25 @@ public class PaperService {
 			}
 		}
 		return modelsLists;
+	}
+	
+	public void higherPriority(Long paperId) {
+		Paper hPaper = paperDao.find(paperId);
+		List<Paper> papers = paperDao.findLPaper(hPaper.isHasAudit(), hPaper.getIsTop(), hPaper.getPriority());
+		if(!CollectionUtils.isEmpty(papers)){
+			Paper lPaper = papers.get(0);
+			paperDao.updatePriority(hPaper.getId(),lPaper.getPriority());
+			paperDao.updatePriority(lPaper.getId(), hPaper.getPriority());
+		}
+	}
+	public void lowerPriority(Long paperId) {
+		Paper lPaper = paperDao.find(paperId);
+		List<Paper> papers = paperDao.findHPaper(lPaper.isHasAudit(), lPaper.getIsTop(), lPaper.getPriority());
+		if(!CollectionUtils.isEmpty(papers)){
+			Paper hPaper = papers.get(0);
+			paperDao.updatePriority(lPaper.getId(),hPaper.getPriority());
+			paperDao.updatePriority(hPaper.getId(), lPaper.getPriority());
+		}
+		
 	}
 }

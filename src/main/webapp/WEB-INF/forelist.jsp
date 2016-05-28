@@ -40,11 +40,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     			<li><span>${item.auditTime}</span>
     			<a target="_blank"  href="<%=request.getContextPath()%>/paper/viewPaper?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}">
     			${item.title}
-    			<c:choose>
-					<c:when test="${item.isRecom ==1}">
-						<label style="color:red"><strong>[推荐]</strong></label>
-					</c:when>
-				</c:choose></a> </li>
+    			</a> </li>
     		  </c:forEach>	 
     </ul>
 

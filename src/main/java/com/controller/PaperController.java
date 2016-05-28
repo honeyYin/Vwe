@@ -299,11 +299,11 @@ public class PaperController extends BaseController{
 						    Integer pageNo) {
 		//上移
 		if(type == 1){
-			paperDao.higherPriority(paperId);
+			paperService.higherPriority(paperId);
 		}
 		//下移
 		if(type == -1){
-			paperDao.lowerPriority(paperId);
+			paperService.lowerPriority(paperId);
 		}
 		
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
@@ -407,6 +407,7 @@ public class PaperController extends BaseController{
 	@RequestMapping(method=RequestMethod.GET,value="paperDetail")
 	public String fpaperDetail(@RequestParam("paperId") Long paperId,
 							   Model model,
+							   HttpServletRequest request,
 							   HttpServletResponse response){
 		Map<String, Object> result = Maps.newHashMap();
 
@@ -437,7 +438,7 @@ public class PaperController extends BaseController{
 	//从request中获取paper对象
 	private Paper paserPaper(Long paperId,HttpServletRequest request) {
 		Paper paper;
-		if(paperId != null){
+		if(paperId != null && paperId>0){
 			paper = paperDao.find(paperId);
 			if(paper == null){
 				paper = new Paper();
@@ -458,8 +459,10 @@ public class PaperController extends BaseController{
 		paper.setChannelName(channel.getName());
 		paper.setTitle(RequestUtil.stringvalue(request, "title"));
 		paper.setAuthor(RequestUtil.stringvalue(request, "author"));
+		if(StringUtils.isEmpty(paper.getAuthor())){
+			paper.setAuthor(getUser(request).getRealName());
+		}
 		paper.setDescription(RequestUtil.stringvalue(request, "description"));
-		paper.setIsRecom(RequestUtil.intvalue(request, "isRecom"));
 		paper.setIsTop(RequestUtil.intvalue(request, "isTop"));
 		String titleImg = RequestUtil.stringvalue(request, "titleImg");
 		int index = titleImg.indexOf("res");
@@ -483,7 +486,7 @@ public class PaperController extends BaseController{
 			String sectionTitle = RequestUtil.stringvalue(request, "sectionTitle"+i);
 			if(StringUtils.isNotEmpty(sectionTitle)){
 				PaperSection section =null;
-				if(sectionId != null){
+				if(sectionId != null && sectionId >0){
 					section = sectionDao.find(sectionId);
 				}
 				section = section==null?new PaperSection():section;
@@ -509,11 +512,8 @@ public class PaperController extends BaseController{
 		for(int i=1;i<=15;i++){
 			Long paraId = RequestUtil.longvalue(request, "paraId"+orderId+"-"+i);
 			String paraTitle = RequestUtil.stringvalue(request, "paraTitle"+orderId+"-"+i);
-			if(StringUtils.isEmpty(paraTitle)){
-				continue;
-			}
 			PaperParagraph para =null;
-			if(paraId != null){
+			if(paraId != null && paraId >0){
 				para = paraDao.find(paraId);
 			}
 			para = para==null?new PaperParagraph():para;
@@ -527,7 +527,11 @@ public class PaperController extends BaseController{
 			if(index !=-1){
 				para.setImgUrl(titleImg.substring(index));
 			}
-			
+			if(StringUtils.isEmpty(para.getTitle())
+					&& StringUtils.isEmpty(para.getContent())
+					&& StringUtils.isEmpty(para.getImgUrl())){
+				continue;
+			}
 			para.setPaperId(paperId);
 			para.setSectionId(sectionId);
 			para.setOrderNum(orderNum++);
@@ -550,7 +554,7 @@ public class PaperController extends BaseController{
 				continue;
 			}
 			PaperOutLink link = null;
-			if(outLinkId != null){
+			if(outLinkId != null && outLinkId >0){
 				link = outLinkDao.find(outLinkId); 
 			}
 			link =(link==null)?new PaperOutLink():link;
@@ -558,6 +562,12 @@ public class PaperController extends BaseController{
 			link.setSecTitle(RequestUtil.stringvalue(request, "outSecTitle"+orderId+"-"+i));
 			link.setPrize(RequestUtil.doublevalue(request, "outPrize"+orderId+"-"+i));
 			link.setOuterUrl(RequestUtil.stringvalue(request, "outUrl"+orderId+"-"+i));
+			if(StringUtils.isEmpty(link.getTitle())
+					&& StringUtils.isEmpty(link.getSecTitle())
+					&& StringUtils.isEmpty(link.getOuterUrl())
+					&& (link.getPrize() == null || link.getPrize() == 0)){
+				continue;
+			}
 			link.setPaperId(paperId);
 			link.setSectionId(sectionId);
 			link.setOrderNum(orderNum++);

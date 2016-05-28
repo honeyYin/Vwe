@@ -38,7 +38,7 @@ public class PaperParagraph implements Serializable{
 	/**
 	 * 小节标题
 	 */
-	@Column(nullable=false)		
+	@Column	
 	private String title;
 	
 	/**

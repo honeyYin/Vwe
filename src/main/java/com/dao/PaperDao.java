@@ -137,14 +137,6 @@ public class PaperDao {
 		Query query = entityManager.createQuery(sqlString);
 		return query.executeUpdate();
 	}
-	/*@Transactional
-	@SuppressWarnings("unchecked")
-	public int updateRecom(Long id,int isRecom) {
-		Query query = entityManager.createQuery("update Paper p set p.isRecom = ?1,p.updateTime = CURRENT_TIMESTAMP() where p.id = ?2");
-		query.setParameter(1, isRecom);
-		query.setParameter(2, id);
-		return query.executeUpdate();
-	}*/
 
 	@SuppressWarnings("unchecked")
 	public List<Paper> getPaperByCondition(String string, int limit, int offset) {
@@ -167,16 +159,30 @@ public class PaperDao {
 	}
 	@Transactional
 	@SuppressWarnings("unchecked")
-	public int higherPriority(Long id) {
-		Query query = entityManager.createQuery("update Paper p set p.priority = (case when p.priority <=1 then 1 WHEN p.priority >1 THEN (p.priority-1) END) ,p.updateTime = CURRENT_TIMESTAMP() where p.id = ?1");
+	public int updatePriority(Long id,Long priority) {
+		Query query = entityManager.createQuery("update Paper p set p.priority = ?2 ,p.updateTime = CURRENT_TIMESTAMP() where p.id = ?1");
 		query.setParameter(1, id);
+		query.setParameter(2, priority);
+
 		return query.executeUpdate();
 	}
-	@Transactional
+	
 	@SuppressWarnings("unchecked")
-	public int lowerPriority(Long id) {
-		Query query = entityManager.createQuery("update Paper p set p.priority = p.priority +1 ,p.updateTime = CURRENT_TIMESTAMP() where p.id = ?1");
-		query.setParameter(1, id);
-		return query.executeUpdate();
+	public List<Paper> findLPaper(boolean hasAudit, int isTop,Long priority){
+		Query query = entityManager.createQuery("select p from Paper p where p.hasAudit = ?1 and p.isTop = ?2 and p.priority <?3 ORDER BY p.priority DESC");
+		query.setParameter(1, hasAudit);
+		query.setParameter(2, isTop);
+		query.setParameter(3, priority);
+		query.setMaxResults(1);
+		return query.getResultList();
+	}
+	@SuppressWarnings("unchecked")
+	public List<Paper> findHPaper(boolean hasAudit, int isTop,Long priority){
+		Query query = entityManager.createQuery("select p from Paper p where p.hasAudit = ?1 and p.isTop = ?2 and p.priority >?3 ORDER BY p.priority ASC");
+		query.setParameter(1, hasAudit);
+		query.setParameter(2, isTop);
+		query.setParameter(3, priority);
+		query.setMaxResults(1);
+		return query.getResultList();
 	}
 }

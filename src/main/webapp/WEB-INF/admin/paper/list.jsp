@@ -139,11 +139,6 @@ request.setCharacterEncoding("UTF-8");
 	<td><input type="checkbox" id="ids" name="ids" value="${item.id}"/></td>
 	<td>${item.id}</td>
 	<td>
-		<%-- <c:choose>
-			<c:when test="${item.isRecom == 1}">
-				<label style="color:red"><strong>[荐]</strong></label>
-			</c:when>
-		</c:choose> --%>
 		<c:choose>
 			<c:when test="${item.isTop ==0}">
 				
@@ -183,16 +178,7 @@ request.setCharacterEncoding("UTF-8");
 				<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=true&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">发布</a>
 			</c:otherwise>
 		</c:choose>
-<%-- 		 | 
-		<c:choose>
-			<c:when test="${item.isRecom == 1}">
-				<a id ="${item.id}" href="<%=basePath%>paper/updateRecom?isRecom=0&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">取消推荐</a>
-			</c:when>
-			<c:otherwise>
-				<a id ="${item.id}" href="<%=basePath%>paper/updateRecom?isRecom=1&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">推荐</a>
-			</c:otherwise>
-		</c:choose>
- --%>		 | 
+		 | 
 		<c:choose>
 			<c:when test="${item.isTop == 1}">
 				<a id ="${item.id}" href="<%=basePath%>paper/updateTop?isTop=0&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">取消置顶</a>
