@@ -20,11 +20,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 <body>
 <div class="box-positon">
-    <h1>您所在的位置: 栏目管理 - 列表</h1>
-        <form class="ropt" action="<%=basePath%>channel/toAdd" method="get">
-            <input type="submit" value="添加" class="return-button"/>
+	<div class="rpos">当前位置: 栏目管理 - 列表</div>
+	<form class="ropt" action="<%=basePath%>channel/toAdd" method="get">
+            <input type="submit" value="添加" class="add"/>
         </form>
-    <div class="clear"></div>
+	<div class="clear"></div>
 </div>
 <div class="body-box">
     <form id="tableForm" method="post" name="listform">

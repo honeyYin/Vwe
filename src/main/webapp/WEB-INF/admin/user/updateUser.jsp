@@ -117,8 +117,8 @@ function callAddUserAction(){
 </tr>
 <tr>
 <td colspan="4" class="pn-fbutton">
-	<input type="button" value="提交" class="button" class="submit"  onclick="callAddUserAction()"/> &nbsp; 
-	<input type="reset" value="重置" class="reset" class="reset"/>
+	<input type="button" value="提交" class="submit"  onclick="callAddUserAction()"/> &nbsp; 
+	<input type="reset" value="重置"  class="reset"/>
 </td>
 </tr>
 </table>

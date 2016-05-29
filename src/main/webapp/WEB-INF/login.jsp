@@ -51,9 +51,9 @@ $(function() {
 				if("succ"== message){//正确
 					$("#loginform").submit();
 				}else if("password" == message ){
-					$("#loginMsg").html("密码不正确");
+					$("#pwdMsg").html("密码不正确");
 				}else{
-					$("#loginMsg").html("用户不存在");
+					$("#loginMsg").html("用户名不存在");
 				}
 		}});
 		
@@ -88,16 +88,16 @@ body{margin:0;padding:0;font-size:12px;background:url(<%=basePath%>/res/tycms/im
 
                 </div>
                 <table width="100%" border="0" align="center" cellpadding="0" cellspacing="5">
-                	<tr>
-                      <td colspan="3"><span id= "loginMsg"  name= "loginMsg"></span></td>
-                    </tr>
+                	
                     <tr>
                       <td width="91" height="40" align="right"><strong> 用户名：</strong></td>
-                      <td width="211"><input type="input" id="loginName" vld="{required:true}" maxlength="100" class="input"/></td>
+                      <td width="211"><input type="input" id="loginName" vld="{required:true}" maxlength="100" class="input"/>
+                      <span id= "loginMsg"  name= "loginMsg"></span></td>
                     </tr>
                     <tr>
                       <td height="40" align="right"><strong>密码：</strong></td>
-                      <td><input type="password" id="password" maxlength="32" vld="{required:true}" class="input"/></td>
+                      <td><input type="password" id="password" maxlength="32" vld="{required:true}" class="input"/>
+                      <span id= "pwdMsg"  name= "pwdMsg"></span></td>
                     </tr>
                     
                     <tr>

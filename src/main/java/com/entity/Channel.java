@@ -58,7 +58,7 @@ public class Channel implements Serializable{
 	@Column
 	private String description;
 	
-	//栏目图片
+	/*//栏目图片
 	@Column
-	private String titleImg;
+	private String titleImg;*/
 }

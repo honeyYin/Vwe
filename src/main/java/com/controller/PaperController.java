@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.constant.OperationTypeEnum;
 import com.constant.PaperElementEnum;
 import com.dao.ChannelDao;
 import com.dao.PaperDao;
@@ -73,8 +74,14 @@ public class PaperController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping(method=RequestMethod.GET,value="list")
-	public ModelAndView list(Long channelId,
-							 Integer pageNo) {
+	public String list(Long channelId,
+							 Integer pageNo,
+							 Model model,
+							 HttpServletRequest request) {
+		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+		if(!StringUtils.isEmpty(queryTitle)){
+			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+		}
 		logger.debug("Received request to list papers");
 		if(pageNo == null || pageNo <=0){
 			pageNo = CURRENT_PAGE_NO;
@@ -87,48 +94,53 @@ public class PaperController extends BaseController{
 		OperationResult<Long> result = paperService.hasNext(channelId,pageNo,papers.size(),false);
 		
 		List<Channel> channels = channelDao.getRootCategory();
-		mav.addObject("channels",channels);
-		mav.addObject("channelId",channelId==null?0:channelId);
-		mav.addObject("pageNo",pageNo==null?0:pageNo+1);
-		mav.addObject("maxPageNo",result.getData());
-		mav.addObject("hasNext",result.getCode()==0?true:false);
-		mav.addObject("papers",papers);
-		mav.setViewName("admin/paper/list");
-		return mav;
+		model.addAttribute("channels",channels);
+		model.addAttribute("channelId",channelId==null?0:channelId);
+		model.addAttribute("pageNo",pageNo==null?0:pageNo+1);
+		model.addAttribute("maxPageNo",result.getData());
+		model.addAttribute("hasNext",result.getCode()==0?true:false);
+		model.addAttribute("papers",papers);
+		return "admin/paper/list";
 		
 	}
 	@RequestMapping(method=RequestMethod.GET,value="queryByCondition")
-	public ModelAndView queryByCondition(Long channelId,
+	public String queryByCondition(Long channelId,
 							 Integer pageNo,
-							 String queryTitle) {
+							 HttpServletRequest request,
+							 Model model) {
+		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+		if(StringUtils.isEmpty(queryTitle)){
+			return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
+		}
 		logger.debug("Received request to list papers");
 		if(pageNo == null || pageNo <=0){
 			pageNo = CURRENT_PAGE_NO;
 		}
 		pageNo = pageNo -1;
-		ModelAndView mav = new ModelAndView();
 		List<Paper> papers = paperService.getPapersByCondition(channelId,pageNo,queryTitle);
 		logger.debug("papers Listing count = "+papers.size());
 		//是否还有下一页，返回总条数
 		OperationResult<Long> result = paperService.hasNextByCondition(channelId,queryTitle,pageNo,papers.size());
 		
 		List<Channel> channels = channelDao.getRootCategory();
-		mav.addObject("channels",channels);
-		mav.addObject("queryTitle",queryTitle);
-		mav.addObject("channelId",channelId==null?0:channelId);
-		mav.addObject("pageNo",pageNo==null?0:pageNo+1);
-		mav.addObject("maxPageNo",result.getData());
-		mav.addObject("hasNext",result.getCode()==0?true:false);
-		mav.addObject("papers",papers);
-		mav.setViewName("admin/paper/queryList");
-		return mav;
+		model.addAttribute("channels",channels);
+		model.addAttribute("queryTitle",queryTitle);
+		model.addAttribute("channelId",channelId==null?0:channelId);
+		model.addAttribute("pageNo",pageNo==null?0:pageNo+1);
+		model.addAttribute("maxPageNo",result.getData());
+		model.addAttribute("hasNext",result.getCode()==0?true:false);
+		model.addAttribute("papers",papers);
+		return "admin/paper/queryList";
 		
 	}
 	@RequestMapping(method=RequestMethod.GET,value="detail") 
 	public ModelAndView paperDetail(@RequestParam("paperId") Long paperId,
 									Long channelId,
-									Integer pageNo) {
+									Integer pageNo,
+									HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView();
+		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+		mav.addObject("queryTitle",queryTitle);
 		
 		Paper paper = paperDao.find(paperId);
 		mav.addObject("paper",paperService.getPaperModel(paper));
@@ -157,7 +169,7 @@ public class PaperController extends BaseController{
 					   Long channelId,
 					   Integer pageNo) {
 		Paper paper =  paserPaper(null,request);
-		paper =paperService.savePaper(paper);
+		paper =paperService.savePaper(paper,getUser(request));
 		
 		savePaperSection(paper.getId(),request);
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
@@ -165,11 +177,15 @@ public class PaperController extends BaseController{
 	@RequestMapping(method=RequestMethod.GET,value="toEdit") 
 	public ModelAndView toEdit(@RequestParam("paperId") Long paperId,
 							   Long channelId,
-							   Integer pageNo) {
+							   Integer pageNo,
+							   HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView();
 		//查询父级栏目
 		List<Channel> channels =channelDao.getRootCategory();
 		Paper paper = paperDao.find(paperId);
+		
+		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+		mav.addObject("queryTitle",queryTitle);
 		
 		mav.addObject("channels",channels);
 		mav.addObject("paper",paperService.getPaperModel(paper));
@@ -185,9 +201,13 @@ public class PaperController extends BaseController{
 					   Integer pageNo) {
 		Long paperId = RequestUtil.longvalue(request,"paperId");
 		Paper paper =  paserPaper(paperId,request);
-		paper = paperDao.save(paper);
+		paper = paperService.savePaper(paper,getUser(request));
 
 		savePaperSection(paper.getId(),request);
+		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+		if(!StringUtils.isEmpty(queryTitle)){
+			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+		}
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
 	}
@@ -211,8 +231,15 @@ public class PaperController extends BaseController{
 	@RequestMapping(method=RequestMethod.GET,value="delete") 
 	public String delete(@RequestParam("paperId") Long paperId,
 						   Long channelId,
-						   Integer pageNo) {
+						   Integer pageNo,
+						   HttpServletRequest request) {
 		paperDao.delete(paperId);
+		//记录操作信息
+		paperService.saveOperationRecord(paperId,OperationTypeEnum.DELETE,getUser(request));
+		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+		if(!StringUtils.isEmpty(queryTitle)){
+			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+		}
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 	}
 	@RequestMapping(method=RequestMethod.POST,value="deleteImg") 
@@ -251,6 +278,14 @@ public class PaperController extends BaseController{
 			if(!StringUtils.isEmpty(string)){
 				paperDao.batchDelete(string);
 			}
+			for(int i=0;i<wids.length;i++){
+				//记录操作信息
+				paperService.saveOperationRecord(wids[i],OperationTypeEnum.DELETE,getUser(request));
+			}
+		}
+		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+		if(!StringUtils.isEmpty(queryTitle)){
+			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
 		}
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
@@ -260,9 +295,16 @@ public class PaperController extends BaseController{
 							  @RequestParam("hasAudit") Boolean hasAudit,
 						      Long channelId,
 						      Integer pageNo,
-						      String redirect) {
+						      String redirect,
+						      HttpServletRequest request) {
 		paperDao.auditPaper(paperId,hasAudit);
+		//记录操作信息
+		paperService.saveOperationRecord(paperId,OperationTypeEnum.AUDIT,getUser(request));
 		if(StringUtils.isEmpty(redirect)){
+			String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+			if(!StringUtils.isEmpty(queryTitle)){
+				return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+			}
 			return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		}else{
 			return "redirect:"+redirect+"?paperId="+paperId+"&pageNo="+pageNo+"&channelId="+channelId;
@@ -279,6 +321,14 @@ public class PaperController extends BaseController{
 			if(!StringUtils.isEmpty(string)){
 				paperDao.batchAudit(string);
 			}
+			for(int i=0;i<wids.length;i++){
+				//记录操作信息
+				paperService.saveOperationRecord(wids[i],OperationTypeEnum.AUDIT,getUser(request));
+			}
+		}
+		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+		if(!StringUtils.isEmpty(queryTitle)){
+			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
 		}
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
@@ -287,8 +337,15 @@ public class PaperController extends BaseController{
 	public String updateTop(@RequestParam("paperId") Long paperId,
 						    @RequestParam("isTop") int isTop,
 						    Long channelId,
-						    Integer pageNo) {
+						    Integer pageNo,
+						    HttpServletRequest request) {
 		paperDao.updateTop(paperId, isTop);
+		//记录操作信息
+		paperService.saveOperationRecord(paperId,OperationTypeEnum.TO_TOP,getUser(request));
+		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+		if(!StringUtils.isEmpty(queryTitle)){
+			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+		}
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
 	}
@@ -296,17 +353,32 @@ public class PaperController extends BaseController{
 	public String updatePrior(@RequestParam("paperId") Long paperId,
 						    @RequestParam("type") Integer type,
 						    Long channelId,
-						    Integer pageNo) {
+						    Integer pageNo,
+						    HttpServletRequest request,
+						    HttpServletResponse response) {
+		int result = 0;
 		//上移
 		if(type == 1){
-			paperService.higherPriority(paperId);
+			result = paperService.higherPriority(paperId);
+			//记录操作信息
+			paperService.saveOperationRecord(paperId,OperationTypeEnum.UP_LEVEL,getUser(request));
 		}
 		//下移
 		if(type == -1){
-			paperService.lowerPriority(paperId);
+			result = paperService.lowerPriority(paperId);
+			//记录操作信息
+			paperService.saveOperationRecord(paperId,OperationTypeEnum.DOWN_LEVEL,getUser(request));
 		}
-		
-		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
+		if(result >0){
+			return "succ";
+		}else{
+			String msg = "已是该类别第一条记录，无法上移。";
+			if(type == -1){
+				msg = "已是该类别最后一条记录，无法下移";
+			}
+			response.setCharacterEncoding("utf-8");
+			return render(msg,"text/html",response);	
+		}
 	}
 	@RequestMapping(method=RequestMethod.GET,value="left")
 	public ModelAndView left(Model model){
@@ -357,9 +429,6 @@ public class PaperController extends BaseController{
 		//是否还有下一页，返回总条数
 		OperationResult<Long> result = paperService.hasNext(channelId,pageNo,papers.size(),true);
 		Channel channel = channelDao.find(channelId);
-		if(channel != null){
-			mav.addObject("channelTitleImg",channel.getTitleImg());
-		}
 		
 		mav.addObject("channelName",channel.getName());
 		mav.addObject("channelId",channelId==null?0:channelId);
@@ -460,7 +529,7 @@ public class PaperController extends BaseController{
 		paper.setTitle(RequestUtil.stringvalue(request, "title"));
 		paper.setAuthor(RequestUtil.stringvalue(request, "author"));
 		if(StringUtils.isEmpty(paper.getAuthor())){
-			paper.setAuthor(getUser(request).getRealName());
+			paper.setAuthor(getUser(request).getLoginName());
 		}
 		paper.setDescription(RequestUtil.stringvalue(request, "description"));
 		paper.setIsTop(RequestUtil.intvalue(request, "isTop"));
@@ -529,7 +598,11 @@ public class PaperController extends BaseController{
 			}
 			if(StringUtils.isEmpty(para.getTitle())
 					&& StringUtils.isEmpty(para.getContent())
-					&& StringUtils.isEmpty(para.getImgUrl())){
+					&& StringUtils.isEmpty(para.getImgUrl())
+					){
+				if(para.getId() !=null && para.getId()>0){
+					paraDao.delete(para.getId());
+				}
 				continue;
 			}
 			para.setPaperId(paperId);
@@ -566,6 +639,9 @@ public class PaperController extends BaseController{
 					&& StringUtils.isEmpty(link.getSecTitle())
 					&& StringUtils.isEmpty(link.getOuterUrl())
 					&& (link.getPrize() == null || link.getPrize() == 0)){
+				if(link.getId()!=null && link.getId()>0){
+					outLinkDao.delete(link.getId());
+				}
 				continue;
 			}
 			link.setPaperId(paperId);

@@ -13,7 +13,7 @@ function addNewSection(parentId){//传入元素id
 	 
 	  var divHtml = "<table width=\"100%\"  cellpadding=\"2\" cellspacing=\"1\" border=\"0\" ><tr><td width='10%'  class='pn-flabel pn-flabel-h'>"+sectionName+":</td>"+
 	  "<td colspan='3' width='90%' class='pn-fcontent'>"+
-	  "<input type='button' value='添加小节'  onclick='javascript:addNewPara("+sectionId+")' /> &nbsp; "+
+	  "<input type='button' value='添加小节'  onclick='javascript:addNewPara("+sectionId+",\"para\")' /> &nbsp; "+
 	  "<input type='button' value='添加区域跳转块'  onclick='javascript:addNewOutLink("+sectionId+")' /> &nbsp; "+
 	  "</td></tr><tr><td width='10%'  class='pn-flabel pn-flabel-h'><span class='pn-frequired'>*</span>版块标题:</td>"+
 	  "<td colspan='3' width='90%' class='pn-fcontent'>"+
@@ -25,7 +25,7 @@ function addNewSection(parentId){//传入元素id
 	  parent.appendChild(oDiv);
 	  sectionId = sectionId+1;
 }
-function addNewPara(parentId){  //传入数据编号即可
+function addNewPara(parentId,type){  //传入数据编号即可
 	  
 	  var parent=getE('div-section'+parentId);//获取父元素
 	  var paraId =arrPara[parentId];
@@ -36,13 +36,15 @@ function addNewPara(parentId){  //传入数据编号即可
 	  var oDiv=document.createElement("div");
 	  oDiv.id = divName;
 	  
-	  var divHtml ="<table width=\"100%\"  cellpadding=\"2\" cellspacing=\"1\" border=\"0\"><tr><td width='10%'  class='pn-flabel pn-flabel-h'>"+paraName+":</td>"+
-			"<td colspan='3' width='90%' class='pn-fcontent'></td></tr><tr>"+
-			"<td width='10%'  class='pn-flabel pn-flabel-h'><span class='pn-frequired'>*</span>小节标题:</td>"+
+	  var divHtml;
+	  if(type=='image'){
+		  divHtml ="<table width=\"100%\"  cellpadding=\"2\" cellspacing=\"1\" border=\"0\"><tr style='display:none'><td width='10%'  class='pn-flabel pn-flabel-h'>小节:</td>"+
+			"<td colspan='3' width='90%' class='pn-fcontent'></td></tr><tr style='display:none'>"+
+			"<td width='10%'  class='pn-flabel pn-flabel-h'>小节标题:</td>"+
 			"<td colspan='3' width='90%' class='pn-fcontent'>"+
 			"<input id='paraTitle"+parentId+"-"+paraId+"'  type='text' maxlength='150' name='paraTitle"+parentId+"-"+paraId+"' class='required' size='70' maxlength='150'/>"+
 			"<input type='button' value='删除'  onclick='javascript:deleteElement("+parentId+","+paraId+",\"para\")'/> &nbsp; "+
-			"</td></tr><tr ><td width='10%' class='pn-flabel pn-flabel-h'>小节正文:</td>"+
+			"</td></tr><tr style='display:none'><td width='10%' class='pn-flabel pn-flabel-h'>小节正文:</td>"+
 			"<td colspan='3' width='90%' class='pn-fcontent'>"+
 			"	<textarea  id='paraContent"+parentId+"-"+paraId+"' name='paraContent"+parentId+"-"+paraId+"' cols='70' rows='10'></textarea>"+
 			"</td></tr><tr  > <td width='10%' class='pn-flabel'>小节配图:</td>"+
@@ -51,13 +53,51 @@ function addNewPara(parentId){  //传入数据编号即可
 			 		"'paraPic"+parentId+"-"+paraId+"','paraTitleImg"+parentId+"-"+paraId+"','paraPicDele"+parentId+"-"+paraId+"','para','-1')\"/>"+
 			"       <input type='hidden' id='paraTitleImg"+parentId+"-"+paraId+"' name='paraTitleImg"+parentId+"-"+paraId+"' value=\"\"/>"+
 			 "       <span class='pn-fhelp' id='paraPic"+parentId+"-"+paraId+"'>无图片</span> <span id = 'paraPicDele"+parentId+"-"+paraId+"'></span></td></tr></table>";
-//	  var content = parent.innerHTML;
+
+	  }else if(type =='content'){
+		  divHtml ="<table width=\"100%\"  cellpadding=\"2\" cellspacing=\"1\" border=\"0\"><tr style='display:none'><td width='10%'  class='pn-flabel pn-flabel-h'>小节:</td>"+
+			"<td colspan='3' width='90%' class='pn-fcontent'></td></tr><tr style='display:none'>"+
+			"<td width='10%'  class='pn-flabel pn-flabel-h'>小节标题:</td>"+
+			"<td colspan='3' width='90%' class='pn-fcontent'>"+
+			"<input id='paraTitle"+parentId+"-"+paraId+"'  type='text' maxlength='150' name='paraTitle"+parentId+"-"+paraId+"' class='required' size='70' maxlength='150'/>"+
+			"<input type='button' value='删除'  onclick='javascript:deleteElement("+parentId+","+paraId+",\"para\")'/> &nbsp; "+
+			"</td></tr><tr ><td width='10%' class='pn-flabel pn-flabel-h'>小节正文:</td>"+
+			"<td colspan='3' width='90%' class='pn-fcontent'>"+
+			"	<textarea  id='paraContent"+parentId+"-"+paraId+"' name='paraContent"+parentId+"-"+paraId+"' cols='70' rows='10'></textarea>"+
+			"</td></tr><tr style='display:none' > <td width='10%' class='pn-flabel'>小节配图:</td>"+
+			 "<td colspan='1' width='40%' class='pn-fcontent'>"+
+			 "       <input class='button'  type='button' id='paraBtnUploadFile"+parentId+"-"+paraId+"' value='上传图片' onclick=\"javascript:uploanFile('paraBtnUploadFile"+parentId+"-"+paraId+"'," +
+			 		"'paraPic"+parentId+"-"+paraId+"','paraTitleImg"+parentId+"-"+paraId+"','paraPicDele"+parentId+"-"+paraId+"','para','-1')\"/>"+
+			"       <input type='hidden' id='paraTitleImg"+parentId+"-"+paraId+"' name='paraTitleImg"+parentId+"-"+paraId+"' value=\"\"/>"+
+			 "       <span class='pn-fhelp' id='paraPic"+parentId+"-"+paraId+"'>无图片</span> <span id = 'paraPicDele"+parentId+"-"+paraId+"'></span></td></tr></table>";
+
+	  }else{
+		  divHtml ="<table width=\"100%\"  cellpadding=\"2\" cellspacing=\"1\" border=\"0\"><tr><td width='10%'  class='pn-flabel pn-flabel-h'>小节:</td>"+
+			"<td colspan='3' width='90%' class='pn-fcontent'>" +
+			"<input type=\"button\" value=\"添加正文\"  onclick=\"javascript:addNewPara("+parentId+",'content')\" /> &nbsp;" +
+			"<input type=\"button\" value=\"添加配图\"  onclick=\"javascript:addNewPara("+parentId+",'image')\" /> &nbsp; </td></tr><tr>"+
+			"<td width='10%'  class='pn-flabel pn-flabel-h'>小节标题:</td>"+
+			"<td colspan='3' width='90%' class='pn-fcontent'>"+
+			"<input id='paraTitle"+parentId+"-"+paraId+"'  type='text' maxlength='150' name='paraTitle"+parentId+"-"+paraId+"' class='required' size='70' maxlength='150'/>"+
+			"<input type='button' value='删除'  onclick='javascript:deleteElement("+parentId+","+paraId+",\"para\")'/> &nbsp; "+
+			"</td></tr><tr ><td width='10%' class='pn-flabel pn-flabel-h'>小节正文:</td>"+
+			"<td colspan='3' width='90%' class='pn-fcontent'>"+
+			"	<textarea  id='paraContent"+parentId+"-"+paraId+"' name='paraContent"+parentId+"-"+paraId+"' cols='70' rows='10'></textarea>"+
+			"</td></tr><tr  style='display:none'> <td width='10%' class='pn-flabel'>小节配图:</td>"+
+			 "<td colspan='1' width='40%' class='pn-fcontent'>"+
+			 "       <input class='button'  type='button' id='paraBtnUploadFile"+parentId+"-"+paraId+"' value='上传图片' onclick=\"javascript:uploanFile('paraBtnUploadFile"+parentId+"-"+paraId+"'," +
+			 		"'paraPic"+parentId+"-"+paraId+"','paraTitleImg"+parentId+"-"+paraId+"','paraPicDele"+parentId+"-"+paraId+"','para','-1')\"/>"+
+			"       <input type='hidden' id='paraTitleImg"+parentId+"-"+paraId+"' name='paraTitleImg"+parentId+"-"+paraId+"' value=\"\"/>"+
+			 "       <span class='pn-fhelp' id='paraPic"+parentId+"-"+paraId+"'>无图片</span> <span id = 'paraPicDele"+parentId+"-"+paraId+"'></span></td></tr></table>";
+
+	  }
+	  //	  var content = parent.innerHTML;
 //	  parent.innerHTML =content+divHtml;
 
 	  oDiv.innerHTML = divHtml;
 	  parent.appendChild(oDiv);
 	  
-	  arrPara[parentId-1] = paraId+1;
+	  arrPara[parentId] = paraId+1;
 }
 function addNewOutLink(parentId){
 
@@ -69,7 +109,7 @@ function addNewOutLink(parentId){
 	  var oDiv=document.createElement("div");
 	  oDiv.id = divName;
 	  
-	  var divHtml ="<table width=\"100%\"  cellpadding=\"2\" cellspacing=\"1\" border=\"0\" ><tr><td width='10%'  class='pn-flabel pn-flabel-h'>"+outLinkName+":</td>"+
+	  var divHtml ="<table width=\"100%\"  cellpadding=\"2\" cellspacing=\"1\" border=\"0\" ><tr><td width='10%'  class='pn-flabel pn-flabel-h'>跳转区域:</td>"+
 		"<td colspan='3' width='90%' class='pn-fcontent'></td></tr><tr >"+
 		"<td width='10%'  class='pn-flabel pn-flabel-h'><span class='pn-frequired'>*</span>标题:</td>"+
 		"<td colspan='3' width='90%' class='pn-fcontent'>"+
@@ -89,7 +129,7 @@ function addNewOutLink(parentId){
 	  oDiv.innerHTML = divHtml;
 	  parent.appendChild(oDiv);
 	  
-	  arrOutLink[parentId-1] = outlinkId+1;
+	  arrOutLink[parentId] = outlinkId+1;
 
 }
 function deleteElement(parentId,deleId,deleType){

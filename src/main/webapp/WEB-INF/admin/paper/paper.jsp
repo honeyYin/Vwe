@@ -55,7 +55,8 @@ h1{text-align:center;font-size:18px;}
 <div class="box-positon">
 	<div class="rpos">当前位置:  内容管理 -- 查看</div>
 	<form class="ropt" action="<%=basePath%>paper/list" method="get">
-	<input type="hidden" id="pageNo"  name="pageNo" value="${pageNo}"/>
+		<input type="hidden" id="queryTitle"  name="queryTitle" value="${queryTitle}" />
+		<input type="hidden" id="pageNo"  name="pageNo" value="${pageNo}"/>
 		<input type="hidden" id="channelId"  name="channelId" value="${channelId}"/>
 		<input class="return-button" type="submit" value="返回列表" />
 	</form>
@@ -98,7 +99,9 @@ h1{text-align:center;font-size:18px;}
   	<div >
 		<h1>---------${para.title}-----------</h1>
 		<p>${para.content }</p>
-		<img src="<%=basePath%>${para.imgUrl}"  width="850" height= "450"/>
+		<c:if test="${para.imgUrl !=null && para.imgUrl !=''}">
+			<img src="<%=basePath%>${para.imgUrl}"  width="850" height= "450"/>
+		</c:if>
   	</div>
   	</c:forEach>
   	<c:forEach items="${section.outLinks}" var="outLink">

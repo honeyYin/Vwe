@@ -140,7 +140,6 @@ public class ChannelController extends BaseController{
 		channel.setIsDeploy(RequestUtil.intvalue(request, "isDeploy"));
 		channel.setName(RequestUtil.stringvalue(request, "name"));
 		channel.setDescription(RequestUtil.stringvalue(request, "description"));
-		channel.setTitleImg(RequestUtil.stringvalue(request, "titleImg"));
 		
 		return channel;
 	}

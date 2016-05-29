@@ -16,12 +16,12 @@
 <div class="fresh">
 		 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 		 <tr>
+		 	<td height="35" align="center"><a href="<%=basePath%>user/toResetPwd?userId=${userId}" target="rightFrame">修改密码</a></td>
+		 </tr>
+		 <tr>
 			 <c:if test="${isAdmin == 1}">
 			 	<td height="35" align="center"><a href="<%=basePath%>user/list" target="rightFrame">用户管理</a></td>
 			 </c:if>
-		 </tr>
-		 <tr>
-		 	<td height="35" align="center"><a href="<%=basePath%>user/toResetPwd?userId=${userId}" target="rightFrame">修改密码</a></td>
 		 </tr>
 		 </table>
 </div>

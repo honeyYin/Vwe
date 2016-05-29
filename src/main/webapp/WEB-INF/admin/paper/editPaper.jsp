@@ -46,6 +46,7 @@ int [] k = new int[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 function callupdateNewsAction(){
 	var paperId = $('#paperId')[0].value;
 	var title = $('#title')[0].value;
+	var titleImg = $('#titleImg')[0].value;
 	var pregStage = $('#pregStage')[0].value;
 	var recPregWeeks = $('#recPregWeeks')[0].value;
 	
@@ -55,6 +56,8 @@ function callupdateNewsAction(){
     
 	if(title==null || title==""){
 		alert("标题不能为空");
+	}else if(titleImg == null || titleImg == ""){
+		alert("标题图片不能为空");
 	}else if(pregStage == 2 && (r != recPregWeeks || recPregWeeks < 0 || recPregWeeks > 40)){
 		alert("孕周填写不合法");
 	}else{
@@ -77,8 +80,9 @@ function showrecPreg(){
 
 <body>
 <div class="box-positon">
-	<div class="rpos"><br />当前位置: 文章管理  -- 修改</div>
+	<div class="rpos">当前位置: 文章管理  - 修改</div>
 	<form class="ropt" action="<%=basePath%>paper/list" method="get">
+		<input type="hidden" id="queryTitle"  name="queryTitle" value="${queryTitle}" />
 		<input type="hidden" id="pageNo"  name="pageNo" value="${pageNo}"/>
 		<input type="hidden" id="channelId"  name="channelId" value="${channelId}"/>
 		<input class="return-button" type="submit" value="返回列表" />
@@ -205,7 +209,7 @@ function showrecPreg(){
 </td>
 </tr>
 <tr id="tr-titleImg">
- 	<td width="10%" class="pn-flabel">标题图片:</td>
+ 	<td width="10%" class="pn-flabel"><span class='pn-frequired'>*</span>标题图片:</td>
  	<td colspan="1" width="40%" class="pn-fcontent">
        	<input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg','picDelet','paper',${paper.id})"/>
         <input type="hidden" id="titleImg" name="titleImg" value="<%=basePath %>${paper.titleImg}"/>
@@ -240,7 +244,7 @@ function showrecPreg(){
   	<tr>
 	<td width="10%"  class="pn-flabel pn-flabel-h">版块<%=i%>:</td>
 	<td colspan="3" width="90%" class="pn-fcontent">
-		<input type="button" value="添加小节"  onclick="javascript:addNewPara(<%=i%>)" /> &nbsp; 
+		<input type="button" value="添加小节"  onclick="javascript:addNewPara(<%=i%>,'para')" /> &nbsp; 
 		<input type="button" value="添加区域跳转块"  onclick="javascript:addNewOutLink(<%=i%>)" /> &nbsp; 
 	</td>
 	</tr>
@@ -256,25 +260,56 @@ function showrecPreg(){
   	<div id="div-para<%=i%>-<%=j[i]%>">
   	<input type="hidden" id = "paraId<%=i%>-<%=j[i]%>" name = "paraId<%=i%>-<%=j[i]%>" value ="${para.id}" />
   	<table  width="100%"  cellpadding="2" cellspacing="1" border="0">
-  		<tr>
-		<td width="10%"  class="pn-flabel pn-flabel-h">小节<%=i%>-<%=j[i]%>:</td>
+  		<c:choose>
+			<c:when test="${para.title==null || para.title=='' }">
+				<tr  style='display:none'>
+			</c:when>
+			<c:otherwise>
+				<tr  >
+			</c:otherwise>
+		</c:choose>
+		<td width="10%"  class="pn-flabel pn-flabel-h">小节:</td>
 		<td colspan="3" width="90%" class="pn-fcontent">
+			<input type="button" value="添加正文"  onclick="javascript:addNewPara(<%=i%>,'content')" /> &nbsp; 
+			<input type="button" value="添加配图"  onclick="javascript:addNewPara(<%=i%>,'image')" /> &nbsp; 
 		</td>
 		</tr>
-		<tr>
+		<c:choose>
+			<c:when test="${para.title==null || para.title=='' }">
+				<tr  style='display:none'>
+			</c:when>
+			<c:otherwise>
+				<tr  >
+			</c:otherwise>
+		</c:choose>
 		<td width="10%"  class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>小节标题:</td>
 		<td colspan="3" width="90%" class="pn-fcontent">
 		<input id="paraTitle<%=i%>-<%=j[i]%>"  type="text" maxlength="150" name="paraTitle<%=i%>-<%=j[i]%>" class="required" size="70" value="${para.title }"/>
 		<input type="button" value="删除"  onclick="javascript:deleteElementAndDB(<%=i%>,<%=j[i]%>,'para',${para.id})"/> &nbsp; 
 		</td>
 		</tr>
-		<tr >
+		<c:choose>
+			<c:when test="${para.content==null || para.content=='' }">
+				<tr  style='display:none'>
+			</c:when>
+			<c:otherwise>
+				<tr  >
+			</c:otherwise>
+		</c:choose>
 		<td width="10%" class="pn-flabel pn-flabel-h">小节正文:</td>
 		<td colspan="3" width="90%" class="pn-fcontent">
 			<textarea  id="paraContent<%=i%>-<%=j[i]%>" name="paraContent<%=i%>-<%=j[i]%>" cols="70" rows="10">${para.content}</textarea>
 		</td>
 		</tr>
-		<tr  >
+		<c:choose>
+			<c:when test="${para.imgUrl==null || para.imgUrl=='' }">
+				<tr  style='display:none'>
+			</c:when>
+			<c:otherwise>
+				<tr  >
+			</c:otherwise>
+		</c:choose>
+		
 		 <td width="10%" class="pn-flabel">小节配图:</td>
 		 <td colspan="1" width="40%" class="pn-fcontent">
 		        <input class="button"  type="button" id="paraBtnUploadFile<%=i%>-<%=j[i]%>" value="上传图片" onclick="javascript:uploanFile('paraBtnUploadFile<%=i%>-<%=j[i]%>','paraPic<%=i%>-<%=j[i]%>','paraTitleImg<%=i%>-<%=j[i]%>','paraPicDele<%=i%>-<%=j[i]%>','para',${para.id })"/>
@@ -351,6 +386,7 @@ function showrecPreg(){
 </div>
 <script type="text/javascript">
 function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
+	alert(type);
 	var button = document.getElementById(buttonId); 
 	var ajaxUploadImage = new AjaxUpload(button,{
 	

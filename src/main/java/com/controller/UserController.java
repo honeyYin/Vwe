@@ -149,10 +149,12 @@ public class UserController extends BaseController{
 		return "admin/user/left";
 	}
 	@RequestMapping(method=RequestMethod.GET,value="main")
-	public String main(Model model,HttpServletRequest request){
-		model.addAttribute("isAdmin",getUser(request).getIsAdmin());
-		model.addAttribute("userId", getUserId(request));
-		return "admin/user/main";
+	public ModelAndView main(HttpServletRequest request){
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("isAdmin",getUser(request).getIsAdmin());
+		mav.addObject("userId", getUserId(request));
+		mav.setViewName("admin/user/main");
+		return mav;
 	}
 	private User paserUser(Long userId, HttpServletRequest request) {
 		User user;

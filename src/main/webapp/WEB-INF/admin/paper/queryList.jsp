@@ -13,6 +13,8 @@ request.setCharacterEncoding("UTF-8");
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <title></title>
 <script src="<%=basePath%>res/common/js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="<%=basePath%>res/common/js/paperCommon.js"></script>
+
 <link href="<%=basePath%>res/common/css/admin.css" rel="stylesheet" type="text/css"/>
 <link href="<%=basePath%>res/common/css/theme.css" rel="stylesheet" type="text/css"/>
 <style>
@@ -34,53 +36,40 @@ request.setCharacterEncoding("UTF-8");
 	}
 
 </style>
-<script>
-	//jquery批量删除
-	function jqcallDelBatch(){  //jquery获取复选框值
- 		var chk_value =[];
- 		$('input[name="ids"]:checked').each(function(){
- 			chk_value.push($(this).val());
- 		});
- 		if(chk_value.length==0){
- 			alert("请选择您要操作的数据");
- 		}else{
-  				if(confirm("您确定删除吗？")) {
-					document.tableForm.action = "<%=basePath%>paper/batchDelete";   
-					document.tableForm.submit();
-			 	}
-			 
- 		}
-	}
-	//jquery批量删除
-	function jqcallVerify(){  //jquery获取复选框值
- 		var chk_value =[];
- 		$('input[name="ids"]:checked').each(function(){
- 			chk_value.push($(this).val());
- 		});
- 		if(chk_value.length==0){
- 			alert("请选择您要操作的数据");
- 		}else{
-  				if(confirm("您确定发布吗？")) {
-					document.tableForm.action = "<%=basePath%>paper/batchAudit";   
-					document.tableForm.submit();
-			 	}
-			 
- 		}
-	}
-	//jquery选中所有checkbox
-	function jqselectCheck(){  //jquery获取复选框值
- 		 if (document.getElementById("allids").checked) {  
-                    $("input[name='ids']:checkbox").each(function() { //遍历所有的name为selectFlag的 checkbox   
-                                $(this).attr("checked", true);  
-                            })  
-                } else {   //反之 取消全选    
-                    $("input[name='ids']:checkbox").each(function() { //遍历所有的name为selectFlag的 checkbox   
-                                $(this).attr("checked", false);  
-                            })  
-                }  
+<script >
 
-	}
-	
+//jquery批量删除
+function jqcallDelBatch(){  //jquery获取复选框值
+		var chk_value =[];
+		$('input[name="ids"]:checked').each(function(){
+			chk_value.push($(this).val());
+		});
+		if(chk_value.length==0){
+			alert("请选择您要操作的数据");
+		}else{
+				if(confirm("您确定删除吗？")) {
+				document.tableForm.action = "<%=basePath%>paper/batchDelete";   
+				document.tableForm.submit();
+		 	}
+		 
+		}
+}
+//jquery批量删除
+function jqcallVerify(){  //jquery获取复选框值
+		var chk_value =[];
+		$('input[name="ids"]:checked').each(function(){
+			chk_value.push($(this).val());
+		});
+		if(chk_value.length==0){
+			alert("请选择您要操作的数据");
+		}else{
+				if(confirm("您确定发布吗？")) {
+				document.tableForm.action = "<%=basePath%>paper/batchAudit";   
+				document.tableForm.submit();
+		 	}
+		 
+		}
+}
 </script>
 </head>
 <body>
@@ -118,6 +107,7 @@ request.setCharacterEncoding("UTF-8");
 </div>
 </form>
 <form id="tableForm" name="tableForm" method="post">
+<input type="hidden" id="queryTitle"  name="queryTitle" value="${queryTitle}" />
 <table class="pn-ltable" style="" width="100%" cellspacing="1" cellpadding="0" border="0">
 <thead class="pn-lthead">
 <tr>
@@ -139,11 +129,6 @@ request.setCharacterEncoding("UTF-8");
 	<td><input type="checkbox" id="ids" name="ids" value="${item.id}"/></td>
 	<td>${item.id}</td>
 	<td>
-		<c:choose>
-			<c:when test="${item.isRecom == 1}">
-				<label style="color:red"><strong>[荐]</strong></label>
-			</c:when>
-		</c:choose>
 		<c:choose>
 			<c:when test="${item.isTop ==0}">
 				
@@ -169,34 +154,25 @@ request.setCharacterEncoding("UTF-8");
 	</c:choose>
 	
 	<td align="center">
-		<a href="<%=basePath%>paper/detail?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">查看</a>
-		 | <a href="<%=basePath%>paper/toEdit?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">修改</a> 
-		 | <a href="<%=basePath%>paper/delete?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt" onclick="return confirm('您确定要删除吗？');">删除</a>
+		<a href="<%=basePath%>paper/detail?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt">查看</a>
+		 | <a href="<%=basePath%>paper/toEdit?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt">修改</a> 
+		 | <a href="<%=basePath%>paper/delete?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt" onclick="return confirm('您确定要删除吗？');">删除</a>
 		 | 
 		<c:choose>
 			<c:when test="${item.hasAudit == true}">
-				<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=false&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">取消发布</a>
+				<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=false&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt">取消发布</a>
 			</c:when>
 			<c:otherwise>
-				<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=true&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">发布</a>
-			</c:otherwise>
-		</c:choose>
-		 | 
-		<c:choose>
-			<c:when test="${item.isRecom == 1}">
-				<a id ="${item.id}" href="<%=basePath%>paper/updateRecom?isRecom=0&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">取消推荐</a>
-			</c:when>
-			<c:otherwise>
-				<a id ="${item.id}" href="<%=basePath%>paper/updateRecom?isRecom=1&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">推荐</a>
+				<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=true&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt">发布</a>
 			</c:otherwise>
 		</c:choose>
 		 | 
 		<c:choose>
 			<c:when test="${item.isTop == 1}">
-				<a id ="${item.id}" href="<%=basePath%>paper/updateTop?isTop=0&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">取消置顶</a>
+				<a id ="${item.id}" href="<%=basePath%>paper/updateTop?isTop=0&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt">取消置顶</a>
 			</c:when>
 			<c:otherwise>
-				<a id ="${item.id}" href="<%=basePath%>paper/updateTop?isTop=1&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">置顶</a>
+				<a id ="${item.id}" href="<%=basePath%>paper/updateTop?isTop=1&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt">置顶</a>
 			</c:otherwise>
 		</c:choose>
 	</td>

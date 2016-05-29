@@ -9,16 +9,8 @@
 <title>后台管理</title>
 </head>
 <frameset cols="227,*" frameborder="0" border="0" framespacing="0">
-	<frame src="<%=basePath%>user/left" name="leftFrame" noresize="noresize" id="leftFrame" />
-	<c:choose >
-		<c:when test="${isAdmin == 1}">
-			<frame src="<%=basePath%>user/list" name="rightFrame" id="rightFrame" />
-		</c:when>
-		<c:otherwise>
+		<frame src="<%=basePath%>user/left" name="leftFrame" noresize="noresize" id="leftFrame" />
 		<frame src="<%=basePath%>user/toResetPwd?userId=${userId}" name="rightFrame" id="rightFrame" />
-		</c:otherwise>
-	</c:choose>
-	
 </frameset>
 <noframes><body></body></noframes>
 </html>

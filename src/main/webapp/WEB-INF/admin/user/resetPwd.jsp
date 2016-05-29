@@ -59,9 +59,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <body>
 	<div class="box-positon">
 		<div class="rpos">当前位置: 修改密码</div>
-		<form class="ropt" action="<%=basePath%>user/list">
-			<input type="submit" value="返回列表"  class="return-button"/>
-		</form>
 		<div class="clear"></div>
 	</div>
 	<div class="body-box">
@@ -96,8 +93,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</tr>
 			<tr>
 			<td colspan="4" class="pn-fbutton">
-				<input type="button" value="提交" class="button" class="submit" onclick="callUpdateUserAction()"/> &nbsp; 
-				<input type="reset" value="重置" class="reset" class="reset"/>
+				<input type="button" value="提交" class="submit" onclick="callUpdateUserAction()"/> &nbsp; 
+				<input type="reset" value="重置"  class="reset"/>
 			</td>
 			</tr>
 			</table>

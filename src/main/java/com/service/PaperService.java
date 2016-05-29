@@ -4,21 +4,25 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.functors.IfClosure;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.constant.OperationTypeEnum;
+import com.constant.PaperElementEnum;
+import com.dao.OperationRecordDao;
 import com.dao.PaperDao;
 import com.dao.PaperImageDao;
 import com.dao.PaperOutLinkDao;
 import com.dao.PaperParaDao;
 import com.dao.PaperSectionDao;
+import com.entity.OperationRecord;
 import com.entity.Paper;
 import com.entity.PaperImage;
 import com.entity.PaperParagraph;
 import com.entity.PaperSection;
+import com.entity.User;
 import com.google.common.collect.Lists;
 import com.model.OperationResult;
 import com.model.PaperModel;
@@ -46,13 +50,39 @@ public class PaperService {
 	@Autowired
 	private PaperImageDao imageDao;
 	
+	@Autowired
+	private OperationRecordDao operationDao;
+	
 	private static final int CURRENT_PAGE_SIZE = 10;
 	
-	public Paper savePaper(Paper paper){
+	public Paper savePaper(Paper paper,User user){
+		Long id = paper.getId();
+		//操作类型
+		OperationTypeEnum type =OperationTypeEnum.UPDATE;
 		Paper entity = paperDao.save(paper);
-		entity.setPriority(entity.getId());
-		entity =paperDao.save(entity);
+		if(id == null || id <=0){
+			entity.setPriority(entity.getId());
+			entity =paperDao.save(entity);
+			
+			type = OperationTypeEnum.ADD;
+		}
+		//记录操作信息
+		saveOperationRecord(entity.getId(),type,user);
 		return entity;
+	}
+	//保存paper的操作记录
+	public void saveOperationRecord(Long paperId,
+									OperationTypeEnum type,
+									User user){
+		
+		OperationRecord record = new OperationRecord();
+		record.setEntity(PaperElementEnum.PAPER.getName());
+		record.setEntityId(paperId);
+		record.setOperatorName(user.getLoginName());
+		record.setOperatorId(user.getId());
+		record.setType(type.getName());
+		operationDao.save(record);		
+				
 	}
 	/**
 	 * 分页获取数据
@@ -294,23 +324,26 @@ public class PaperService {
 		return modelsLists;
 	}
 	
-	public void higherPriority(Long paperId) {
+	public int higherPriority(Long paperId) {
 		Paper hPaper = paperDao.find(paperId);
+		int result = 0;
 		List<Paper> papers = paperDao.findLPaper(hPaper.isHasAudit(), hPaper.getIsTop(), hPaper.getPriority());
 		if(!CollectionUtils.isEmpty(papers)){
 			Paper lPaper = papers.get(0);
-			paperDao.updatePriority(hPaper.getId(),lPaper.getPriority());
+			result = paperDao.updatePriority(hPaper.getId(),lPaper.getPriority());
 			paperDao.updatePriority(lPaper.getId(), hPaper.getPriority());
 		}
+		return result;
 	}
-	public void lowerPriority(Long paperId) {
+	public int lowerPriority(Long paperId) {
 		Paper lPaper = paperDao.find(paperId);
+		int result = 0;
 		List<Paper> papers = paperDao.findHPaper(lPaper.isHasAudit(), lPaper.getIsTop(), lPaper.getPriority());
 		if(!CollectionUtils.isEmpty(papers)){
 			Paper hPaper = papers.get(0);
-			paperDao.updatePriority(lPaper.getId(),hPaper.getPriority());
+			result = paperDao.updatePriority(lPaper.getId(),hPaper.getPriority());
 			paperDao.updatePriority(hPaper.getId(), lPaper.getPriority());
 		}
-		
+		return result;
 	}
 }

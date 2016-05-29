@@ -45,14 +45,6 @@ request.setCharacterEncoding("UTF-8");
                     </td>
                 </tr>
                 <tr>
-                    <td width="20%" class="pn-flabel pn-flabel-h">栏目图片:</td>
-                    <td colspan="1" width="90%" class="pn-fcontent">
-                        <input class="button" type="button" id="btnUploadFile" value="上传图片" />
-                        <input type="hidden" id="titleImg" name="titleImg" value="no"/>
-                         <span class="pn-fhelp" id="pic">无图片</span>
-                    </td>
-                </tr>                
-                <tr>
                     <td width="20%" class="pn-flabel pn-flabel-h">栏目每页记录数:</td>
                     <td colspan="3" width="90%" class="pn-fcontent">
                     	<input type="text" name="pageSize" value="20" style="width:40px" class="digits" maxlength="5"/>
@@ -86,46 +78,6 @@ request.setCharacterEncoding("UTF-8");
     </form>
 </div>
 <script type="text/javascript">
-	function cutpres(msg)
-	{
-		var start = msg.indexOf("{");
-		return msg.substr(start).replace("</pre>", "");
-	}
-	var button = document.getElementById("btnUploadFile"); 
-	var ajaxUploadImage = new AjaxUpload(button,{
-	
-		action: '<%=basePath%>upload',
-		autoSubmit: true, //交由确定按钮提交
-		name: 'filedata',   
-		
-		onChange:function(file,ext){//当选择文件后执行的方法,ext存在文件后续,可以在这里判断文件格式
-			hasAddSpecialImage=true;
-		},
-			        
-		onSubmit : function(file, ext){
-		    if (!(ext && /^(jpg|JPG|png|PNG|gif|GIF)$/.test(ext))) {  
-		        alert("您上传的图片格式不对，仅能上传jpg、JPG、png、PNG、gif、GIF的图片，请重新选择！");  
-		        return false;  
-		    }  
-		
-			 this.disable();
-		},
-		
-		onComplete: function(file, response){ //上传完毕后的操作	
-			console.log(response);
-			var start = response.indexOf("{");
-			var end = response.indexOf("}");
-			var	msg = response.substring((start+1), end);
-			if(msg=="size"){
-				alert("文件大于1M");
-			}else{
-				document.getElementById("pic").innerHTML = "<img height ='50' width = '150' src = '<%=basePath%>" + msg + "'/>";
-				document.getElementById("titleImg").value = msg;
-			}
-		
-			this.enable();
-	}
-	});
 
 function callAddNewsAction(){
 	//判断

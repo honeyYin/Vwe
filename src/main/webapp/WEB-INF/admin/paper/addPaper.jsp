@@ -37,7 +37,9 @@ request.setCharacterEncoding("UTF-8");
 
 }); --%>
 function callAddNewsAction(){
+	alert("te");
 	var title = $('#title')[0].value;
+	var titleImg = $('#titleImg')[0].value;
 	var pregStage = $('#pregStage')[0].value;
 	var recPregWeeks = $('#recPregWeeks')[0].value;
 	
@@ -47,9 +49,12 @@ function callAddNewsAction(){
     
 	if(title ==null || title ==""){
 		alert("标题不能为空");
+	}else if(titleImg == null || titleImg == ""){
+		alert("标题图片不能为空");
 	}else if(pregStage == 2 && (r != recPregWeeks || recPregWeeks < 0 || recPregWeeks > 40)){
 		alert("孕周填写不合法");
 	}else{
+		alert("add");
 		$("#newsForm")[0].action="<%=basePath%>paper/add";
 		$("#newsForm")[0].submit();
 	}
@@ -69,7 +74,7 @@ function showrecPreg(){
 
 <body>
 <div class="box-positon">
-	<div class="rpos"><br />当前位置: 文章管理 -- 添加</div>
+	<div class="rpos">当前位置: 文章管理 - 添加</div>
 	<form class="ropt" action="<%=basePath%>paper/list" method="get">
 		<input type="hidden" id="pageNo"  name="pageNo" value="${pageNo}"/>
 		<input type="hidden" id="channelId"  name="channelId" value="${channelId}"/>
@@ -160,7 +165,7 @@ function showrecPreg(){
 </td>
 </tr>
 <tr id="tr-titleImg" >
- <td width="10%" class="pn-flabel">标题图片:</td>
+ <td width="10%" class="pn-flabel"><span class='pn-frequired'>*</span>标题图片:</td>
  <td colspan="1" width="40%" class="pn-fcontent">
         <input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg','picDelet','paper','')"/>
         <input type="hidden" id="titleImg" name="titleImg" value=""/>
@@ -175,91 +180,6 @@ function showrecPreg(){
 	<input type="button" value="添加版块"  onclick="javascript:addNewSection('div-content')" /> &nbsp; 
 </td>
 </tr>
-
-<!-- <div id="div-section1">
-<tr>
-<td width="10%"  class="pn-flabel pn-flabel-h">版块1:</td>
-<td colspan="3" width="90%" class="pn-fcontent">
-	<input type="button" value="添加小节"  onclick="javascript:addNewPara('div-section1')" /> &nbsp; 
-	<input type="button" value="添加区域跳转块"  onclick="javascript:addNewOutLink('div-section1')" /> &nbsp; 
-</td>
-</tr>
-<tr>
-<td width="10%"  class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>版块标题:</td>
-<td colspan="3" width="90%" class="pn-fcontent">
-<input id="sectionTitle1"  type="text" maxlength="150" name="sectionTitle1" class="required" size="70" maxlength="150"/>
-<input type="button" value="删除"  onclick="javascript:deleteElement('div-content','div-section1')"/> &nbsp; 
-</td>
-</tr>
-
-小节区域start
-<div id="div-para1">
-<tr>
-<td width="10%"  class="pn-flabel pn-flabel-h">小节1-1:</td>
-<td colspan="3" width="90%" class="pn-fcontent">
-</td>
-</tr>
-<tr>
-<td width="10%"  class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>小节标题:</td>
-<td colspan="3" width="90%" class="pn-fcontent">
-<input id="paraTitle1"  type="text" maxlength="150" name="paraTitle1" class="required" size="70" maxlength="150"/>
-<input type="button" value="删除"  onclick="javascript:deleteElement('div-section1','div-para1')"/> &nbsp; 
-</td>
-</tr>
-<tr >
-<td width="10%" class="pn-flabel pn-flabel-h">小节正文:</td>
-<td colspan="3" width="90%" class="pn-fcontent">
-	<textarea  id="paraContent1" name="paraContent1" cols="70" rows="10"></textarea>
-</td>
-</tr>
-<tr  >
- <td width="10%" class="pn-flabel">小节配图:</td>
- <td colspan="1" width="40%" class="pn-fcontent">
-        <input class="button"  type="button" id="paraBtnUploadFile1" value="上传图片" onclick="javascript:uploanFile('paraBtnUploadFile1','paraPic1','paraTitleImg1')"/>
-        <input type="hidden" id="paraTitleImg1" name="paraTitleImg1" value=""/>
-        <span class="pn-fhelp" id="paraPic1">无图片</span>
- </td>
-</tr>
-</div>
-小节区域end
-区域跳转start
-<div id="div-outLink1">
-<tr>
-<td width="10%"  class="pn-flabel pn-flabel-h">跳转区域1-1:</td>
-<td colspan="3" width="90%" class="pn-fcontent">
-</td>
-</tr>
-<tr >
-<td width="10%"  class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>标题:</td>
-<td colspan="3" width="90%" class="pn-fcontent">
-<input id="outTitle1"  type="text" maxlength="150" name="outTitle1" class="required" size="70" />
-<input type="button" value="删除" /> &nbsp; 
-</td>
-</tr>
-<tr>
-<td width="10%" class="pn-flabel pn-flabel-h">副标题:</td>
-<td colspan="3" width="90%" class="pn-fcontent">
-	<input id="outSecTitle1"  type="text" maxlength="150" name="outSecTitle1" class="required" size="70" />
-</td>
-</tr>
-<tr>
-<td width="10%" class="pn-flabel pn-flabel-h">金额:</td>
-<td colspan="3" width="90%" class="pn-fcontent">
-	<input id="outPrize1"  type="text" maxlength="50" name="outPrize1" class="required" size="20" />
-</td>
-</tr>
-<tr >
-<td width="10%" class="pn-flabel pn-flabel-h">链接:</td>
-<td colspan="3" width="90%" class="pn-fcontent">
-	<input id="outUrl1"  type="text" maxlength="150" name="outUrl1" class="required" size="70" />
-</td>
-</tr>
-</div>
-区域跳转end
-</div> -->
-<!-- 版块区域end -->
-<!-- </div> -->
-
 </table>
 </div>
 <!-- 文章正文区域end -->

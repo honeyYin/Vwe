@@ -3,8 +3,9 @@ package com.constant;
 public enum PaperElementEnum {
 	PAPER(0,"paper"),  
 	SECTION(1,"section"),  
-	OUTLINK(1,"outlink"), 
-	PARA(2,"para");  
+	OUTLINK(2,"outlink"), 
+	PARA(3,"para"), 
+	CHANNEL(4,"para");  
 	
 	
 	private int code;

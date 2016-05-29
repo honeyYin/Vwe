@@ -13,6 +13,8 @@ request.setCharacterEncoding("UTF-8");
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <title></title>
 <script src="<%=basePath%>res/common/js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="<%=basePath%>res/common/js/paperCommon.js"></script>
+
 <link href="<%=basePath%>res/common/css/admin.css" rel="stylesheet" type="text/css"/>
 <link href="<%=basePath%>res/common/css/theme.css" rel="stylesheet" type="text/css"/>
 <style>
@@ -35,57 +37,67 @@ request.setCharacterEncoding("UTF-8");
 
 </style>
 <script>
-	//jquery批量删除
-	function jqcallDelBatch(){  //jquery获取复选框值
- 		var chk_value =[];
- 		$('input[name="ids"]:checked').each(function(){
- 			chk_value.push($(this).val());
- 		});
- 		if(chk_value.length==0){
- 			alert("请选择您要操作的数据");
- 		}else{
-  				if(confirm("您确定删除吗？")) {
-					document.tableForm.action = "<%=basePath%>paper/batchDelete";   
-					document.tableForm.submit();
-			 	}
-			 
- 		}
-	}
-	//jquery批量删除
-	function jqcallVerify(){  //jquery获取复选框值
- 		var chk_value =[];
- 		$('input[name="ids"]:checked').each(function(){
- 			chk_value.push($(this).val());
- 		});
- 		if(chk_value.length==0){
- 			alert("请选择您要操作的数据");
- 		}else{
-  				if(confirm("您确定发布吗？")) {
-					document.tableForm.action = "<%=basePath%>paper/batchAudit";   
-					document.tableForm.submit();
-			 	}
-			 
- 		}
-	}
-	//jquery选中所有checkbox
-	function jqselectCheck(){  //jquery获取复选框值
- 		 if (document.getElementById("allids").checked) {  
-                    $("input[name='ids']:checkbox").each(function() { //遍历所有的name为selectFlag的 checkbox   
-                                $(this).attr("checked", true);  
-                            })  
-                } else {   //反之 取消全选    
-                    $("input[name='ids']:checkbox").each(function() { //遍历所有的name为selectFlag的 checkbox   
-                                $(this).attr("checked", false);  
-                            })  
-                }  
 
-	}
-	
+function movePaper(type,paperId){
+	var channelId = $('#channelId')[0].value;
+	var pageNo = $('#pageNo')[0].value;
+	var queryTitle = $('#queryTitle')[0].value;
+	var par_data="type="+type+"&paperId="+paperId+"&channelId="+channelId+"&pageNo="+pageNo;
+	$.ajax({ 
+		 type: "GET", 
+		 url: "<%=basePath%>paper/updatePrior",  
+		 data: par_data, 
+		 success: function(message){ 
+			 if(message.length == "succ"){
+				 if(queryTitle == null || queryTitle == ""){
+					 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/list?pageNo="+pageNo+"&channelId="+channelId;
+
+				 }else{
+					 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+
+				 }
+			 }else{
+				 alert(message);
+			 }
+	}});
+}
+//jquery批量删除
+function jqcallDelBatch(){  //jquery获取复选框值
+		var chk_value =[];
+		$('input[name="ids"]:checked').each(function(){
+			chk_value.push($(this).val());
+		});
+		if(chk_value.length==0){
+			alert("请选择您要操作的数据");
+		}else{
+				if(confirm("您确定删除吗？")) {
+				document.tableForm.action = "<%=basePath%>paper/batchDelete";   
+				document.tableForm.submit();
+		 	}
+		 
+		}
+}
+//jquery批量删除
+function jqcallVerify(){  //jquery获取复选框值
+		var chk_value =[];
+		$('input[name="ids"]:checked').each(function(){
+			chk_value.push($(this).val());
+		});
+		if(chk_value.length==0){
+			alert("请选择您要操作的数据");
+		}else{
+				if(confirm("您确定发布吗？")) {
+				document.tableForm.action = "<%=basePath%>paper/batchAudit";   
+				document.tableForm.submit();
+		 	}
+		 
+		}
+}
 </script>
 </head>
 <body>
 <div class="box-positon">
-	<div class="rpos">当前位置: 文章管理  -- 列表</div>
+	<div class="rpos">当前位置: 文章管理  - 列表</div>
 	<form class="ropt" name="inform" action="<%=basePath%>paper/toAdd" method="get">
 		<input type="hidden" id="pageNo" name="pageNo" value="${pageNo}"/>
 		<input type="hidden" id="channelId" name="channelId" value="${channelId}"/>
@@ -166,8 +178,8 @@ request.setCharacterEncoding("UTF-8");
 	<td align="center">
 		<a href="<%=basePath%>paper/detail?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">查看</a>
 		 | <a href="<%=basePath%>paper/toEdit?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">修改</a> 
-		 | <a href="<%=basePath%>paper/updatePrior?type=1&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">上移</a> 
-		 | <a href="<%=basePath%>paper/updatePrior?type=-1&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">下移</a> 
+		 | <a href="javascript:movePaper(1,${item.id})" class="pn-opt">上移</a> 
+		 | <a href="javascript:movePaper(-1,${item.id})" class="pn-opt">下移</a> 
 		 | <a href="<%=basePath%>paper/delete?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt" onclick="return confirm('您确定要删除吗？');">删除</a>
 		 | 
 		<c:choose>
