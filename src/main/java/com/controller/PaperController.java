@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +88,6 @@ public class PaperController extends BaseController{
 			pageNo = CURRENT_PAGE_NO;
 		}
 		pageNo = pageNo -1;
-		ModelAndView mav = new ModelAndView();
 		List<Paper> papers = paperService.getPapersByPage(channelId,pageNo);
 		logger.debug("papers Listing count = "+papers.size());
 		//是否还有下一页，返回总条数
@@ -169,9 +169,11 @@ public class PaperController extends BaseController{
 					   Long channelId,
 					   Integer pageNo) {
 		Paper paper =  paserPaper(null,request);
-		paper =paperService.savePaper(paper,getUser(request));
+		if(paper != null){
+			paper =paperService.savePaper(paper,getUser(request));
+			savePaperSection(paper.getId(),request);
+		}
 		
-		savePaperSection(paper.getId(),request);
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 	}
 	@RequestMapping(method=RequestMethod.GET,value="toEdit") 
@@ -201,9 +203,10 @@ public class PaperController extends BaseController{
 					   Integer pageNo) {
 		Long paperId = RequestUtil.longvalue(request,"paperId");
 		Paper paper =  paserPaper(paperId,request);
-		paper = paperService.savePaper(paper,getUser(request));
-
-		savePaperSection(paper.getId(),request);
+		if(paper != null){
+			paper = paperService.savePaper(paper,getUser(request));
+			savePaperSection(paper.getId(),request);
+		}
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
 		if(!StringUtils.isEmpty(queryTitle)){
 			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
@@ -349,6 +352,22 @@ public class PaperController extends BaseController{
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
 	}
+	@RequestMapping(method=RequestMethod.GET,value="updateRecom") 
+	public String updateRecom(@RequestParam("paperId") Long paperId,
+						    @RequestParam("isRecom") int isRecom,
+						    Long channelId,
+						    Integer pageNo,
+						    HttpServletRequest request) {
+		paperDao.updateRecom(paperId, isRecom);
+		//记录操作信息
+		paperService.saveOperationRecord(paperId,OperationTypeEnum.TO_RECOM,getUser(request));
+		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+		if(!StringUtils.isEmpty(queryTitle)){
+			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+		}
+		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
+		
+	}
 	@RequestMapping(method=RequestMethod.GET,value="updatePrior") 
 	public String updatePrior(@RequestParam("paperId") Long paperId,
 						    @RequestParam("type") Integer type,
@@ -370,7 +389,7 @@ public class PaperController extends BaseController{
 			paperService.saveOperationRecord(paperId,OperationTypeEnum.DOWN_LEVEL,getUser(request));
 		}
 		if(result >0){
-			return "succ";
+			return render("succ","text/html",response);
 		}else{
 			String msg = "已是该类别第一条记录，无法上移。";
 			if(type == -1){
@@ -406,7 +425,10 @@ public class PaperController extends BaseController{
 		paperService.addViewCount(paperId);
 		//向数据库查询对应新闻的内容
 		Paper paper = paperDao.find(paperId);
-		List<Paper> rePapers = paperDao.fgetRecPaperByCategory(paper.getChannelId(),paper.getId(),5, 0);
+		List<Paper> rePapers = Lists.newArrayList();
+		if(paper !=null){
+			rePapers = paperDao.fgetRecPaperByCategory(paper.getChannelId(),paper.getId(),5, 0);
+		}
 		
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("paper", paperService.getPaperModel(paper));
@@ -441,7 +463,6 @@ public class PaperController extends BaseController{
 		return mav;
 		
 	}
-	
 	//=====================接口调用===========================
 	/**
 	 * 
@@ -485,16 +506,19 @@ public class PaperController extends BaseController{
 			paperService.addViewCount(paperId);
 
 			//向数据库查询对应新闻的内容
-			Paper paper = paperDao.find(paperId);
-			
-			List<Paper> recList = paperDao.fgetRecPaperByCategory(paper.getChannelId(),paper.getId(),5, 0);
-			
-	
+			List<Paper> papers = paperDao.ffind(paperId);
+			Paper paper = null;
+			List<Paper> recList = Lists.newArrayList();
+			if(!CollectionUtils.isEmpty(papers)){
+				paper = papers.get(0);
+				recList = paperDao.fgetRecPaperByCategory(paper.getChannelId(),paper.getId(),5, 0);
+			}
 			result.put("status", 0);//0标识成功，-1标识失败
 			result.put("msg", "succ");
 			result.put("paper", paperService.getPaperModel(paper));
-			result.put("recList", recList);
+			result.put("recList", paperService.getPaperModels(recList));
 		}catch(Exception ex){
+			logger.warn("fail to get paper"+ex.getMessage(),ex);
 			result.put("status", -1);//0标识成功，-1标识失败
 			result.put("msg", "fail");
 			result.put("paper", null);

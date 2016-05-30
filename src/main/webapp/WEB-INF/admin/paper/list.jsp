@@ -48,7 +48,7 @@ function movePaper(type,paperId){
 		 url: "<%=basePath%>paper/updatePrior",  
 		 data: par_data, 
 		 success: function(message){ 
-			 if(message.length == "succ"){
+			 if(message == "succ"){
 				 if(queryTitle == null || queryTitle == ""){
 					 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/list?pageNo="+pageNo+"&channelId="+channelId;
 
@@ -159,6 +159,14 @@ function jqcallVerify(){  //jquery获取复选框值
 				<label style="color:red"><strong>[固顶]</strong></label>
 			</c:otherwise>
 		</c:choose>
+		<c:choose>
+			<c:when test="${item.isRecom ==0}">
+				
+			</c:when>
+			<c:otherwise>
+				<label style="color:red"><strong>[荐]</strong></label>
+			</c:otherwise>
+		</c:choose>
 		<strong>[${item.channelName}]</strong>
 	</td>
 	<td align="center">${item.title}</td>
@@ -197,6 +205,15 @@ function jqcallVerify(){  //jquery获取复选框值
 			</c:when>
 			<c:otherwise>
 				<a id ="${item.id}" href="<%=basePath%>paper/updateTop?isTop=1&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">置顶</a>
+			</c:otherwise>
+		</c:choose>
+		 | 
+		<c:choose>
+			<c:when test="${item.isRecom == 1}">
+				<a id ="${item.id}" href="<%=basePath%>paper/updateRecom?isRecom=0&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">取消推荐</a>
+			</c:when>
+			<c:otherwise>
+				<a id ="${item.id}" href="<%=basePath%>paper/updateRecom?isRecom=1&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">推荐</a>
 			</c:otherwise>
 		</c:choose>
 	</td>

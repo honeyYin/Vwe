@@ -61,6 +61,11 @@ public class Paper  implements Serializable{
 	//是否置顶
 	@Column	
 	private int isTop=0;
+	
+	//是否置顶
+	@Column	
+	private int isRecom=0;
+		
 	//是否删除
 	@Column	
 	private int disabled=0;

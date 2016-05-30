@@ -42,7 +42,7 @@ function addNewPara(parentId,type){  //传入数据编号即可
 			"<td colspan='3' width='90%' class='pn-fcontent'></td></tr><tr style='display:none'>"+
 			"<td width='10%'  class='pn-flabel pn-flabel-h'>小节标题:</td>"+
 			"<td colspan='3' width='90%' class='pn-fcontent'>"+
-			"<input id='paraTitle"+parentId+"-"+paraId+"'  type='text' maxlength='150' name='paraTitle"+parentId+"-"+paraId+"' class='required' size='70' maxlength='150'/>"+
+			"<input id='paraTitle"+parentId+"-"+paraId+"'  type='text' maxlength='150' name='paraTitle"+parentId+"-"+paraId+"'  size='70' maxlength='150'/>"+
 			"<input type='button' value='删除'  onclick='javascript:deleteElement("+parentId+","+paraId+",\"para\")'/> &nbsp; "+
 			"</td></tr><tr style='display:none'><td width='10%' class='pn-flabel pn-flabel-h'>小节正文:</td>"+
 			"<td colspan='3' width='90%' class='pn-fcontent'>"+
@@ -59,7 +59,7 @@ function addNewPara(parentId,type){  //传入数据编号即可
 			"<td colspan='3' width='90%' class='pn-fcontent'></td></tr><tr style='display:none'>"+
 			"<td width='10%'  class='pn-flabel pn-flabel-h'>小节标题:</td>"+
 			"<td colspan='3' width='90%' class='pn-fcontent'>"+
-			"<input id='paraTitle"+parentId+"-"+paraId+"'  type='text' maxlength='150' name='paraTitle"+parentId+"-"+paraId+"' class='required' size='70' maxlength='150'/>"+
+			"<input id='paraTitle"+parentId+"-"+paraId+"'  type='text' maxlength='150' name='paraTitle"+parentId+"-"+paraId+"'  size='70' maxlength='150'/>"+
 			"<input type='button' value='删除'  onclick='javascript:deleteElement("+parentId+","+paraId+",\"para\")'/> &nbsp; "+
 			"</td></tr><tr ><td width='10%' class='pn-flabel pn-flabel-h'>小节正文:</td>"+
 			"<td colspan='3' width='90%' class='pn-fcontent'>"+
@@ -78,7 +78,7 @@ function addNewPara(parentId,type){  //传入数据编号即可
 			"<input type=\"button\" value=\"添加配图\"  onclick=\"javascript:addNewPara("+parentId+",'image')\" /> &nbsp; </td></tr><tr>"+
 			"<td width='10%'  class='pn-flabel pn-flabel-h'>小节标题:</td>"+
 			"<td colspan='3' width='90%' class='pn-fcontent'>"+
-			"<input id='paraTitle"+parentId+"-"+paraId+"'  type='text' maxlength='150' name='paraTitle"+parentId+"-"+paraId+"' class='required' size='70' maxlength='150'/>"+
+			"<input id='paraTitle"+parentId+"-"+paraId+"'  type='text' maxlength='150' name='paraTitle"+parentId+"-"+paraId+"'  size='70' maxlength='150'/>"+
 			"<input type='button' value='删除'  onclick='javascript:deleteElement("+parentId+","+paraId+",\"para\")'/> &nbsp; "+
 			"</td></tr><tr ><td width='10%' class='pn-flabel pn-flabel-h'>小节正文:</td>"+
 			"<td colspan='3' width='90%' class='pn-fcontent'>"+
@@ -113,17 +113,17 @@ function addNewOutLink(parentId){
 		"<td colspan='3' width='90%' class='pn-fcontent'></td></tr><tr >"+
 		"<td width='10%'  class='pn-flabel pn-flabel-h'><span class='pn-frequired'>*</span>标题:</td>"+
 		"<td colspan='3' width='90%' class='pn-fcontent'>"+
-		"<input id='outTitle"+parentId+"-"+outlinkId+"'  type='text' maxlength='150' name='outTitle"+parentId+"-"+outlinkId+"' class='required' size='70' />"+
+		"<input id='outTitle"+parentId+"-"+outlinkId+"'  type='text' maxlength='12' name='outTitle"+parentId+"-"+outlinkId+"' class='required' size='24' />"+
 		"<input type='button' value='删除' onclick='javascript:deleteElement("+parentId+","+outlinkId+",\"outLink\")'/> &nbsp; </td></tr><tr>"+
 		"<td width='10%' class='pn-flabel pn-flabel-h'>副标题:</td>"+
 		"<td colspan='3' width='90%' class='pn-fcontent'>"+
-		"	<input id='outSecTitle"+parentId+"-"+outlinkId+"'  type='text' maxlength='150' name='outSecTitle"+parentId+"-"+outlinkId+"' class='required' size='70' />"+
-		"</td></tr><tr><td width='10%' class='pn-flabel pn-flabel-h'>金额:</td>"+
+		"	<input id='outSecTitle"+parentId+"-"+outlinkId+"'  type='text' maxlength='12' name='outSecTitle"+parentId+"-"+outlinkId+"' size='24' />"+
+		"</td></tr><tr><td width='10%' class='pn-flabel pn-flabel-h'><span class='pn-frequired'>*</span>金额:</td>"+
 		"<td colspan='3' width='90%' class='pn-fcontent'>"+
-		"	<input id='outPrize"+parentId+"-"+outlinkId+"'  type='text' maxlength='50' name='outPrize"+parentId+"-"+outlinkId+"' class='required' size='20' />"+
-		"</td></tr><tr ><td width='10%' class='pn-flabel pn-flabel-h'>链接:</td>"+
+		"	<input id='outPrize"+parentId+"-"+outlinkId+"'  type='text' maxlength='12' name='outPrize"+parentId+"-"+outlinkId+"' class='required' size='24' />"+
+		"</td></tr><tr ><td width='10%' class='pn-flabel pn-flabel-h'><span class='pn-frequired'>*</span>链接:</td>"+
 		"<td colspan='3' width='90%' class='pn-fcontent'>"+
-		"	<input id='outUrl"+parentId+"-"+outlinkId+"'  type='text' maxlength='150' name='outUrl"+parentId+"-"+outlinkId+"' class='required' size='70' /></td></tr></div></table>";
+		"	<input id='outUrl"+parentId+"-"+outlinkId+"'  type='text' maxlength='500' name='outUrl"+parentId+"-"+outlinkId+"' class='required' size='70' /></td></tr></div></table>";
 //	  var content = parent.innerHTML;
 //	  parent.innerHTML =content+divHtml;
 	  oDiv.innerHTML = divHtml;

@@ -20,7 +20,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="content">
 
 <!-- mainNav -->
-<img src="<%=basePath%>${paper.titleImg}"  width="850" height= "450"/>
+
+		<c:if test="${paper.titleImg !=null && paper.titleImg !=''}">
+			<img src="<%=basePath%>${paper.titleImg}"  width="850" height= "450"/>
+		</c:if>
     <div class="mainNav">
        
     </div>
@@ -52,7 +55,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	<div >
 		<h1>---------${para.title}-----------</h1>
 		<p>${para.content }</p>
-		<img src="<%=basePath%>${para.imgUrl}"  width="850" height= "450"/>
+		
+		<c:if test="${para.imgUrl !=null && para.imgUrl !=''}">
+			<img src="<%=basePath%>${para.imgUrl}"  width="850" height= "450"/>
+		</c:if>
   	</div>
   	</c:forEach>
   	<c:forEach items="${section.outLinks}" var="outLink">

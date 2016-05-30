@@ -43,6 +43,8 @@ public class PaperModel  implements Serializable{
 	private boolean hasAudit=false;
 	//是否置顶
 	private int isTop=0;
+	
+	private int isRecom=0;
 	//是否删除
 	private int disabled=0;
 	//封面图url
@@ -77,10 +79,13 @@ public class PaperModel  implements Serializable{
 		this.title = paper.getTitle();
 		this.hasAudit = paper.isHasAudit();
 		this.isTop = paper.getIsTop();
+		this.isRecom = paper.getIsRecom();
 		this.id = paper.getId();
 		this.titleImg = paper.getTitleImg();
 		this.viewCount = paper.getViewCount();
-		this.pregStageCode = paper.getPregStage().getCode();
+		if(paper.getPregStage() != null){
+			this.pregStageCode = paper.getPregStage().getCode();
+		}
 		this.pregStage = paper.getPregStage().getName();
 		this.recPregWeeks = paper.getRecPregWeeks();
 		this.hospital = paper.getHospital();

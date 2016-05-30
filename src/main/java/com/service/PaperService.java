@@ -267,9 +267,15 @@ public class PaperService {
 		if(CollectionUtils.isEmpty(paras)){
 			return Lists.newArrayList();
 		}
+		int orderNum = 1;
 		 List<PaperParagraphModel>  results = Lists.newArrayList();
 		for(PaperParagraph item:paras){
 			PaperParagraphModel model = new PaperParagraphModel(item);
+			if(StringUtils.isEmpty(model.getTitle())){
+				model.setOrderNum(-1);
+			}else{
+				model.setOrderNum(orderNum++);
+			}
 			if(StringUtils.isNotEmpty(model.getImgUrl())){
 				List<PaperImage> images = imageDao.findByUrl(model.getImgUrl());
 				if(!CollectionUtils.isEmpty(images)){
@@ -327,7 +333,7 @@ public class PaperService {
 	public int higherPriority(Long paperId) {
 		Paper hPaper = paperDao.find(paperId);
 		int result = 0;
-		List<Paper> papers = paperDao.findLPaper(hPaper.isHasAudit(), hPaper.getIsTop(), hPaper.getPriority());
+		List<Paper> papers = paperDao.findLPaper(hPaper.isHasAudit(), hPaper.getIsTop(), hPaper.getPriority(),hPaper.getIsRecom());
 		if(!CollectionUtils.isEmpty(papers)){
 			Paper lPaper = papers.get(0);
 			result = paperDao.updatePriority(hPaper.getId(),lPaper.getPriority());
@@ -338,7 +344,7 @@ public class PaperService {
 	public int lowerPriority(Long paperId) {
 		Paper lPaper = paperDao.find(paperId);
 		int result = 0;
-		List<Paper> papers = paperDao.findHPaper(lPaper.isHasAudit(), lPaper.getIsTop(), lPaper.getPriority());
+		List<Paper> papers = paperDao.findHPaper(lPaper.isHasAudit(), lPaper.getIsTop(), lPaper.getPriority(),lPaper.getIsRecom());
 		if(!CollectionUtils.isEmpty(papers)){
 			Paper hPaper = papers.get(0);
 			result = paperDao.updatePriority(lPaper.getId(),hPaper.getPriority());

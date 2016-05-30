@@ -49,20 +49,34 @@ function callupdateNewsAction(){
 	var titleImg = $('#titleImg')[0].value;
 	var pregStage = $('#pregStage')[0].value;
 	var recPregWeeks = $('#recPregWeeks')[0].value;
+	var requires = $('.required');
 	
 	var r,re;
     re = /\d*/i; //\d表示数字,*表示匹配多个数字
     r = recPregWeeks.match(re);
     
-	if(title==null || title==""){
+    if(title==null || title==""){
 		alert("标题不能为空");
 	}else if(titleImg == null || titleImg == ""){
 		alert("标题图片不能为空");
 	}else if(pregStage == 2 && (r != recPregWeeks || recPregWeeks < 0 || recPregWeeks > 40)){
 		alert("孕周填写不合法");
 	}else{
-		$("#newsForm")[0].action="<%=basePath%>paper/edit";
-		$("#newsForm")[0].submit();
+		var outIllegal = 0;
+		for(var n=0;n<requires.length;n++){
+			var outname = requires[n].name;
+			var outvalue = requires[n].value;
+			if(outvalue == null || outvalue == ""){
+				outIllegal = 1;
+				break;
+			}
+		}
+		if(outIllegal == 1){
+			alert("有必填项未填写");
+		}else{
+			$("#newsForm")[0].action="<%=basePath%>paper/edit";
+			$("#newsForm")[0].submit();
+		}
 	}
 } 
 function showrecPreg(){
@@ -137,7 +151,7 @@ function showrecPreg(){
 <tr id="tr-description">
 <td width="10%" class="pn-flabel pn-flabel-h">摘要:</td>
 <td colspan="3" width="90%" class="pn-fcontent" >
-<textarea id ="description"  cols="70" rows="3" maxlength="255"  name="description" >${paper.description}</textarea>
+<textarea id ="description"  cols="70" rows="3" name="description" >${paper.description}</textarea>
 </td>
 </tr>
 
@@ -228,7 +242,7 @@ function showrecPreg(){
 </tr>
 <!-- 版块区域start -->
 <tr>
-<td width="10%"  class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>文章正文:</td>
+<td width="10%"  class="pn-flabel pn-flabel-h">文章正文:</td>
 <td class="pn-fcontent">
 	<input type="button" value="添加版块"  onclick="javascript:addNewSection('div-content')" /> &nbsp; 
 </td>
@@ -284,7 +298,7 @@ function showrecPreg(){
 		</c:choose>
 		<td width="10%"  class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>小节标题:</td>
 		<td colspan="3" width="90%" class="pn-fcontent">
-		<input id="paraTitle<%=i%>-<%=j[i]%>"  type="text" maxlength="150" name="paraTitle<%=i%>-<%=j[i]%>" class="required" size="70" value="${para.title }"/>
+		<input id="paraTitle<%=i%>-<%=j[i]%>"  type="text" maxlength="150" name="paraTitle<%=i%>-<%=j[i]%>"  size="70" value="${para.title }"/>
 		<input type="button" value="删除"  onclick="javascript:deleteElementAndDB(<%=i%>,<%=j[i]%>,'para',${para.id})"/> &nbsp; 
 		</td>
 		</tr>
@@ -343,26 +357,26 @@ function showrecPreg(){
 		<tr >
 		<td width="10%"  class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>标题:</td>
 		<td colspan="3" width="90%" class="pn-fcontent">
-		<input id="outTitle<%=i%>-<%=k[i]%>"  type="text" maxlength="150" name="outTitle<%=i%>-<%=k[i]%>" class="required" size="70" value="${outLink.title }" />
+		<input id="outTitle<%=i%>-<%=k[i]%>"  type="text" maxlength="12" name="outTitle<%=i%>-<%=k[i]%>" class="required" size="24" value="${outLink.title }" />
 		<input type="button" value="删除" onclick="javascript:deleteElementAndDB(<%=i%>,<%=k[i]%>,'outLink',${outLink.id})"/> &nbsp; 
 		</td>
 		</tr>
 		<tr>
 		<td width="10%" class="pn-flabel pn-flabel-h">副标题:</td>
 		<td colspan="3" width="90%" class="pn-fcontent">
-			<input id="outSecTitle<%=i%>-<%=k[i]%>"  type="text" maxlength="150" name="outSecTitle<%=i%>-<%=k[i]%>" class="required" size="70" value="${outLink.secTitle }" />
+			<input id="outSecTitle<%=i%>-<%=k[i]%>"  type="text" maxlength="12" name="outSecTitle<%=i%>-<%=k[i]%>" size="24" value="${outLink.secTitle }" />
 		</td>
 		</tr>
 		<tr>
-		<td width="10%" class="pn-flabel pn-flabel-h">金额:</td>
+		<td width="10%" class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>金额:</td>
 		<td colspan="3" width="90%" class="pn-fcontent">
-			<input id="outPrize<%=i%>-<%=k[i]%>"  type="text" maxlength="50" name="outPrize<%=i%>-<%=k[i]%>" class="required" size="20" value="${outLink.prize }" />
+			<input id="outPrize<%=i%>-<%=k[i]%>"  type="text" maxlength="12" name="outPrize<%=i%>-<%=k[i]%>" class="required" size="24" value="${outLink.prize }" />
 		</td>
 		</tr>
 		<tr >
-		<td width="10%" class="pn-flabel pn-flabel-h">链接:</td>
+		<td width="10%" class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>链接:</td>
 		<td colspan="3" width="90%" class="pn-fcontent">
-			<input id="outUrl<%=i%>-<%=k[i]%>"  type="text" maxlength="150" name="outUrl<%=i%>-<%=k[i]%>" class="required" size="70" value="${outLink.outerUrl }" />
+			<input id="outUrl<%=i%>-<%=k[i]%>"  type="text" maxlength="500" name="outUrl<%=i%>-<%=k[i]%>" class="required" size="70" value="${outLink.outerUrl }" />
 		</td>
 		</tr>
   	</table>
@@ -386,7 +400,6 @@ function showrecPreg(){
 </div>
 <script type="text/javascript">
 function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
-	alert(type);
 	var button = document.getElementById(buttonId); 
 	var ajaxUploadImage = new AjaxUpload(button,{
 	

@@ -5,9 +5,10 @@ public enum OperationTypeEnum {
 	UPDATE(1,"更新"),  
 	DELETE(2,"删除"),  
 	AUDIT(3,"发布"),  
-	TO_TOP(4,"置顶"),  
+	TO_TOP(4,"置顶"),   
 	UP_LEVEL(5,"上移"), 
-	DOWN_LEVEL(6,"下移");  
+	DOWN_LEVEL(6,"下移"),
+	TO_RECOM(7,"推荐");  
 	
 	
 	private int code;

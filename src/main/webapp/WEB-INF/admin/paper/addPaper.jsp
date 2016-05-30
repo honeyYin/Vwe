@@ -37,26 +37,38 @@ request.setCharacterEncoding("UTF-8");
 
 }); --%>
 function callAddNewsAction(){
-	alert("te");
 	var title = $('#title')[0].value;
 	var titleImg = $('#titleImg')[0].value;
 	var pregStage = $('#pregStage')[0].value;
 	var recPregWeeks = $('#recPregWeeks')[0].value;
+	var requires = $('.required');
 	
 	var r,re;
     re = /\d*/i; //\d表示数字,*表示匹配多个数字
     r = recPregWeeks.match(re);
     
-	if(title ==null || title ==""){
+    if(title ==null || title ==""){
 		alert("标题不能为空");
 	}else if(titleImg == null || titleImg == ""){
 		alert("标题图片不能为空");
 	}else if(pregStage == 2 && (r != recPregWeeks || recPregWeeks < 0 || recPregWeeks > 40)){
 		alert("孕周填写不合法");
 	}else{
-		alert("add");
-		$("#newsForm")[0].action="<%=basePath%>paper/add";
-		$("#newsForm")[0].submit();
+		var outIllegal = 0;
+		for(var n=0;n<requires.length;n++){
+			var outname = requires[n].name;
+			var outvalue = requires[n].value;
+			if(outvalue == null || outvalue == ""){
+				outIllegal = 1;
+				break;
+			}
+		}
+		if(outIllegal == 1){
+			alert("有必填项未填写");
+		}else{
+			$("#newsForm")[0].action="<%=basePath%>paper/add";
+			$("#newsForm")[0].submit();
+		}
 	}
 } 
 function showrecPreg(){
@@ -125,7 +137,7 @@ function showrecPreg(){
 <tr id="tr-description">
 <td width="10%" class="pn-flabel pn-flabel-h">摘要:</td>
 <td colspan="3" width="90%" class="pn-fcontent">
-	<textarea id ="description" cols="70" rows="3" name="description"  maxlength="255"></textarea>
+	<textarea id ="description" cols="70" rows="3" name="description"></textarea>
 </td>
 </tr>
 
@@ -175,7 +187,7 @@ function showrecPreg(){
 
 <!-- 版块区域start -->
 <tr>
-<td width="10%"  class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>文章正文:</td>
+<td width="10%"  class="pn-flabel pn-flabel-h">文章正文:</td>
 <td class="pn-fcontent">
 	<input type="button" value="添加版块"  onclick="javascript:addNewSection('div-content')" /> &nbsp; 
 </td>
