@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import com.entity.PaperParagraph;
+import com.util.StringUtil;
 
 /**
  * 文章小节
@@ -59,9 +60,9 @@ public class PaperParagraphModel implements Serializable{
 	public PaperParagraphModel(){}
 	
 	public PaperParagraphModel(PaperParagraph para){
-		this.title = para.getTitle();
+		this.title = StringUtil.encode(para.getTitle());
 		this.id = para.getId();
-		this.content = para.getContent();
+		this.content = StringUtil.encode(para.getContent());
 		this.imgUrl = para.getImgUrl();
 		this.orderNum = para.getOrderNum();
 		this.sectionId = para.getSectionId();

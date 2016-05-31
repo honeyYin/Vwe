@@ -29,6 +29,7 @@ import com.model.PaperModel;
 import com.model.PaperParagraphModel;
 import com.model.PaperSectionModel;
 import com.model.PaperTitleImgModel;
+import com.util.StringUtil;
 
 @Service
 public class PaperService {
@@ -253,7 +254,7 @@ public class PaperService {
 				sectionModel.setId(section.getId());
 				sectionModel.setPaperId(section.getPaperId());
 				sectionModel.setOrderNum(section.getOrderNum());
-				sectionModel.setTitle(section.getTitle());
+				sectionModel.setTitle(StringUtil.encode(section.getTitle()));
 				sectionModel.setParas(getParaModels(paraDao.getParaBySection(section.getId())));
 				sectionModel.setOutLinks(outLinkDao.getOutLinkBySection(section.getId()));
 				sectionModels.add(sectionModel);

@@ -2,6 +2,8 @@ package com.util;
 
 import java.util.Random;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class StringUtil {
 		
 		public static String getRandomStringWithNum(int length) { 
@@ -13,5 +15,11 @@ public class StringUtil {
 		        sb.append(buffer.charAt(random.nextInt(range))); 
 		    } 
 		    return sb.toString(); 
+		}
+		public static String encode(String str) {
+			if(StringUtils.isEmpty(str)){
+				return "";
+			}
+			return str.replace("\"", "&#34;").replace("'", "&#39;");
 		}
 }

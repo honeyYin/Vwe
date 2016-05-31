@@ -9,6 +9,7 @@ import lombok.Setter;
 import com.entity.Paper;
 import com.google.common.collect.Lists;
 import com.util.DateUtil;
+import com.util.StringUtil;
 /**
  * 文章
  * @author hzyinhonglian
@@ -71,12 +72,12 @@ public class PaperModel  implements Serializable{
 	
 	public PaperModel(Paper paper){
 		this.auditTime = DateUtil.dateToStr(paper.getAuditTime());
-		this.author = paper.getAuthor();
+		this.author = StringUtil.encode(paper.getAuthor());
 		this.channelId =paper.getChannelId();
-		this.channelName = paper.getChannelName();
-		this.description = paper.getDescription();
+		this.channelName = StringUtil.encode(paper.getChannelName());
+		this.description = StringUtil.encode(paper.getDescription());
 		this.disabled = paper.getDisabled();
-		this.title = paper.getTitle();
+		this.title = StringUtil.encode(paper.getTitle());
 		this.hasAudit = paper.isHasAudit();
 		this.isTop = paper.getIsTop();
 		this.isRecom = paper.getIsRecom();
@@ -88,9 +89,9 @@ public class PaperModel  implements Serializable{
 		}
 		this.pregStage = paper.getPregStage().getName();
 		this.recPregWeeks = paper.getRecPregWeeks();
-		this.hospital = paper.getHospital();
+		this.hospital = StringUtil.encode(paper.getHospital());
 	}
-	public static List getPaperModels(List<Paper> papers){
+	public static List<PaperModel> getPaperModels(List<Paper> papers){
 		List<PaperModel> results = Lists.newArrayList();
 		if (papers == null || papers.size()<=0) {
 			return Lists.newArrayList();

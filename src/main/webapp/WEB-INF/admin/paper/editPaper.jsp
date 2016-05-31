@@ -122,7 +122,7 @@ function showrecPreg(){
 <select id="channelId"  name="channelId">
          <c:forEach items="${channels}" var="item">
             <c:choose>
-				<c:when test="${item.id == channelId}">
+				<c:when test="${item.id == paper.channelId}">
 				        <option value="${item.id }" selected="selected">${item.name }</option>
 				</c:when>
 				<c:otherwise>
