@@ -74,7 +74,7 @@ function callupdateNewsAction(){
 		if(outIllegal == 1){
 			alert("有必填项未填写");
 		}else{
-			$("#newsForm")[0].action="<%=basePath%>paper/edit";
+			<%-- $("#newsForm")[0].action="<%=basePath%>paper/edit"; --%>
 			$("#newsForm")[0].submit();
 		}
 	}
@@ -87,6 +87,17 @@ function showrecPreg(){
 		document.getElementById("div_recPreg").style.display="none";
 	}
       
+}
+function clearNoNum(obj)
+{
+	//先把非数字的都替换掉，除了数字和.
+	obj.value = obj.value.replace(/[^\d.]/g,"");
+	//必须保证第一个为数字而不是.
+	obj.value = obj.value.replace(/^\./g,"");
+	//保证只有出现一个.而没有多个.
+	obj.value = obj.value.replace(/\.{2,}/g,".");
+	//保证.只出现一次，而不能出现两次以上
+	obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
 }
 </script>
 
@@ -106,7 +117,7 @@ function showrecPreg(){
 
 <div >
 
-<form id="newsForm"  name="newsForm" method="post" action="javascript:callupdateNewsAction()">
+<form id="newsForm"  name="newsForm" method="post" action="<%=basePath%>paper/edit">
 <input type="hidden" id="paperId"  name="paperId" value="${paper.id}"/>
 <input type="hidden" id="pageNo"  name="pageNo" value="${pageNo}"/>
 
@@ -370,7 +381,8 @@ function showrecPreg(){
 		<tr>
 		<td width="10%" class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>金额:</td>
 		<td colspan="3" width="90%" class="pn-fcontent">
-			<input id="outPrize<%=i%>-<%=k[i]%>"  type="text" maxlength="12" name="outPrize<%=i%>-<%=k[i]%>" class="required" size="24" value="${outLink.prize }" />
+			<input id="outPrize<%=i%>-<%=k[i]%>"  type="text" maxlength="12" name="outPrize<%=i%>-<%=k[i]%>" class="required" size="24" value="${outLink.prize }" onkeyup="clearNoNum(this)" 
+			onafterpaste="clearNoNum(this)"/>
 		</td>
 		</tr>
 		<tr >
@@ -392,7 +404,7 @@ function showrecPreg(){
 <table width="100%"  cellpadding="2" cellspacing="1" border="0">
 <tr>
 <td colspan="4" class="pn-fbutton">
-	<input type="submit" value="提交"  class="submit" /> &nbsp; 
+	<input type="submit" value="提交"  class="submit" onclick="javascript:callupdateNewsAction()"/> &nbsp; 
 	<input type="reset" value="重置" class="reset"/>
 </td>
 </tr>
@@ -450,6 +462,11 @@ arrOutLink[<%=t%>] = <%=k[t]%>;
 <%
 	}
 %>
+/* 初始化上传控件 */
+
+var paperId = $('#paperId')[0].value;
+uploanFile('btnUploadFile','pic','titleImg','picDelet','paper',paperId);
+
 </script>
 </body>
 </html>

@@ -66,7 +66,6 @@ function callAddNewsAction(){
 		if(outIllegal == 1){
 			alert("有必填项未填写");
 		}else{
-			$("#newsForm")[0].action="<%=basePath%>paper/add";
 			$("#newsForm")[0].submit();
 		}
 	}
@@ -79,6 +78,17 @@ function showrecPreg(){
 		document.getElementById("div_recPreg").style.display="none";
 	}
       
+}
+function clearNoNum(obj)
+{
+	//先把非数字的都替换掉，除了数字和.
+	obj.value = obj.value.replace(/[^\d.]/g,"");
+	//必须保证第一个为数字而不是.
+	obj.value = obj.value.replace(/^\./g,"");
+	//保证只有出现一个.而没有多个.
+	obj.value = obj.value.replace(/\.{2,}/g,".");
+	//保证.只出现一次，而不能出现两次以上
+	obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
 }
 </script>
 
@@ -97,7 +107,7 @@ function showrecPreg(){
 
 <div  class="body-box">
 
-<form id="newsForm" name="newsForm" method="post" action="javascript:callAddNewsAction()">
+<form id="newsForm" name="newsForm" method="post" action="<%=basePath%>paper/add">
 <input type="hidden" id="pageNo"  name="pageNo" value="${pageNo}"/>
 
 <!-- 文章正文区域start -->
@@ -179,7 +189,7 @@ function showrecPreg(){
 <tr id="tr-titleImg" >
  <td width="10%" class="pn-flabel"><span class='pn-frequired'>*</span>标题图片:</td>
  <td colspan="1" width="40%" class="pn-fcontent">
-        <input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg','picDelet','paper','')"/>
+        <input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg','picDelet','paper','')" onfocus ="javascript:uploanFile('btnUploadFile','pic','titleImg','picDelet','paper','')"/>
         <input type="hidden" id="titleImg" name="titleImg" value=""/>
         <span class="pn-fhelp" id="pic">无图片</span><span id = "picDelet" ></span>
  </td>
@@ -199,7 +209,7 @@ function showrecPreg(){
 <table width="100%"  cellpadding="2" cellspacing="1" border="0">
 <tr>
 <td colspan="4" class="pn-fbutton">
-	<input type="submit" value="提交"  class="submit" /> &nbsp; 
+	<input type="submit" value="提交"  class="submit" onclick= "javascript:callAddNewsAction()"/> &nbsp; 
 	<input type="reset" value="重置" class="reset"/>
 </td>
 </tr>
@@ -247,6 +257,8 @@ function showrecPreg(){
 		}
 		});	
 	}	
+	/* 初始化上传控件 */
+	uploanFile('btnUploadFile','pic','titleImg','picDelet','paper','');
 </script>	
 </body>
 </html>

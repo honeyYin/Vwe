@@ -200,4 +200,9 @@ public class PaperDao {
 		query.setMaxResults(1);
 		return query.getResultList();
 	}
+	@SuppressWarnings("unchecked")
+	public Long getTopCount(){
+		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.isTop = 1");
+		return (Long)query.getSingleResult();
+	}
 }

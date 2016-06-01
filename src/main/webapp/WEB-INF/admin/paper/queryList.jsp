@@ -54,6 +54,28 @@ function jqcallDelBatch(){  //jquery获取复选框值
 		 
 		}
 }
+function upateTop(paperId,isTop){
+	var channelId = $('#channelId')[0].value;
+	var pageNo = $('#pageNo')[0].value;
+	var queryTitle = $('#queryTitle')[0].value;
+	var par_data="isTop="+isTop+"&paperId="+paperId;
+	$.ajax({ 
+		 type: "GET", 
+		 url: "<%=basePath%>paper/updateTop",  
+		 data: par_data, 
+		 success: function(message){ 
+			 if(message == "succ"){
+				 if(queryTitle == null || queryTitle == ""){
+					 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/list?pageNo="+pageNo+"&channelId="+channelId;
+
+				 }else{
+					 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+				 }
+			 }else{
+				 alert("固顶文章已达上限");
+			 }
+	}});
+}
 //jquery批量删除
 function jqcallVerify(){  //jquery获取复选框值
 		var chk_value =[];
@@ -177,10 +199,10 @@ function jqcallVerify(){  //jquery获取复选框值
 		 | 
 		<c:choose>
 			<c:when test="${item.isTop == 1}">
-				<a id ="${item.id}" href="<%=basePath%>paper/updateTop?isTop=0&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt">取消置顶</a>
+				<a id ="${item.id}" href="javascript:upateTop(${item.id},0)" class="pn-opt">取消置顶</a>
 			</c:when>
 			<c:otherwise>
-				<a id ="${item.id}" href="<%=basePath%>paper/updateTop?isTop=1&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt">置顶</a>
+				<a id ="${item.id}" href="javascript:upateTop(${item.id},1)" class="pn-opt">置顶</a>
 			</c:otherwise>
 		</c:choose>
 		 | 

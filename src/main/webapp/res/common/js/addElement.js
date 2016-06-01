@@ -99,6 +99,9 @@ function addNewPara(parentId,type){  //传入数据编号即可
 	  parent.appendChild(oDiv);
 	  
 	  arrPara[parentId] = paraId+1;
+	  if(type=='image'){
+		  uploanFile('paraBtnUploadFile'+parentId+'-'+paraId,'paraPic'+parentId+'-'+paraId,'paraTitleImg'+parentId+'-'+paraId,'paraPicDele'+parentId+'-'+paraId,'para','-1');
+	  }
 }
 function addNewOutLink(parentId){
 
@@ -121,7 +124,8 @@ function addNewOutLink(parentId){
 		"	<input id='outSecTitle"+parentId+"-"+outlinkId+"'  type='text' maxlength='12' name='outSecTitle"+parentId+"-"+outlinkId+"' size='24' />"+
 		"</td></tr><tr><td width='10%' class='pn-flabel pn-flabel-h'><span class='pn-frequired'>*</span>金额:</td>"+
 		"<td colspan='3' width='90%' class='pn-fcontent'>"+
-		"	<input id='outPrize"+parentId+"-"+outlinkId+"'  type='text' maxlength='12' name='outPrize"+parentId+"-"+outlinkId+"' class='required' size='24' />"+
+		"	<input id='outPrize"+parentId+"-"+outlinkId+"'  type='text' maxlength='12' name='outPrize"+parentId+"-"+outlinkId+"' class='required' size='24' " +
+		" onkeyup=\"clearNoNum(this)\"/>"+
 		"</td></tr><tr ><td width='10%' class='pn-flabel pn-flabel-h'><span class='pn-frequired'>*</span>链接:</td>"+
 		"<td colspan='3' width='90%' class='pn-fcontent'>"+
 		"	<input id='outUrl"+parentId+"-"+outlinkId+"'  type='text' maxlength='500' name='outUrl"+parentId+"-"+outlinkId+"' class='required' size='70' /></td></tr></div></table>";

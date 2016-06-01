@@ -65,7 +65,7 @@ function callAddUserAction(){
 	else{
 			document.getElementById("password").value=hex_md5(document.getElementById("password").value);
 			//alert(document.getElementById("password").value);
-			document.jvForm.action ="<%=basePath%>user/add";
+			<%-- document.jvForm.action ="<%=basePath%>user/add"; --%>
 			document.jvForm.submit();
 	}
 }
@@ -83,7 +83,7 @@ function callAddUserAction(){
 	<div class="clear"></div>
 </div>
 <div class="body-box">
-<form method="post"  id="jvForm" name="jvForm" >
+<form method="post"  id="jvForm" name="jvForm" action="<%=basePath%>user/add">
 <table width="100%" class="pn-ftable" cellpadding="2" cellspacing="1" border="0">
 <tr>
 <td width="12%" class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>用户名:</td>

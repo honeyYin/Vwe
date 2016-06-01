@@ -339,18 +339,19 @@ public class PaperController extends BaseController{
 	@RequestMapping(method=RequestMethod.GET,value="updateTop") 
 	public String updateTop(@RequestParam("paperId") Long paperId,
 						    @RequestParam("isTop") int isTop,
-						    Long channelId,
-						    Integer pageNo,
-						    HttpServletRequest request) {
+						    HttpServletRequest request,
+						    HttpServletResponse response) {
+		if(isTop == 1){
+			Long count = paperDao.getTopCount();
+			if(count!= null && count>=8){
+				return render("size", "text/html",response);
+			}
+		}
+		
 		paperDao.updateTop(paperId, isTop);
 		//记录操作信息
 		paperService.saveOperationRecord(paperId,OperationTypeEnum.TO_TOP,getUser(request));
-		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
-		if(!StringUtils.isEmpty(queryTitle)){
-			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
-		}
-		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
-		
+		return render("succ", "text/html",response);
 	}
 	@RequestMapping(method=RequestMethod.GET,value="updateRecom") 
 	public String updateRecom(@RequestParam("paperId") Long paperId,
@@ -371,8 +372,6 @@ public class PaperController extends BaseController{
 	@RequestMapping(method=RequestMethod.GET,value="updatePrior") 
 	public String updatePrior(@RequestParam("paperId") Long paperId,
 						    @RequestParam("type") Integer type,
-						    Long channelId,
-						    Integer pageNo,
 						    HttpServletRequest request,
 						    HttpServletResponse response) {
 		int result = 0;

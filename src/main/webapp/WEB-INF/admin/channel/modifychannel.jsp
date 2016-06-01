@@ -16,6 +16,24 @@ request.setCharacterEncoding("UTF-8");
     <link href="<%=basePath%>res/common/css/theme.css" rel="stylesheet" type="text/css"/>
 	<script type="text/javascript" src="res/common/js/AjaxUpload.js"></script>
 	<script type="text/javascript" src="<%=basePath%>res/common/js/jquery.js"></script>	
+	<script type="text/javascript">
+	
+	function callAddNewsAction(){
+		//判断
+		var title = $("#name").val();
+		var pro = $("#priority").val();
+		//action="modifyChannel.do"
+		if(title==null || title==""){
+			alert("栏目名不能为空");
+		}else if(pro==null || pro==""){
+			alert("排列顺序不能为空");
+		}
+		else{
+			$("#addChannelF")[0].action="<%=basePath%>channel/edit";
+			$("#addChannelF")[0].submit();
+		};
+	}
+</script>
 </head>
 <body>
     <div class="box-positon">
@@ -28,7 +46,7 @@ request.setCharacterEncoding("UTF-8");
     </div>
 
     <div class="body-box">
-        <form method="post" action="javascript:callAddNewsAction()" id="addChannelF">
+        <form method="post" action="<%=basePath%>channel/edit" id="addChannelF">
              <table width="100%" class="pn-ftable" cellpadding="2" cellspacing="1" border="0">
                 <tr>
                     <td width="10%" class="pn-flabel pn-flabel-h">
@@ -79,29 +97,12 @@ request.setCharacterEncoding("UTF-8");
                  <tr>
                     <td colspan="4" class="pn-fbutton">
                     	 <input type="hidden" name="channelId" value="${channel.id }"/>
-                        <input type="submit" value="提交" class="submit" class="submit"/> &nbsp;
+                        <input type="submit" value="提交" class="submit" onclick="javascript:callAddNewsAction()"/> &nbsp;
                     </td>
                 </tr>
              </table>
     </form>
 </div>
-<script type="text/javascript">
-	
-	function callAddNewsAction(){
-		//判断
-		var title = $("#name").val();
-		var pro = $("#priority").val();
-		//action="modifyChannel.do"
-		if(title==null || title==""){
-			alert("栏目名不能为空");
-		}else if(pro==null || pro==""){
-			alert("排列顺序不能为空");
-		}
-		else{
-			$("#addChannelF")[0].action="<%=basePath%>channel/edit";
-			$("#addChannelF")[0].submit();
-		};
-	}
-</script>
+
 </body>
 </html>
