@@ -83,7 +83,8 @@ $(function(){
                                     	<li class="current" id="tb_11"><a href="<%=basePath%>admin/main" target="mainFrame">首页</a></li>
 										<li class="sep"></li><li class="normal" id="tb_12" ><a href="<%=basePath%>channel/main" target="mainFrame" >栏目</a></li>
 										<li class="sep"></li><li class="normal" id="tb_13"><a href="<%=basePath%>paper/main" target="mainFrame" >文章</a></li>
-										<li class="sep"></li><li class="normal" id="tb_19"><a href="<%=basePath%>user/main" target="mainFrame" >用户</a></li>
+										<li class="sep"></li><li class="normal" id="tb_14"><a href="<%=basePath%>user/main" target="mainFrame" >用户</a></li>
+										<li class="sep"></li><li class="normal" id="tb_15"><a href="<%=basePath%>crawler/main" target="mainFrame" >一键抓取</a></li>
 									</ul>
                                 </td>
                               </tr>

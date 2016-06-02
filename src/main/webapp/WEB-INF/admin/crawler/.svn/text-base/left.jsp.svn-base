@@ -1,0 +1,107 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+
+<%@include file="../head.jsp" %>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>My JSP 'left.jsp' starting page</title>
+    
+    <link href="<%=basePath%>thirdparty/treeview/css/jquery.tree.css" rel="stylesheet" type="text/css" />
+   
+    <script src="<%=basePath%>thirdparty/treeview/js/jquery.js" type="text/javascript"></script>
+    <!--
+    <script src="js/common.js" type="text/javascript" ></script>
+    -->
+	<script src="<%=basePath%>thirdparty/treeview/js/jquery.tree.js" type="text/javascript" ></script>
+    <!--
+    <script src="js/tree1.js" type="text/javascript" ></script>
+    -->
+    <%--<script src="<%=basePath%>thirdparty/treeview/js/tree2.js" type="text/javascript" ></script>--%>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var o = {
+              //  showcheck: true,          
+                //url: "http://jscs.cloudapp.net/ControlsSample/GetChildData" 
+               // theme: "bbit-tree-lines", //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
+                showcheck: true,
+                //theme: "bbit-tree-arrows", //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
+                //onnodeclick:function(item){window.location.href="http://www.baidu.com"}
+				 onnodeclick:function(item){
+					 //根据item的属性 获得 需要跳转的页面
+					 //如果有 children  跳转到查询界面
+					 if(item.hasChildren){
+						 window.parent.frames["rightFrame"].location.href = "queryAllChannel.do?channelId=" + item.channelId;
+					 }
+					 else{
+						 window.parent.frames["rightFrame"].location.href = "queryChannelById.do?channelId=" + item.channelId;
+					 }
+					 //如果有 如果无，跳转到修改页面
+					 
+					 //在修改页面 添加返回列表
+					 
+					 //在添加页面 添加返回泪飙
+					 
+					 //在列表界面 添加  添加按钮
+					 
+					 
+				 }
+            };
+            
+            //利用 ajax 添加数据
+            
+            	$.ajax({
+						type : "POST",
+						url : "queryAllForTree.do",
+						data : "",
+						success : function(msg) {
+							//alert(msg);
+							//console.log(msg);
+							//console.log(msg);
+							var temp = eval('(' + msg + ')');
+							//alert(msg.toJson);
+							o.data =  eval('(' + temp.toJson + ')');
+							$("#tree").treeview(o);
+							//window.parent.frames["rightFrame"].location.href = "http://www.baidu.com";
+						}
+					});
+           // o.data = treedata;
+           // $("#tree").treeview(o);
+          
+		  $("#showchecked").click(function(e){
+                var s=$("#tree").getTSVs();
+                if(s !=null)
+                alert(s.join(","));
+                else
+                alert("NULL");
+            });
+            
+			$("#showcurrent").click(function(e){
+                var s=$("#tree").getTCT();
+                if(s !=null)
+                    alert(s.text);
+                else
+                    alert("NULL");
+             });
+        });
+    </script>
+</head>
+<body>
+	<div class="left">
+	<%@include file="../date.jsp" %>
+	<div class="fresh">
+		 <table width="100%" border="0" cellspacing="0" cellpadding="0">
+	          <tr>
+	            <td height="35" align="center"><img src="<%=basePath%>/res/common/img/theme/refresh-icon.png" />&nbsp;&nbsp;<a href="javascript:location.href='refreshChannel.do'">刷新</a></td>
+	      	 </tr>
+	     </table>
+	</div>
+	     <div id="tree">
+	            
+	      </div>
+	 </div>
+
+</body>
+</html>
