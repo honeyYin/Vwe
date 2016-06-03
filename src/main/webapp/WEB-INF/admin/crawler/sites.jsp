@@ -24,7 +24,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="box-positon">
 	<div class="rpos">当前位置: 一键抓取</div>
 	<form class="ropt" action="<%=basePath%>crawler/toAddSite" method="get">
-            <input type="submit" value="添加站点" class="add"/>
+            <input type="submit" value="添加" class="add" style="margin-right:20px"/>
     </form>
 	<div class="clear"></div>
 </div>
@@ -47,11 +47,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                	${item.id }
 	                </td>
 	                <td>${item.title }</td>
-	                <td align="center">
-	                	<input type="text" name="url" value="${item.url }" style="width:40px; border:1px solid #7e9db9"/>
+	                <td align="left">
+	                	${item.url }
 	                </td>
 	                <td align="center">		
-	                	<a href="<%=basePath %>crawler/deleteSite?siteId=${item.id}" class="pn-opt">删除</a>
+	                	<a href="<%=basePath %>crawler/toEditSite?siteId=${item.id}" class="pn-opt">修改</a>
+	                	| <a href="<%=basePath %>crawler/deleteSite?siteId=${item.id}" class="pn-opt">删除</a>
 	                </td>
 	            </tr>
             </c:forEach>

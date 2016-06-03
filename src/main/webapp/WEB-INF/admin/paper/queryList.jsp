@@ -100,7 +100,7 @@ function jqcallVerify(){  //jquery获取复选框值
 	<form class="ropt" name="inform" action="<%=basePath%>paper/toAdd" method="get">
 		<input type="hidden" id="pageNo" name="pageNo" value="${pageNo}"/>
 		<input type="hidden" id="channelId" name="channelId" value="${channelId}"/>
-		<input class="add" type="submit" value="添加" />
+		<input class="add" type="submit" value="添加" style="margin-right:20px"/>
 	</form>
 	<div class="clear"></div>
 </div>

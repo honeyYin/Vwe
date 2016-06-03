@@ -14,11 +14,12 @@ request.setCharacterEncoding("UTF-8");
     <title></title>
     <link href="<%=basePath%>res/common/css/admin.css" rel="stylesheet" type="text/css"/>
     <link href="<%=basePath%>res/common/css/theme.css" rel="stylesheet" type="text/css"/>
-	<script type="text/javascript" src="<%=basePath%>res/common/js/jquery.js"></script>	
+<script src="<%=basePath%>res/common/js/jquery.js" type="text/javascript"></script>
 <script type="text/javascript">
-	callAddAction(){
+	function callAddAction(){
 		var title = $('#title')[0].value;
 		var url = $('#url')[0].value;
+		
 		if(title ==null || title ==""){
 			alert("站点名称不能为空");
 		}else if(url == null || url == ""){
@@ -39,7 +40,7 @@ request.setCharacterEncoding("UTF-8");
     </div>
 
     <div class="body-box">
-        <form method="post" id="newsForm"  name="newsForm" action="<%=basePath%>crawler/add" >
+        <form method="post" id="newsForm"  name="newsForm" action="<%=basePath%>crawler/addSite" >
              <table width="100%" class="pn-ftable" cellpadding="1" cellspacing="1" border="0">
                 
                	<tr>
@@ -47,14 +48,14 @@ request.setCharacterEncoding("UTF-8");
                         <span class="pn-frequired">*</span>站点名称:
                     </td>
                     <td colspan="1" width="40%" class="pn-fcontent">
-                        <input type="text" maxlength="100" id="title" name="title" class="required" maxlength="100"/>
+                        <input type="text" maxlength="100" id="title" name="title" class="required" style="height:25px;"/>
                     </td>
                 </tr>
                 <tr>
                     <td width="20%" class="pn-flabel pn-flabel-h">
                     <span class="pn-frequired">*</span>站点链接:</td>
                     <td colspan="3" width="90%" class="pn-fcontent">
-                        <input type="text" maxlength="100" id="url" name="url" class="required" maxlength="100"/>
+                        <input type="text" maxlength="100" id="url" name="url" class="required" style="height:25px;"/>
                     </td>
                 </tr>
                 <tr>

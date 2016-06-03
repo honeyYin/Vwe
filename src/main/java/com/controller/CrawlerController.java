@@ -94,11 +94,11 @@ public class CrawlerController {
 		return "admin/crawler/addsite";
 	}
 	
-	@RequestMapping(method=RequestMethod.GET,value="addSite")
+	@RequestMapping(method=RequestMethod.POST,value="addSite")
 	public String addSite(Model model,HttpServletRequest request){
 		CrawlerSite site = paserSite(null,request);
 		siteDao.save(site);
-		return "redirect:crawler/getSitesList";
+		return "redirect:getSitesList";
 	}
 
 	@RequestMapping(method=RequestMethod.GET,value="toEditSite")
@@ -110,18 +110,18 @@ public class CrawlerController {
 		return "admin/crawler/editsite";
 	}
 	
-	@RequestMapping(method=RequestMethod.GET,value="editSite")
+	@RequestMapping(method=RequestMethod.POST,value="editSite")
 	public String editSite(Model model,HttpServletRequest request){
 		Long siteId = RequestUtil.longvalue(request,"siteId");
 		CrawlerSite site = paserSite(siteId,request);
 		siteDao.save(site);
-		return "redirect:crawler/getSitesList";
+		return "redirect:getSitesList";
 	}
-	@RequestMapping(method=RequestMethod.POST,value="deleteSite") 
+	@RequestMapping(method=RequestMethod.GET,value="deleteSite") 
 	public String deleteSite(@RequestParam("siteId") Long siteId) {
 		
 		siteDao.deleteSite(siteId);
-		return "redirect:crawler/getSitesList";	
+		return "redirect:getSitesList";	
 		
 	}
 	private CrawlerSite paserSite(Long siteId,HttpServletRequest request) {
@@ -163,6 +163,7 @@ public class CrawlerController {
 			            model.setFromUrl(url);
 			            model.setTitle(trim(link.text(), 35));
 			            model.setUrl(link.attr("abs:href"));
+			            model.setTrimUrl(trim(link.attr("abs:href"),50));
 			            results.add(model);
 		            }
 		            

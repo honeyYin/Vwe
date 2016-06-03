@@ -19,7 +19,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 </head>
 <script>
-	function changeUrl(url){
+	function changeUrl(){
+		var id = document.getElementById("siteId").value;
+		var url = document.getElementById("urlValue"+id).value;
 		document.getElementById("url").value = url;
 	}
 </script>
@@ -30,21 +32,37 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 
 <div class="body-box">
-	<form name="form1" id ="form1"  action="<%=basePath%>crawler/queryByCondition" method ="get" padding-top:5px;">
-	<div>
-		<select name="siteId" >
-			<option value="0" selected="selected">--请选择抓取的目标网站--</option>
+	<div style="margin-top:15px;line-height:34px;line-height:34px;font-size:12px;" >
+		<form name="form1" id ="form1"  action="<%=basePath%>crawler/queryByCondition" method ="get" padding-top:5px;">
+		<div >
+			&nbsp;目标站点: 
+			<select id="siteId" name="siteId" style="height:25px;width:185px" onchange="javascript:changeUrl()">
+				<option value="0" selected="selected">--请选择抓取的目标网站--</option>
+				<c:forEach items="${sites}" var="v_site">
+				<c:choose>
+					<c:when test="${v_site.url == url}">
+						<option value="${v_site.id }"  selected>${v_site.title }</option>
+					</c:when>
+					<c:otherwise>
+						<option value="${v_site.id }" >${v_site.title }</option>
+					</c:otherwise>
+				</c:choose>
+					
+				</c:forEach>
+			</select>
+			<input type="text" id="url"  name="url" value="${url}" size="75" style="margin-left:22px;height:25px;"/>
+		</div>
+		<div >
+			&nbsp;&nbsp;关键词: <input type="text" id="queryTitle"  name="queryTitle" value="${queryTitle}"  style="height:25px;width:185px"/>
+			<input class="query" type="submit" value="搜索" style="margin-left:22px;"/>
+		</div>
+		<div>
 			<c:forEach items="${sites}" var="v_site">
-				<option value="${v_site.id }" onclick="javascript:changeUrl(${v_site.url})">${v_site.title }</option>
+				<input type="hidden" id="urlValue${v_site.id }" name="urlValue${v_site.id }" value="${v_site.url}"/>
 			</c:forEach>
-		</select>
+		</div>
+		</form>
 	</div>
-	<div>
-		URL: <input type="text" id="url"  name="url" value="${url}" style="width:100px"/>
-		关键词: <input type="text" id="queryTitle"  name="queryTitle" value="${queryTitle}" style="width:100px"/>
-		<input class="query" type="submit" value="搜索" />
-	</div>
-	</form>
     <form id="tableForm" name="listform">
         <table class="pn-ltable" style="" width="100%" cellspacing="1" cellpadding="0" border="0">
             <thead class="pn-lthead">
@@ -58,15 +76,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <tbody  class="pn-ltbody">
            <c:forEach var="item" items="${links}">
 	            <tr onmouseover="this.bgColor='#eeeeee'" onmouseout="this.bgColor='#ffffff'">
-	                <td>
+	                <td align="center" width="10%">
 	                	${item.order }
 	                </td>
-	                <td>${item.title }</td>
-	                <td align="center">
-	                	<input type="text" name="url" value="${item.url }" style="width:40px; border:1px solid #7e9db9"/>
+	                <td width="30%">
+	                	<a style="width:200px" onclick="window.open('${item.url }')">${item.title }</a>
 	                </td>
-	                <td align="center">		
-	                	<a href="" class="pn-opt">入库</a>
+	                <td align="left" width="40%">
+	                	<a style="width:200px" onclick="window.open('${item.url }')">${item.trimUrl }</a>
+	                </td>
+	                <td align="center" width="20%">		
+	                	<a class="pn-opt">入库</a>
 	                </td>
 	            </tr>
             </c:forEach>

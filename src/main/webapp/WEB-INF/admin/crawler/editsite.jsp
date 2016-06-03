@@ -16,7 +16,7 @@ request.setCharacterEncoding("UTF-8");
     <link href="<%=basePath%>res/common/css/theme.css" rel="stylesheet" type="text/css"/>
 	<script type="text/javascript" src="<%=basePath%>res/common/js/jquery.js"></script>	
 <script type="text/javascript">
-	callAddAction(){
+	function callAddAction(){
 		var title = $('#title')[0].value;
 		var url = $('#url')[0].value;
 		if(title ==null || title ==""){
@@ -39,7 +39,7 @@ request.setCharacterEncoding("UTF-8");
     </div>
 
     <div class="body-box">
-        <form method="post" id="newsForm"  name="newsForm" action="<%=basePath%>crawler/add" >
+        <form method="post" id="newsForm"  name="newsForm" action="<%=basePath%>crawler/editSite" >
         	<input type ="hidden" id="siteId" name="siteId" value="${siteId }"/>
              <table width="100%" class="pn-ftable" cellpadding="1" cellspacing="1" border="0">
                 
@@ -48,14 +48,14 @@ request.setCharacterEncoding("UTF-8");
                         <span class="pn-frequired">*</span>站点名称:
                     </td>
                     <td colspan="1" width="40%" class="pn-fcontent">
-                        <input type="text" maxlength="100" id="title" name="title" value="${title}" class="required" maxlength="100"/>
+                        <input type="text" maxlength="100" id="title" name="title" value="${title}" class="required" style="height:25px;"/>
                     </td>
                 </tr>
                 <tr>
                     <td width="20%" class="pn-flabel pn-flabel-h">
                     <span class="pn-frequired">*</span>站点链接:</td>
                     <td colspan="3" width="90%" class="pn-fcontent">
-                        <input type="text" maxlength="100" id="url" name="url" value="${url}" class="required" maxlength="100"/>
+                        <input type="text" maxlength="100" id="url" name="url" value="${url}" class="required" style="height:25px;"/>
                     </td>
                 </tr>
                 <tr>

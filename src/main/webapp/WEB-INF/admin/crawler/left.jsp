@@ -20,9 +20,6 @@
         function toSites(){
         	window.parent.frames["rightFrame"].location.href = "<%=basePath%>crawler/getSitesList";
         }
-        function getHistory(){
-        	window.parent.frames["rightFrame"].location.href = "<%=basePath%>crawler/history";
-        }
     </script>
 </head>
 <body>
@@ -32,8 +29,9 @@
 		 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	          <tr>
 	            <td height="35" align="center"><a href="javascript:toCrawler()" >一键抓取</a></td>
+	      	 </tr>
+	      	 <tr>
 	            <td height="35" align="center"><a href="javascript:toSites()" >站点管理</a></td>
-	            <td height="35" align="center"><a href="javascript:getHistory()" >抓取记录</a></td>
 	      	 </tr>
 	     </table>
 	</div>

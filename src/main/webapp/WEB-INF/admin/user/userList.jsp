@@ -67,7 +67,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="box-positon">
 	<div class="rpos">当前位置: 用户管理 - 列表</div>
 	<form class="ropt" action="<%=basePath%>user/toAdd" method="get">
-		<input class="add" type="submit" value="添加" />
+		<input class="add" type="submit" value="添加" style="margin-right:20px"/>
 	</form>
 	<div class="clear"></div>
 </div>
