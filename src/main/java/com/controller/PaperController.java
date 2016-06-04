@@ -171,7 +171,9 @@ public class PaperController extends BaseController{
 		Paper paper =  paserPaper(null,request);
 		if(paper != null){
 			paper =paperService.savePaper(paper,getUser(request));
-			savePaperSection(paper.getId(),request);
+			if(paper.getType()!= null && paper.getType() == 0){
+				savePaperSection(paper.getId(),request);
+			}
 		}
 		
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
@@ -435,7 +437,13 @@ public class PaperController extends BaseController{
 		mav.setViewName("forecontent");
 		return mav;
 	}
-	
+	/**
+	 * 前端查看栏目列表
+	 * @param channelId
+	 * @param pageNo
+	 * @return
+	 */
+	@Deprecated
 	@RequestMapping(method=RequestMethod.GET,value="viewPaperList")
 	public ModelAndView fviewPaperList(Long channelId,
 							 Integer pageNo) {
@@ -547,23 +555,31 @@ public class PaperController extends BaseController{
 		}
 		paper.setUpdateTime(new Date());
 		paper.setChannelId(RequestUtil.longvalue(request, "channelId"));
-
 		paper.setChannelName(channel.getName());
 		paper.setTitle(RequestUtil.stringvalue(request, "title"));
-		paper.setAuthor(RequestUtil.stringvalue(request, "author"));
-		if(StringUtils.isEmpty(paper.getAuthor())){
-			paper.setAuthor(getUser(request).getLoginName());
-		}
-		paper.setDescription(RequestUtil.stringvalue(request, "description"));
-		paper.setIsTop(RequestUtil.intvalue(request, "isTop"));
 		String titleImg = RequestUtil.stringvalue(request, "titleImg");
 		int index = titleImg.indexOf("res");
 		if(index != -1){
 			paper.setTitleImg(titleImg.substring(index));
 		}
-		paper.setPregStage(RequestUtil.intvalue(request, "pregStage"));
-		paper.setRecPregWeeks(RequestUtil.intvalue(request, "recPregWeeks"));
-		paper.setHospital(RequestUtil.stringvalue(request, "hospital"));
+		
+		Integer type = RequestUtil.intvalue(request, "type");
+		if(type == null){type=0;}
+		paper.setType(type);
+		
+		if(type==1){
+			paper.setUrl(RequestUtil.stringvalue(request, "paperurl"));
+		}else{
+			paper.setAuthor(RequestUtil.stringvalue(request, "author"));
+			if(StringUtils.isEmpty(paper.getAuthor())){
+				paper.setAuthor(getUser(request).getLoginName());
+			}
+			paper.setDescription(RequestUtil.stringvalue(request, "description"));
+			paper.setIsTop(RequestUtil.intvalue(request, "isTop"));
+			paper.setPregStage(RequestUtil.intvalue(request, "pregStage"));
+			paper.setRecPregWeeks(RequestUtil.intvalue(request, "recPregWeeks"));
+			paper.setHospital(RequestUtil.stringvalue(request, "hospital"));
+		}
 		return paper;
 	}			
 	/**

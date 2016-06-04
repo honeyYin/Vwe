@@ -57,10 +57,15 @@ public class PaperDao {
 		return query.getResultList();
 	}
 	@SuppressWarnings("unchecked")
-	public List<Paper> fgetPaperByPage(int limit,int offset) {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true ORDER BY p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC  ");
-		query.setFirstResult(offset);//设置查询结果的开始记录数
+	public List<Paper> fgetPaperByPage(int limit, int offset) {
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true and p.isTop=1 ORDER BY p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC  ");
+		query.setFirstResult(offset);
 		query.setMaxResults(limit);
+		return query.getResultList();
+	}
+	@SuppressWarnings("unchecked")
+	public List<Paper> fgetTopPapers() {
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true and p.isTop=1 ORDER BY p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC  ");
 		return query.getResultList();
 	}
 	@SuppressWarnings("unchecked")

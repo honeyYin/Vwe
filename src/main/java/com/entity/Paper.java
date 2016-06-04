@@ -87,6 +87,13 @@ public class Paper  implements Serializable{
 	//顺序
 	@Column
 	private Long priority;
+	//类型：内部文章：0 外链 ：1
+	@Column
+	private Integer type = 0;
+	
+	//外链
+	@Column 
+	private String url;
 	
 	public void setPregStage(int stage){
 		this.pregStage = PregStageEnum.valueOfCode(stage);

@@ -155,7 +155,7 @@ function clearNoNum(obj)
 	<input id="paperId" name="paperId" type="hidden" value="${paper.id}"/>
 	<span class="pn-frequired">*</span>标题:</td>
 <td colspan="3" width="90%" class="pn-fcontent">
-<input id="title"  type="text" class="required" name="title"  value = "${paper.title}" size="70" maxlength="150"/>
+<input id="title"  type="text" class="required" name="title"  value = "${paper.title}" size="70" maxlength="16"/>
 </td>
 </tr>
 

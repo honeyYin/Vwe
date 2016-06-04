@@ -301,11 +301,11 @@ public class PaperService {
 		 return result;
 	 }
 	 /**
-	  * 获取推荐的三篇文章头图
+	  * 获取已发布的置顶文章头图
 	  * @return
 	  */
 	public List<PaperTitleImgModel> getPaperTitleImgs(HttpServletRequest request) {
-		List<Paper> papers = paperDao.fgetPaperByPage(3,0);
+		List<Paper> papers = paperDao.fgetTopPapers();
 		List<PaperTitleImgModel> modelsLists = Lists.newArrayList();
 
 		String path = request.getContextPath();
