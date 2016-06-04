@@ -15,6 +15,8 @@ public class PaperTitleImgModel {
 	private String titleImg;
 	
 	private Long paperId;
+	//文章类型
+	private Integer type;
 	
 	//访问文章详情的url
 	private String paperUrl;

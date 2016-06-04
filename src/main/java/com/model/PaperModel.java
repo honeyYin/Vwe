@@ -66,6 +66,10 @@ public class PaperModel  implements Serializable{
 	//所属医院
 	private String hospital;	
 	
+	private Integer type;
+	
+	private String url;
+	
 	private List<PaperSectionModel> sections;
 	
 	PaperModel(){}
@@ -86,10 +90,12 @@ public class PaperModel  implements Serializable{
 		this.viewCount = paper.getViewCount();
 		if(paper.getPregStage() != null){
 			this.pregStageCode = paper.getPregStage().getCode();
+			this.pregStage = paper.getPregStage().getName();
 		}
-		this.pregStage = paper.getPregStage().getName();
 		this.recPregWeeks = paper.getRecPregWeeks();
 		this.hospital = StringUtil.encode(paper.getHospital());
+		this.type = paper.getType();
+		this.url = paper.getUrl();
 	}
 	public static List<PaperModel> getPaperModels(List<Paper> papers){
 		List<PaperModel> results = Lists.newArrayList();

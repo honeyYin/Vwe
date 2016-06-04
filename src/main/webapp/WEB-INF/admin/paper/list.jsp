@@ -206,7 +206,14 @@ function jqcallVerify(){  //jquery获取复选框值
 	</c:choose>
 	
 	<td align="center">
-		<a href="<%=basePath%>paper/detail?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">查看</a>
+		<c:choose>
+			<c:when test="${item.type ==1 }">
+				<a onclick="window.open('${item.url }')" class="pn-opt">查看</a>
+			</c:when>
+			<c:otherwise>
+				<a href="<%=basePath%>paper/detail?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">查看</a>
+			</c:otherwise>
+		</c:choose>
 		 | <a href="<%=basePath%>paper/toEdit?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">修改</a> 
 		 | <a href="javascript:movePaper(1,${item.id})" class="pn-opt">上移</a> 
 		 | <a href="javascript:movePaper(-1,${item.id})" class="pn-opt">下移</a> 

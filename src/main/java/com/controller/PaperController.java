@@ -557,11 +557,7 @@ public class PaperController extends BaseController{
 		paper.setChannelId(RequestUtil.longvalue(request, "channelId"));
 		paper.setChannelName(channel.getName());
 		paper.setTitle(RequestUtil.stringvalue(request, "title"));
-		String titleImg = RequestUtil.stringvalue(request, "titleImg");
-		int index = titleImg.indexOf("res");
-		if(index != -1){
-			paper.setTitleImg(titleImg.substring(index));
-		}
+		
 		
 		Integer type = RequestUtil.intvalue(request, "type");
 		if(type == null){type=0;}
@@ -569,7 +565,17 @@ public class PaperController extends BaseController{
 		
 		if(type==1){
 			paper.setUrl(RequestUtil.stringvalue(request, "paperurl"));
+			String titleImg = RequestUtil.stringvalue(request, "otitleImg");
+			int index = titleImg.indexOf("res");
+			if(index != -1){
+				paper.setTitleImg(titleImg.substring(index));
+			}
 		}else{
+			String titleImg = RequestUtil.stringvalue(request, "titleImg");
+			int index = titleImg.indexOf("res");
+			if(index != -1){
+				paper.setTitleImg(titleImg.substring(index));
+			}
 			paper.setAuthor(RequestUtil.stringvalue(request, "author"));
 			if(StringUtils.isEmpty(paper.getAuthor())){
 				paper.setAuthor(getUser(request).getLoginName());

@@ -44,38 +44,51 @@ int [] k = new int[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
 }); --%>
 function callupdateNewsAction(){
-	var paperId = $('#paperId')[0].value;
+	var type = $('#type')[0].value;
 	var title = $('#title')[0].value;
-	var titleImg = $('#titleImg')[0].value;
-	var pregStage = $('#pregStage')[0].value;
-	var recPregWeeks = $('#recPregWeeks')[0].value;
-	var requires = $('.required');
-	
-	var r,re;
-    re = /\d*/i; //\d表示数字,*表示匹配多个数字
-    r = recPregWeeks.match(re);
-    
-    if(title==null || title==""){
-		alert("标题不能为空");
-	}else if(titleImg == null || titleImg == ""){
-		alert("标题图片不能为空");
-	}else if(pregStage == 2 && (r != recPregWeeks || recPregWeeks < 0 || recPregWeeks > 40)){
-		alert("孕周填写不合法");
-	}else{
-		var outIllegal = 0;
-		for(var n=0;n<requires.length;n++){
-			var outname = requires[n].name;
-			var outvalue = requires[n].value;
-			if(outvalue == null || outvalue == ""){
-				outIllegal = 1;
-				break;
-			}
-		}
-		if(outIllegal == 1){
-			alert("有必填项未填写");
+	if(type == 1){
+		var paperurl = $('#paperurl')[0].value;
+		var otitleImg = $('#otitleImg')[0].value;
+		if(title ==null || title ==""){
+			alert("标题不能为空");
+		}else if(otitleImg == null || otitleImg == ""){
+			alert("标题图片不能为空");
+		}else if(paperurl == null || paperurl ==""){
+			alert("文章链接不能为空");
 		}else{
-			<%-- $("#newsForm")[0].action="<%=basePath%>paper/edit"; --%>
 			$("#newsForm")[0].submit();
+		}
+	}else{
+		var titleImg = $('#titleImg')[0].value;
+		var pregStage = $('#pregStage')[0].value;
+		var recPregWeeks = $('#recPregWeeks')[0].value;
+		var requires = $('.required');
+		
+		var r,re;
+	    re = /\d*/i; //\d表示数字,*表示匹配多个数字
+	    r = recPregWeeks.match(re);
+	    
+	    if(title==null || title==""){
+			alert("标题不能为空");
+		}else if(titleImg == null || titleImg == ""){
+			alert("标题图片不能为空");
+		}else if(pregStage == 2 && (r != recPregWeeks || recPregWeeks < 0 || recPregWeeks > 40)){
+			alert("孕周填写不合法");
+		}else{
+			var outIllegal = 0;
+			for(var n=0;n<requires.length;n++){
+				var outname = requires[n].name;
+				var outvalue = requires[n].value;
+				if(outvalue == null || outvalue == ""){
+					outIllegal = 1;
+					break;
+				}
+			}
+			if(outIllegal == 1){
+				alert("有必填项未填写");
+			}else{
+				$("#newsForm")[0].submit();
+			}
 		}
 	}
 } 
@@ -158,108 +171,155 @@ function clearNoNum(obj)
 <input id="title"  type="text" class="required" name="title"  value = "${paper.title}" size="70" maxlength="16"/>
 </td>
 </tr>
-
-<tr id="tr-description">
-<td width="10%" class="pn-flabel pn-flabel-h">摘要:</td>
-<td colspan="3" width="90%" class="pn-fcontent" >
-<textarea id ="description"  cols="70" rows="3" name="description" >${paper.description}</textarea>
+<tr id="tr-type">
+<td width="10%" class="pn-flabel pn-flabel-h"><span class="pn-frequired">*</span>文章类型:</td>
+<td colspan="1" width="40%" class="pn-fcontent">
+	<input type="hidden" id = "type" name="type" value="${paper.type }" />
+	<c:choose>
+		<c:when test="${paper.type==1 }">
+			<span>外链</span>
+		</c:when>
+		<c:otherwise>内部文章</c:otherwise>
+	</c:choose>
 </td>
 </tr>
-
-<tr id="tr-author">
-<td width="10%" class="pn-flabel pn-flabel-h">作者:</td><td colspan="1" width="40%" class="pn-fcontent">
-<input id ="author" type="text" maxlength="100" name="author" value = "${paper.author}"/>
-</td>
-</tr>
-
-<tr id="tr-isTop">
-<td width="10%" class="pn-flabel pn-flabel-h">固顶级别:</td><td colspan="1" width="40%" class="pn-fcontent">
-<c:choose>
-	<c:when test="${paper.isTop==0}">
-		<select  id="isTop" name="isTop">
-			<option id="isTop0" value="0" selected>不固顶</option>
-			<option id="isTop1" value="1">固顶</option>
-		</select> 
-	</c:when>
-	<c:otherwise>
-		<select  id="isTop" name="isTop">
-			<option id="isTop0" value="0">不固顶</option>
-			<option id="isTop1" value="1" selected>固顶</option>
-		</select>   
-	</c:otherwise>
-</c:choose>
-</td>
-</tr>
-<tr id="tr-pregWeeks">
-<td width="10%" class="pn-flabel pn-flabel-h">推荐孕周:</td>
-<td colspan="1" width="10%" class="pn-fcontent">
-<select  id="pregStage" name="pregStage" onclick="showrecPreg()">
-<c:choose>
-	<c:when test="${paper.pregStageCode==1}">
-			<option value="0" >全孕周</option>
-			<option value="1" selected>40周以上</option>
-			<option value="2" >0-40周</option>
-	</c:when>
-	<c:when test="${paper.pregStageCode==2}">
-			<option value="0" >全孕周</option>
-			<option value="1" >40周以上</option>
-			<option value="2" selected>0-40周</option>
-	</c:when>
-	<c:otherwise>
-			<option value="0" selected>全孕周</option>
-			<option value="1" >40周以上</option>
-			<option value="2" >0-40周</option> 
-	</c:otherwise>
-</c:choose>
-</select>
-<c:choose>
-	<c:when test="${paper.pregStageCode==2}">
-		<div id = "div_recPreg">
-			<input id ="recPregWeeks" type="text" maxlength="20" name="recPregWeeks" value="${paper.recPregWeeks}"/>
-			<span class="pn-fhelp">0-40之间的数字</span>
-		</div>
-	</c:when>
-	<c:otherwise>
-		<div id = "div_recPreg" style="display:none" >
-			<input id ="recPregWeeks" type="text" maxlength="20" name="recPregWeeks" value="${paper.recPregWeeks}"/>
-			<span class="pn-fhelp">0-40之间的数字</span>
-		</div>
-	</c:otherwise>
-</c:choose>
-</td>
-</tr>
-<tr id="tr-hospital">
-<td width="10%" class="pn-flabel pn-flabel-h">所属医院:</td><td colspan="1" width="40%" class="pn-fcontent">
-<input id ="hospital" type="text" maxlength="100" name="hospital" value = "${paper.hospital}"/>
-</td>
-</tr>
-<tr id="tr-titleImg">
- 	<td width="10%" class="pn-flabel"><span class='pn-frequired'>*</span>标题图片:</td>
- 	<td colspan="1" width="40%" class="pn-fcontent">
-       	<input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg','picDelet','paper',${paper.id})"/>
-        <input type="hidden" id="titleImg" name="titleImg" value="<%=basePath %>${paper.titleImg}"/>
-       <span class="pn-fhelp" id="pic">
-        <c:choose>
-		        	<c:when test = "${paper.titleImg ==null || paper.titleImg== ''}">
-		        		无图片<span id = "picDelet" ></span>
-		        	</c:when>
-		        	<c:otherwise>
-		        		<img height ="50" width = "150" src = "<%=basePath%>${paper.titleImg}"/>
-		        		<span id = "picDelet"><a href="javascript:deleteImg('paper',${paper.id},'pic','titleImg','picDelet')">删除</a></span>
-		        	</c:otherwise>
-		</c:choose>
-		</span>
- 	</td>
-</tr>
-<!-- 版块区域start -->
-<tr>
-<td width="10%"  class="pn-flabel pn-flabel-h">文章正文:</td>
-<td class="pn-fcontent">
-	<input type="button" value="添加版块"  onclick="javascript:addNewSection('div-content')" /> &nbsp; 
-</td>
-</tr>
-
 </table>
+<c:choose>
+<c:when test="${paper.type == 1 }">
+	<div id="div-outpaper" >
+	<table  width="100%"  cellpadding="2" cellspacing="1" border="0">
+	<tr id="tr-paperImg" >
+		 <td width="10%" class="pn-flabel"><span class='pn-frequired'>*</span>标题图片:</td>
+		 <td colspan="1" width="40%" class="pn-fcontent">
+		        <input class="button"  type="button" id="obtnUploadFile" value="上传图片" onclick="javascript:uploanFile('obtnUploadFile','opic','otitleImg','opicDelet','paper','')" />
+		        <input type="hidden" id="otitleImg" name="otitleImg" value="${paper.titleImg }"/>
+		        <span class="pn-fhelp" id="pic">
+	        	<c:choose>
+			        	<c:when test = "${paper.titleImg ==null || paper.titleImg== ''}">
+			        		无图片<span id = "opicDelet" ></span>
+			        	</c:when>
+			        	<c:otherwise>
+			        		<img height ="50" width = "150" src = "<%=basePath%>${paper.titleImg}"/>
+			        		<span id = "opicDelet"><a href="javascript:deleteImg('paper',${paper.id},'opic','otitleImg','opicDelet')">删除</a></span>
+			        	</c:otherwise>
+				</c:choose>
+			</span>
+		 </td>
+	</tr>
+	<tr id="tr-paperurl">
+		<td width="10%" class="pn-flabel pn-flabel-h"><span class='pn-frequired'>*</span>链接:</td>
+		<td colspan="1" width="40%" class="pn-fcontent">
+			<input id ="paperurl" type="text"  name="paperurl" value="${paper.url }"/>
+		</td>
+	</tr>
+	</table>
+</div>
+</c:when>
+<c:otherwise>
+	
+<div id="div-inpaper">
+	<table id="table-content" width="100%"  cellpadding="2" cellspacing="1" border="0">
+	<tr id="tr-description">
+	<td width="10%" class="pn-flabel pn-flabel-h">摘要:</td>
+	<td colspan="3" width="90%" class="pn-fcontent" >
+	<textarea id ="description"  cols="70" rows="3" name="description" >${paper.description}</textarea>
+	</td>
+	</tr>
+	
+	<tr id="tr-author">
+	<td width="10%" class="pn-flabel pn-flabel-h">作者:</td><td colspan="1" width="40%" class="pn-fcontent">
+	<input id ="author" type="text" maxlength="100" name="author" value = "${paper.author}"/>
+	</td>
+	</tr>
+	
+	<tr id="tr-isTop">
+	<td width="10%" class="pn-flabel pn-flabel-h">固顶级别:</td><td colspan="1" width="40%" class="pn-fcontent">
+	<c:choose>
+		<c:when test="${paper.isTop==0}">
+			<select  id="isTop" name="isTop">
+				<option id="isTop0" value="0" selected>不固顶</option>
+				<option id="isTop1" value="1">固顶</option>
+			</select> 
+		</c:when>
+		<c:otherwise>
+			<select  id="isTop" name="isTop">
+				<option id="isTop0" value="0">不固顶</option>
+				<option id="isTop1" value="1" selected>固顶</option>
+			</select>   
+		</c:otherwise>
+	</c:choose>
+	</td>
+	</tr>
+	<tr id="tr-pregWeeks">
+	<td width="10%" class="pn-flabel pn-flabel-h">推荐孕周:</td>
+	<td colspan="1" width="10%" class="pn-fcontent">
+	<select  id="pregStage" name="pregStage" onclick="showrecPreg()">
+	<c:choose>
+		<c:when test="${paper.pregStageCode==1}">
+				<option value="0" >全孕周</option>
+				<option value="1" selected>40周以上</option>
+				<option value="2" >0-40周</option>
+		</c:when>
+		<c:when test="${paper.pregStageCode==2}">
+				<option value="0" >全孕周</option>
+				<option value="1" >40周以上</option>
+				<option value="2" selected>0-40周</option>
+		</c:when>
+		<c:otherwise>
+				<option value="0" selected>全孕周</option>
+				<option value="1" >40周以上</option>
+				<option value="2" >0-40周</option> 
+		</c:otherwise>
+	</c:choose>
+	</select>
+	<c:choose>
+		<c:when test="${paper.pregStageCode==2}">
+			<div id = "div_recPreg">
+				<input id ="recPregWeeks" type="text" maxlength="20" name="recPregWeeks" value="${paper.recPregWeeks}"/>
+				<span class="pn-fhelp">0-40之间的数字</span>
+			</div>
+		</c:when>
+		<c:otherwise>
+			<div id = "div_recPreg" style="display:none" >
+				<input id ="recPregWeeks" type="text" maxlength="20" name="recPregWeeks" value="${paper.recPregWeeks}"/>
+				<span class="pn-fhelp">0-40之间的数字</span>
+			</div>
+		</c:otherwise>
+	</c:choose>
+	</td>
+	</tr>
+	<tr id="tr-hospital">
+	<td width="10%" class="pn-flabel pn-flabel-h">所属医院:</td><td colspan="1" width="40%" class="pn-fcontent">
+	<input id ="hospital" type="text" maxlength="100" name="hospital" value = "${paper.hospital}"/>
+	</td>
+	</tr>
+	<tr id="tr-titleImg">
+	 	<td width="10%" class="pn-flabel"><span class='pn-frequired'>*</span>标题图片:</td>
+	 	<td colspan="1" width="40%" class="pn-fcontent">
+	       	<input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg','picDelet','paper',${paper.id})"/>
+	        <input type="hidden" id="titleImg" name="titleImg" value="<%=basePath %>${paper.titleImg}"/>
+	       <span class="pn-fhelp" id="pic">
+	        <c:choose>
+			        	<c:when test = "${paper.titleImg ==null || paper.titleImg== ''}">
+			        		无图片<span id = "picDelet" ></span>
+			        	</c:when>
+			        	<c:otherwise>
+			        		<img height ="50" width = "150" src = "<%=basePath%>${paper.titleImg}"/>
+			        		<span id = "picDelet"><a href="javascript:deleteImg('paper',${paper.id},'pic','titleImg','picDelet')">删除</a></span>
+			        	</c:otherwise>
+			</c:choose>
+			</span>
+	 	</td>
+	</tr>
+	<!-- 版块区域start -->
+	<tr>
+	<td width="10%"  class="pn-flabel pn-flabel-h">文章正文:</td>
+	<td class="pn-fcontent">
+		<input type="button" value="添加版块"  onclick="javascript:addNewSection('div-content')" /> &nbsp; 
+	</td>
+	</tr>
+	
+	</table>
 <!-- 版块区域 -->
 <c:forEach items="${paper.sections}" var="section">
 
@@ -394,10 +454,15 @@ function clearNoNum(obj)
   	</table>
   	</div>
 <% k[i] = k[i]+1; %>   
-  	</c:forEach>   
-  </div> 
+  	</c:forEach> 
+  	</div>  
  <% i = i+1; %>         	   		
 </c:forEach>
+
+</div>
+
+</c:otherwise>
+</c:choose>
 </div>
 <!-- 文章正文区域end -->
 
@@ -408,6 +473,7 @@ function clearNoNum(obj)
 	<input type="reset" value="重置" class="reset"/>
 </td>
 </tr>
+</table>
 </form>
 </div>
 <script type="text/javascript">
@@ -466,6 +532,7 @@ arrOutLink[<%=t%>] = <%=k[t]%>;
 
 var paperId = $('#paperId')[0].value;
 uploanFile('btnUploadFile','pic','titleImg','picDelet','paper',paperId);
+uploanFile('obtnUploadFile','opic','otitleImg','opicDelet','paper','');
 
 </script>
 </body>

@@ -245,6 +245,10 @@ public class PaperService {
 				model.setImgUrlRatio(images.get(0).getRatio()); 
 			}
 		}
+		//外链文章
+		if(model.getType() != null && model.getType() == 1){
+			return model;
+		}
 		List<PaperSection> sections = sectionDao.getSecitonByPaper(paper.getId());
 		
 		if(!CollectionUtils.isEmpty(sections)){
@@ -314,7 +318,12 @@ public class PaperService {
 			for(Paper item: papers){
 				PaperTitleImgModel model = new PaperTitleImgModel();
 				model.setPaperId(item.getId());
-				model.setPaperUrl(basePath+"paperDetail?paperId="+item.getId());
+				model.setType(item.getType());
+				if(item.getType() != null && item.getType() == 1){
+					model.setPaperUrl(item.getUrl());
+				}else{
+					model.setPaperUrl(basePath+"paperDetail?paperId="+item.getId());
+				}
 				if(StringUtils.isNotEmpty(item.getTitleImg())){
 					model.setTitleImg(basePath+item.getTitleImg());
 					List<PaperImage> images = imageDao.findByUrl(item.getTitleImg());
