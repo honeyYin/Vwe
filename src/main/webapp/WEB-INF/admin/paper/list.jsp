@@ -133,7 +133,6 @@ function jqcallVerify(){  //jquery获取复选框值
 <!-- action="queryByCondition.do" -->
 <form name="form1" id ="form1"  action="<%=basePath%>paper/queryByCondition" method ="get" padding-top:5px;">
 <div>
-<input type="hidden" id="pageNo" name="pageNo" value="${pageNo}"/>
 标题: <input type="text" id="queryTitle"  name="queryTitle" value="${queryTitle}" style="width:100px"/>
 <select name="channelId">
 	<option value="0" selected="selected">--所有栏目--</option>
@@ -158,6 +157,7 @@ function jqcallVerify(){  //jquery获取复选框值
 	<th width="20"><input type='checkbox' id="allids" onclick="jqselectCheck()"/></th>
 	<th>ID</th>
 	<th>栏目</th>
+	<th>类型</th>
 	<th>标题</th>
 	<th>作者</th>
 	<th>点击量</th>
@@ -190,6 +190,12 @@ function jqcallVerify(){  //jquery获取复选框值
 			</c:otherwise>
 		</c:choose>
 		<strong>[${item.channelName}]</strong>
+	</td>
+	<td align="center">
+		<c:choose>
+			<c:when test="${item.type ==1}">外链</c:when>
+			<c:otherwise>内部文章</c:otherwise>
+		</c:choose>
 	</td>
 	<td align="center">${item.title}</td>
 	<td align="center">${item.author}</td>

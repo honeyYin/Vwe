@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -20,9 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.dao.ChannelDao;
 import com.dao.CrawlerSiteDao;
+import com.entity.Channel;
 import com.entity.CrawlerSite;
-import com.entity.Paper;
 import com.google.common.collect.Lists;
 import com.model.LinkModel;
 import com.util.RequestUtil;
@@ -36,6 +36,9 @@ public class CrawlerController {
 
 	@Autowired
 	private CrawlerSiteDao siteDao;
+	
+	@Autowired
+	private ChannelDao channelDao;
 
 	private static final Logger logger = LoggerFactory.getLogger(PaperController.class);
 	
@@ -70,6 +73,8 @@ public class CrawlerController {
 		if(!StringUtils.isEmpty(url)){
 			linkModels = getLinks(url,queryTitle);
 		}
+		List<Channel> channels = channelDao.getRootCategory();
+		model.addAttribute("channels",channels);
 		model.addAttribute("sites", siteDao.findAllSites());
         model.addAttribute("links", linkModels);
         model.addAttribute("queryTitle", queryTitle);

@@ -19,7 +19,12 @@ public class ChannelDao {
 	public Channel find(Long id) {
 		return entityManager.find(Channel.class, id);
 	}
-	
+	@SuppressWarnings("unchecked")
+	public List<Channel> findByName(String name){
+		Query query = entityManager.createQuery("select p from Channel p where p.disabled = 0 and p.name = ?1");
+		query.setParameter(1, name);
+		return query.getResultList();
+	}
 	@SuppressWarnings("unchecked")
 	public List<Channel> getAllCategory() {
 		return entityManager.createQuery("select p from Channel p where p.disabled = 0 order by p.priority ASC,p.updateTime DESC").getResultList();

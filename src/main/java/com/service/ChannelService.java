@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +68,23 @@ public class ChannelService {
 			updatePriority(ids[i], priority[i]);
 		}
 	}
-	
+	public Channel findOrAddByName(String name){
+		List<Channel> channels = cateDao.findByName(name);
+		if(CollectionUtils.isEmpty(channels)){
+			Channel channel= new Channel();
+			channel.setDisabled(0);
+			channel.setIsDeploy(0);
+			channel.setName(name);
+			channel.setParentId(0l);
+			channel.setPriority(10);
+			channel.setPageSize(10);
+			channel = cateDao.save(channel);
+			return channel;
+		}else{
+			return channels.get(0);
+		}
+		
+	}
 	void updatePriority(long id, int priority){
 		Channel channel = cateDao.find(id);
 		channel.setPriority(priority);

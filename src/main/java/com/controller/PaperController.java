@@ -38,6 +38,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.model.OperationResult;
 import com.model.PaperModel;
+import com.service.ChannelService;
 import com.service.PaperService;
 import com.util.RequestUtil;
 
@@ -68,6 +69,9 @@ public class PaperController extends BaseController{
 	@Autowired
 	private ChannelDao channelDao;
 	
+	@Autowired
+	private ChannelService channelService;
+	
 	/**
 	 * 分页获取文章列表
 	 * @param pageNo
@@ -79,20 +83,26 @@ public class PaperController extends BaseController{
 							 Integer pageNo,
 							 Model model,
 							 HttpServletRequest request) {
+		if(pageNo == null || pageNo <=0){
+			pageNo = CURRENT_PAGE_NO;
+		}
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
 		if(!StringUtils.isEmpty(queryTitle)){
 			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
 		}
+		
+		//是否还有下一页，返回总条数
+		OperationResult<Long> mrResult = paperService.hasNext(channelId,pageNo,0,false);
+		int maxpage = Integer.valueOf(mrResult.getData().toString());
 		logger.debug("Received request to list papers");
-		if(pageNo == null || pageNo <=0){
-			pageNo = CURRENT_PAGE_NO;
+		
+		if(pageNo >maxpage){
+			pageNo = maxpage;
 		}
 		pageNo = pageNo -1;
 		List<Paper> papers = paperService.getPapersByPage(channelId,pageNo);
 		logger.debug("papers Listing count = "+papers.size());
-		//是否还有下一页，返回总条数
 		OperationResult<Long> result = paperService.hasNext(channelId,pageNo,papers.size(),false);
-		
 		List<Channel> channels = channelDao.getRootCategory();
 		model.addAttribute("channels",channels);
 		model.addAttribute("channelId",channelId==null?0:channelId);
@@ -108,13 +118,19 @@ public class PaperController extends BaseController{
 							 Integer pageNo,
 							 HttpServletRequest request,
 							 Model model) {
+		if(pageNo == null || pageNo <=0){
+			pageNo = CURRENT_PAGE_NO;
+		}
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
 		if(StringUtils.isEmpty(queryTitle)){
 			return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		}
+		OperationResult<Long> mrResult = paperService.hasNextByCondition(channelId,queryTitle,pageNo,0);
+		int maxpage = Integer.valueOf(mrResult.getData().toString());
 		logger.debug("Received request to list papers");
-		if(pageNo == null || pageNo <=0){
-			pageNo = CURRENT_PAGE_NO;
+		
+		if(pageNo >maxpage){
+			pageNo = maxpage;
 		}
 		pageNo = pageNo -1;
 		List<Paper> papers = paperService.getPapersByCondition(channelId,pageNo,queryTitle);
@@ -177,6 +193,15 @@ public class PaperController extends BaseController{
 		}
 		
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
+	}
+	@RequestMapping(method=RequestMethod.POST,value="addCrawlerPaper") 
+	public String addCrawlerPaper(HttpServletRequest request,
+					   			  HttpServletResponse response) {
+		Paper paper =  paserPaper(null,request);
+		if(paper != null){
+			paper =paperService.savePaper(paper,getUser(request));
+		}
+		return render("succ", "text/html", response);
 	}
 	@RequestMapping(method=RequestMethod.GET,value="toEdit") 
 	public ModelAndView toEdit(@RequestParam("paperId") Long paperId,
@@ -550,19 +575,23 @@ public class PaperController extends BaseController{
 			paper.setCreateTime(new Date());
 		}
 		Channel channel = channelDao.find(RequestUtil.longvalue(request, "channelId"));
+		Integer type = RequestUtil.intvalue(request, "type");
+		if(type == null){type=0;}
+		
 		if(channel == null){
-			return null;
+			if(type == 1){
+				channel = channelService.findOrAddByName("外链草稿");
+			}else{
+				return null;
+			}
 		}
 		paper.setUpdateTime(new Date());
-		paper.setChannelId(RequestUtil.longvalue(request, "channelId"));
+		paper.setChannelId(channel.getId());
 		paper.setChannelName(channel.getName());
 		paper.setTitle(RequestUtil.stringvalue(request, "title"));
 		
 		
-		Integer type = RequestUtil.intvalue(request, "type");
-		if(type == null){type=0;}
 		paper.setType(type);
-		
 		if(type==1){
 			paper.setUrl(RequestUtil.stringvalue(request, "paperurl"));
 			String titleImg = RequestUtil.stringvalue(request, "otitleImg");

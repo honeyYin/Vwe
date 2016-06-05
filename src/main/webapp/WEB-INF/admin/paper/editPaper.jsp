@@ -112,6 +112,45 @@ function clearNoNum(obj)
 	//保证.只出现一次，而不能出现两次以上
 	obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
 }
+function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
+	var button = document.getElementById(buttonId); 
+	var ajaxUploadImage = new AjaxUpload(button,{
+	
+		action: '<%=basePath%>upload',
+		autoSubmit: true, //交由确定按钮提交
+		name: 'filedata',   
+		
+		onChange:function(file,ext){//当选择文件后执行的方法,ext存在文件后续,可以在这里判断文件格式
+			hasAddSpecialImage=true;
+		},
+			        
+		onSubmit : function(file, ext){
+		    if (!(ext && /^(jpg|JPG|png|PNG|gif|GIF)$/.test(ext))) {  
+		        alert("您上传的图片格式不对，仅能上传jpg、JPG、png、PNG、gif、GIF的图片，请重新选择！");  
+		        return false;  
+		    }  
+		
+			 this.disable();
+		},
+		
+		onComplete: function(file, response){ //上传完毕后的操作	
+			var start = response.indexOf("{");
+			var end = response.indexOf("}");
+			var	msg = response.substring((start+1), end);
+			//var	json = eval( msg );
+			
+			if(msg=="size"){
+				alert("文件大于1M");
+			}else{
+				document.getElementById(picId).innerHTML = "<img height ='50' width = '150' src = '<%=basePath%>" + msg + "'/>";
+				document.getElementById(titleImgId).value = msg;
+				document.getElementById(spanId).innerHTML="<a href=\"javascript:deleteImg('"+type+"','"+deleId+"','"+picId+"','"+titleImgId+"','"+spanId+"')\">删除</a>";
+			}
+		
+			this.enable();
+	}
+	});
+}
 </script>
 
 </head>
@@ -192,18 +231,22 @@ function clearNoNum(obj)
 		 <td width="10%" class="pn-flabel"><span class='pn-frequired'>*</span>标题图片:</td>
 		 <td colspan="1" width="40%" class="pn-fcontent">
 		        <input class="button"  type="button" id="obtnUploadFile" value="上传图片" onclick="javascript:uploanFile('obtnUploadFile','opic','otitleImg','opicDelet','paper','')" />
-		        <input type="hidden" id="otitleImg" name="otitleImg" value="${paper.titleImg }"/>
-		        <span class="pn-fhelp" id="pic">
 	        	<c:choose>
 			        	<c:when test = "${paper.titleImg ==null || paper.titleImg== ''}">
-			        		无图片<span id = "opicDelet" ></span>
+				        	<input type="hidden" id="otitleImg" name="otitleImg" value=""/>
+			        		<span class="pn-fhelp" id="pic">
+				        		无图片<span id = "opicDelet" ></span>
+				        	</span>
 			        	</c:when>
 			        	<c:otherwise>
-			        		<img height ="50" width = "150" src = "<%=basePath%>${paper.titleImg}"/>
-			        		<span id = "opicDelet"><a href="javascript:deleteImg('paper',${paper.id},'opic','otitleImg','opicDelet')">删除</a></span>
+				        	<input type="hidden" id="otitleImg" name="otitleImg" value="${paper.titleImg }"/>
+			        		<span class="pn-fhelp" id="pic">
+				        		<img height ="50" width = "150" src = "<%=basePath%>${paper.titleImg}"/>
+				        		<span id = "opicDelet"><a href="javascript:deleteImg('paper',${paper.id},'opic','otitleImg','opicDelet')">删除</a></span>
+				        	</span>
 			        	</c:otherwise>
 				</c:choose>
-			</span>
+			
 		 </td>
 	</tr>
 	<tr id="tr-paperurl">
@@ -297,18 +340,22 @@ function clearNoNum(obj)
 	 	<td width="10%" class="pn-flabel"><span class='pn-frequired'>*</span>标题图片:</td>
 	 	<td colspan="1" width="40%" class="pn-fcontent">
 	       	<input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg','picDelet','paper',${paper.id})"/>
-	        <input type="hidden" id="titleImg" name="titleImg" value="<%=basePath %>${paper.titleImg}"/>
-	       <span class="pn-fhelp" id="pic">
 	        <c:choose>
-			        	<c:when test = "${paper.titleImg ==null || paper.titleImg== ''}">
-			        		无图片<span id = "picDelet" ></span>
-			        	</c:when>
-			        	<c:otherwise>
-			        		<img height ="50" width = "150" src = "<%=basePath%>${paper.titleImg}"/>
-			        		<span id = "picDelet"><a href="javascript:deleteImg('paper',${paper.id},'pic','titleImg','picDelet')">删除</a></span>
-			        	</c:otherwise>
+				<c:when test = "${paper.titleImg ==null || paper.titleImg== ''}">
+			        <input type="hidden" id="titleImg" name="titleImg" value=""/>
+	      			<span class="pn-fhelp" id="pic">
+			        	无图片<span id = "picDelet" ></span>
+			        </span>
+			    </c:when>
+			    <c:otherwise>
+			    	<input type="hidden" id="titleImg" name="titleImg" value="${paper.titleImg}"/>
+	      			<span class="pn-fhelp" id="pic">
+	      				<img height ="50" width = "150" src = "<%=basePath%>${paper.titleImg}"/>
+			        	<span id = "picDelet"><a href="javascript:deleteImg('paper',${paper.id},'pic','titleImg','picDelet')">删除</a></span>
+			        </span>
+			   </c:otherwise>			        	
 			</c:choose>
-			</span>
+			
 	 	</td>
 	</tr>
 	<!-- 版块区域start -->
@@ -398,12 +445,14 @@ function clearNoNum(obj)
 		 <td width="10%" class="pn-flabel">小节配图:</td>
 		 <td colspan="1" width="40%" class="pn-fcontent">
 		        <input class="button"  type="button" id="paraBtnUploadFile<%=i%>-<%=j[i]%>" value="上传图片" onclick="javascript:uploanFile('paraBtnUploadFile<%=i%>-<%=j[i]%>','paraPic<%=i%>-<%=j[i]%>','paraTitleImg<%=i%>-<%=j[i]%>','paraPicDele<%=i%>-<%=j[i]%>','para',${para.id })"/>
-		        <input type="hidden" id="paraTitleImg<%=i%>-<%=j[i]%>" name="paraTitleImg<%=i%>-<%=j[i]%>" value="<%=basePath %>${para.imgUrl }"/>
+		        
 		        <c:choose>
 		        	<c:when test = "${para.imgUrl == null || para.imgUrl == ''}">
+		        		<input type="hidden" id="paraTitleImg<%=i%>-<%=j[i]%>" name="paraTitleImg<%=i%>-<%=j[i]%>" value=""/>
 		        		<span class="pn-fhelp" id="paraPic<%=i%>-<%=j[i]%>">无图片</span><span id = "paraPicDele<%=i%>-<%=j[i]%>"></span>
 		        	</c:when>
 		        	<c:otherwise>
+		        		<input type="hidden" id="paraTitleImg<%=i%>-<%=j[i]%>" name="paraTitleImg<%=i%>-<%=j[i]%>" value="${para.imgUrl }"/>
 		        		<span class="pn-fhelp" id="paraPic<%=i%>-<%=j[i]%>"><img height ="50" width = "150" src = "<%=basePath%>${para.imgUrl}"/></span>
 		        		<span id = "paraPicDele<%=i%>-<%=j[i]%>"><a href="javascript:deleteImg('para',${para.id},'paraPic<%=i%>-<%=j[i]%>','paraTitleImg<%=i%>-<%=j[i]%>','paraPicDele<%=i%>-<%=j[i]%>')">删除</a></span>
 		        	</c:otherwise>
@@ -413,7 +462,11 @@ function clearNoNum(obj)
 		</tr>
   	</table>
   	</div>
-  	
+  	<script>
+  	var cc= <%=i%>+'-'+<%=j[i]%>;
+  	var paraId = document.getElementById('paraId'+cc);
+  	uploanFile('paraBtnUploadFile'+cc,'paraPic'+cc,'paraTitleImg'+cc,'paraPicDele'+cc,'para',paraId);
+  	</script>
 <% j[i] = j[i]+1 ;%> 
   	</c:forEach>
   	<c:forEach items="${section.outLinks}" var="outLink">
@@ -477,45 +530,6 @@ function clearNoNum(obj)
 </form>
 </div>
 <script type="text/javascript">
-function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
-	var button = document.getElementById(buttonId); 
-	var ajaxUploadImage = new AjaxUpload(button,{
-	
-		action: '<%=basePath%>upload',
-		autoSubmit: true, //交由确定按钮提交
-		name: 'filedata',   
-		
-		onChange:function(file,ext){//当选择文件后执行的方法,ext存在文件后续,可以在这里判断文件格式
-			hasAddSpecialImage=true;
-		},
-			        
-		onSubmit : function(file, ext){
-		    if (!(ext && /^(jpg|JPG|png|PNG|gif|GIF)$/.test(ext))) {  
-		        alert("您上传的图片格式不对，仅能上传jpg、JPG、png、PNG、gif、GIF的图片，请重新选择！");  
-		        return false;  
-		    }  
-		
-			 this.disable();
-		},
-		
-		onComplete: function(file, response){ //上传完毕后的操作	
-			var start = response.indexOf("{");
-			var end = response.indexOf("}");
-			var	msg = response.substring((start+1), end);
-			//var	json = eval( msg );
-			
-			if(msg=="size"){
-				alert("文件大于1M");
-			}else{
-				document.getElementById(picId).innerHTML = "<img height ='50' width = '150' src = '<%=basePath%>" + msg + "'/>";
-				document.getElementById(titleImgId).value = msg;
-				document.getElementById(spanId).innerHTML="<a href=\"javascript:deleteImg('"+type+"','"+deleId+"','"+picId+"','"+titleImgId+"','"+spanId+"')\">删除</a>";
-			}
-		
-			this.enable();
-	}
-	});
-}
 
 var sectionId = <%=i%>;
 var arrPara =new Array(<%=j.length%>);
