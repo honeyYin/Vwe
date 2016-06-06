@@ -147,6 +147,11 @@ function jqcallVerify(){  //jquery获取复选框值
 	 </c:choose>
 	</c:forEach>
 </select>
+<select  id="type" name="type" >
+	<option value="-1" selected>所有类型</option>
+	<option value="0" >内部文章</option>
+	<option value="1">外链</option>
+</select>
 <input class="query" type="submit" value="搜索" />
 </div>
 </form>
@@ -197,7 +202,7 @@ function jqcallVerify(){  //jquery获取复选框值
 			<c:otherwise>内部文章</c:otherwise>
 		</c:choose>
 	</td>
-	<td align="center">${item.title}</td>
+	<td align="left">${item.title}</td>
 	<td align="center">${item.author}</td>
 	<td align="right">${item.viewCount}</td>
 	<c:choose>

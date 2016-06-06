@@ -124,6 +124,25 @@ function jqcallVerify(){  //jquery获取复选框值
 	 </c:choose>
 	</c:forEach>
 </select>
+<select  id="type" name="type" >
+	<c:choose>
+		<c:when test="${type == 1 }">
+			<option value="-1" >所有类型</option>
+			<option value="0" >内部文章</option>
+			<option value="1" selected>外链</option>
+		</c:when>
+		<c:when test="${type == 0 }">
+			<option value="-1" >所有类型</option>
+			<option value="0" selected>内部文章</option>
+			<option value="1">外链</option>
+		</c:when>
+		<c:otherwise>
+			<option value="-1" selected>所有类型</option>
+			<option value="0" >内部文章</option>
+			<option value="1">外链</option>
+		</c:otherwise>
+	</c:choose>
+</select>
 <input class="query" type="submit" value="搜索" />
 </div>
 </form>
@@ -175,7 +194,7 @@ function jqcallVerify(){  //jquery获取复选框值
 			<c:otherwise>内部文章</c:otherwise>
 		</c:choose>
 	</td>
-	<td align="center">${item.title}</td>
+	<td align="left">${item.title}</td>
 	<td align="center">${item.author}</td>
 	<td align="right">${item.viewCount}</td>
 	<c:choose>
@@ -248,6 +267,7 @@ function jqcallVerify(){  //jquery获取复选框值
 	<script>
 			function toPage(){
 				var channelId = document.getElementById("channelId").value;
+				var type = document.getElementById("type").value;
 				var queryTitle = document.getElementById("queryTitle").value;
 				var current = document.getElementById("topageNo").value;
 				var last = document.getElementById("maxPageNo").value;
@@ -260,31 +280,32 @@ function jqcallVerify(){  //jquery获取复选框值
 					if(current>last){
 						current=last;
 					}
-					var path = "<%=request.getContextPath()%>/paper/queryByCondition?queryTitle="+queryTitle+"&pageNo="+current+"&channelId="+channelId;
+					var path = "<%=request.getContextPath()%>/paper/queryByCondition?queryTitle="+queryTitle+"&pageNo="+current+"&channelId="+channelId+"&type="+type;
 					location.href=path;
 				}
 			}
 		 	
 	</script>
 		<input type="hidden" id="channelId" name="channelId" value="${channelId}"/>
+		<input type = "hidden" id="type" name="type" value="${type}"/> 
 		<input type = "hidden" id="pageNo" name="pageNo" value="${pageNo}"/> 
 		<input type = "hidden" id="maxPageNo" name="maxPageNo" value="${maxPageNo}"/> 
 		共  ${maxPageNo} 页 
 		<input type="text" id="topageNo" name="topageNo" style="width:25px" value="${pageNo}"/>
 		<a href="#" onclick="toPage()">跳转</a>
-		<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=1&channelId=${channelId}">首页</a>
+		<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=1&channelId=${channelId}&type=${type}">首页</a>
 		<c:choose>
 		<c:when test="${pageNo <= 1}">
-			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=1&channelId=${channelId}">上一页</a>
+			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=1&channelId=${channelId}&type=${type}">上一页</a>
 		</c:when>
 		<c:otherwise>
-			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=${pageNo-1}&channelId=${channelId}">上一页</a>
+			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=${pageNo-1}&channelId=${channelId}&type=${type}">上一页</a>
 		</c:otherwise>
 		</c:choose> 
 		<c:choose>
 		<c:when test="${hasNext == true}">
-			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=${pageNo+1}&channelId=${channelId}">下一页</a>
-			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=${maxPageNo}&channelId=${channelId}">尾页</a>
+			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=${pageNo+1}&channelId=${channelId}&type=${type}">下一页</a>
+			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=${maxPageNo}&channelId=${channelId}&type=${type}">尾页</a>
 		</c:when>
 		<c:otherwise>
 		</c:otherwise>

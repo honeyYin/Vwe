@@ -1,6 +1,5 @@
 package com.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -116,16 +115,17 @@ public class PaperController extends BaseController{
 	@RequestMapping(method=RequestMethod.GET,value="queryByCondition")
 	public String queryByCondition(Long channelId,
 							 Integer pageNo,
+							 Integer type,
 							 HttpServletRequest request,
 							 Model model) {
 		if(pageNo == null || pageNo <=0){
 			pageNo = CURRENT_PAGE_NO;
 		}
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
-		if(StringUtils.isEmpty(queryTitle)){
+		if(StringUtils.isEmpty(queryTitle) && type == null){
 			return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		}
-		OperationResult<Long> mrResult = paperService.hasNextByCondition(channelId,queryTitle,pageNo,0);
+		OperationResult<Long> mrResult = paperService.hasNextByCondition(channelId,type,queryTitle,pageNo,0);
 		int maxpage = Integer.valueOf(mrResult.getData().toString());
 		logger.debug("Received request to list papers");
 		
@@ -133,21 +133,21 @@ public class PaperController extends BaseController{
 			pageNo = maxpage;
 		}
 		pageNo = pageNo -1;
-		List<Paper> papers = paperService.getPapersByCondition(channelId,pageNo,queryTitle);
+		List<Paper> papers = paperService.getPapersByCondition(channelId,type,pageNo,queryTitle);
 		logger.debug("papers Listing count = "+papers.size());
 		//是否还有下一页，返回总条数
-		OperationResult<Long> result = paperService.hasNextByCondition(channelId,queryTitle,pageNo,papers.size());
+		OperationResult<Long> result = paperService.hasNextByCondition(channelId,type,queryTitle,pageNo,papers.size());
 		
 		List<Channel> channels = channelDao.getRootCategory();
 		model.addAttribute("channels",channels);
 		model.addAttribute("queryTitle",queryTitle);
+		model.addAttribute("type",type==null?-1:type);
 		model.addAttribute("channelId",channelId==null?0:channelId);
 		model.addAttribute("pageNo",pageNo==null?0:pageNo+1);
 		model.addAttribute("maxPageNo",result.getData());
 		model.addAttribute("hasNext",result.getCode()==0?true:false);
 		model.addAttribute("papers",papers);
 		return "admin/paper/queryList";
-		
 	}
 	@RequestMapping(method=RequestMethod.GET,value="detail") 
 	public ModelAndView paperDetail(@RequestParam("paperId") Long paperId,
@@ -580,7 +580,7 @@ public class PaperController extends BaseController{
 		
 		if(channel == null){
 			if(type == 1){
-				channel = channelService.findOrAddByName("外链草稿");
+				channel = channelService.findOrAddByName("草稿");
 			}else{
 				return null;
 			}

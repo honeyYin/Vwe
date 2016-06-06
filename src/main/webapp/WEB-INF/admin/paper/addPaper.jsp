@@ -220,7 +220,7 @@ function addOuterPaper(type){
 	</td>
 	</tr>
 	<tr id="tr-titleImg" >
-	 <td width="10%" class="pn-flabel"><span class='pn-frequired'>*</span>标题图片:</td>
+	 <td width="10%" class="pn-flabel pn-flabel-h"><span class='pn-frequired'>*</span>标题图片:</td>
 	 <td colspan="1" width="40%" class="pn-fcontent">
 	        <input class="button"  type="button" id="btnUploadFile" value="上传图片" onclick="javascript:uploanFile('btnUploadFile','pic','titleImg','picDelet','paper','')" />
 	        <input type="hidden" id="titleImg" name="titleImg" value=""/>
@@ -237,6 +237,7 @@ function addOuterPaper(type){
 	</tr>
 </table>
 </div>
+<div class="clear"></div>
 <div id="div-outpaper" style="display:none">
 <table  width="100%"  cellpadding="2" cellspacing="1" border="0">
 	<tr id="tr-paperImg" >

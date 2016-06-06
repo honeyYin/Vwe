@@ -230,7 +230,7 @@ function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
 	<tr id="tr-paperImg" >
 		 <td width="10%" class="pn-flabel"><span class='pn-frequired'>*</span>标题图片:</td>
 		 <td colspan="1" width="40%" class="pn-fcontent">
-		        <input class="button"  type="button" id="obtnUploadFile" value="上传图片" onclick="javascript:uploanFile('obtnUploadFile','opic','otitleImg','opicDelet','paper','')" />
+		        <input class="button"  type="button" id="obtnUploadFile" value="上传图片" onclick="javascript:uploanFile('obtnUploadFile','opic','otitleImg','opicDelet','paper',${paper.id})" />
 	        	<c:choose>
 			        	<c:when test = "${paper.titleImg ==null || paper.titleImg== ''}">
 				        	<input type="hidden" id="otitleImg" name="otitleImg" value=""/>
@@ -545,9 +545,8 @@ arrOutLink[<%=t%>] = <%=k[t]%>;
 /* 初始化上传控件 */
 
 var paperId = $('#paperId')[0].value;
+uploanFile('obtnUploadFile','opic','otitleImg','opicDelet','paper',paperId);
 uploanFile('btnUploadFile','pic','titleImg','picDelet','paper',paperId);
-uploanFile('obtnUploadFile','opic','otitleImg','opicDelet','paper','');
-
 </script>
 </body>
 </html>
