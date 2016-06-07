@@ -23,54 +23,54 @@ public class PaperDao {
 	}
 	@SuppressWarnings("unchecked")
 	public List<Paper> ffind(Long id) {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true and p.id= ?1 ");
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.isDraft = 0 and p.hasAudit = true and p.id= ?1 ");
 		query.setParameter(1, id);
 		return query.getResultList();
 	}
 	@SuppressWarnings("unchecked")
 	public Long getAllPageSize(){
-		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0");
+		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.isDraft = 0");
 		return (Long)query.getSingleResult();
 	}
 	@SuppressWarnings("unchecked")
 	public Long fgetAllPageSize(){
-		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.hasAudit = true");
+		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.isDraft = 0 and p.hasAudit = true");
 		return (Long)query.getSingleResult();
 	}
 	@SuppressWarnings("unchecked")
 	public Long getCategoryPageSize(long cateId){
-		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.channelId = ?1");
+		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.isDraft = 0 and p.channelId = ?1");
 		query.setParameter(1, cateId);
 		return (Long)query.getSingleResult();
 	}
 	@SuppressWarnings("unchecked")
 	public Long fgetCategoryPageSize(long cateId){
-		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.hasAudit = true and p.channelId = ?1");
+		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.isDraft = 0 and p.hasAudit = true and p.channelId = ?1");
 		query.setParameter(1, cateId);
 		return (Long)query.getSingleResult();
 	}
 	@SuppressWarnings("unchecked")
 	public List<Paper> getPaperByPage(int limit,int offset) {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 ORDER BY p.hasAudit DESC,p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC ");
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.isDraft = 0 ORDER BY p.hasAudit DESC,p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC ");
 		query.setFirstResult(offset);//设置查询结果的开始记录数
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}
 	@SuppressWarnings("unchecked")
 	public List<Paper> fgetPaperByPage(int limit, int offset) {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true and p.isTop=1 ORDER BY p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC  ");
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.isDraft = 0 and p.hasAudit = true and p.isTop=1 ORDER BY p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC  ");
 		query.setFirstResult(offset);
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}
 	@SuppressWarnings("unchecked")
 	public List<Paper> fgetTopPapers() {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true and p.isTop=1 ORDER BY p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC  ");
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.isDraft = 0 and p.hasAudit = true and p.isTop=1 ORDER BY p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC  ");
 		return query.getResultList();
 	}
 	@SuppressWarnings("unchecked")
 	public List<Paper> getPaperByCategory(long cateId,int limit,int offset) {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.channelId = ?1 ORDER BY p.hasAudit DESC,p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC ");
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.isDraft = 0 and p.channelId = ?1 ORDER BY p.hasAudit DESC,p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC ");
 		query.setParameter(1, cateId);
 		query.setFirstResult(offset);//设置查询结果的开始记录数
 		query.setMaxResults(limit);
@@ -78,7 +78,7 @@ public class PaperDao {
 	}
 	@SuppressWarnings("unchecked")
 	public List<Paper> fgetPaperByCategory(long cateId,int limit,int offset) {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = true and p.channelId = ?1 ORDER BY p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC  ");
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.isDraft = 0 and p.hasAudit = true and p.channelId = ?1 ORDER BY p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC  ");
 		query.setParameter(1, cateId);
 		query.setFirstResult(offset);//设置查询结果的开始记录数
 		query.setMaxResults(limit);
@@ -86,7 +86,7 @@ public class PaperDao {
 	}
 	@SuppressWarnings("unchecked")
 	public List<Paper> fgetRecPaperByCategory(long cateId,long paperId,int limit,int offset) {
-		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.isRecom = 1 and p.hasAudit = true and p.channelId = ?1 and p.id != ?2 ORDER BY p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC ");
+		Query query =  entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.isDraft = 0 and p.isRecom = 1 and p.hasAudit = true and p.channelId = ?1 and p.id != ?2 ORDER BY p.isTop DESC,p.isRecom DESC ,p.priority ASC,p.updateTime DESC ");
 		query.setParameter(1, cateId);
 		query.setParameter(2, paperId);
 		query.setFirstResult(offset);//设置查询结果的开始记录数
@@ -187,7 +187,7 @@ public class PaperDao {
 	}
 	@SuppressWarnings("unchecked")
 	public List<Paper> findLPaper(boolean hasAudit, int isTop,Long priority,int isRecom){
-		Query query = entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = ?1 and p.isTop = ?2 and p.priority <?3 and p.isRecom = ?4 ORDER BY p.priority DESC");
+		Query query = entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.isDraft = 0 and p.hasAudit = ?1 and p.isTop = ?2 and p.priority <?3 and p.isRecom = ?4 ORDER BY p.priority DESC");
 		query.setParameter(1, hasAudit);
 		query.setParameter(2, isTop);
 		query.setParameter(3, priority);
@@ -197,7 +197,7 @@ public class PaperDao {
 	}
 	@SuppressWarnings("unchecked")
 	public List<Paper> findHPaper(boolean hasAudit, int isTop,Long priority,int isRecom){
-		Query query = entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.hasAudit = ?1 and p.isTop = ?2 and p.priority >?3 and p.isRecom = ?4 ORDER BY p.priority ASC");
+		Query query = entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.isDraft = 0 and p.hasAudit = ?1 and p.isTop = ?2 and p.priority >?3 and p.isRecom = ?4 ORDER BY p.priority ASC");
 		query.setParameter(1, hasAudit);
 		query.setParameter(2, isTop);
 		query.setParameter(3, priority);
@@ -207,7 +207,13 @@ public class PaperDao {
 	}
 	@SuppressWarnings("unchecked")
 	public Long getTopCount(){
-		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.isTop = 1");
+		Query query =  entityManager.createQuery("select count(p.id) from Paper p where p.disabled = 0 and p.isDraft = 0 and p.isTop = 1");
 		return (Long)query.getSingleResult();
+	}
+	@SuppressWarnings("unchecked")
+	public List<Paper> findByUrl(String url) {
+		Query query = entityManager.createQuery("select p from Paper p where p.disabled = 0 and p.isDraft = 0 and p.url = ?1 ORDER BY p.priority ASC");
+		query.setParameter(1, url);
+		return query.getResultList();
 	}
 }

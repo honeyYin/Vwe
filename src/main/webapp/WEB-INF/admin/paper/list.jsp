@@ -194,7 +194,14 @@ function jqcallVerify(){  //jquery获取复选框值
 				<label style="color:red"><strong>[荐]</strong></label>
 			</c:otherwise>
 		</c:choose>
-		<strong>[${item.channelName}]</strong>
+		<c:choose>
+			<c:when test="${item.channelName == null || item.channelName==''}">
+				<strong>[暂无]</strong>
+			</c:when>
+			<c:otherwise>
+				<strong>[${item.channelName}]</strong>
+			</c:otherwise>
+		</c:choose>
 	</td>
 	<td align="center">
 		<c:choose>
@@ -206,13 +213,21 @@ function jqcallVerify(){  //jquery获取复选框值
 	<td align="center">${item.author}</td>
 	<td align="right">${item.viewCount}</td>
 	<c:choose>
-		<c:when test="${item.hasAudit == true}">
-			<td align="center">已发布</td>
-			<td align="center">${item.auditTime}</td>
+		<c:when test="${item.isDraft == 1}">
+			<td align="center">草稿</td>
+			<td align="center"></td>
 		</c:when>
 		<c:otherwise>
-			<td align="center">待发布</td>
-			<td align="center"></td>
+			<c:choose>
+				<c:when test="${item.hasAudit == true}">
+					<td align="center">已发布</td>
+					<td align="center">${item.auditTime}</td>
+				</c:when>
+				<c:otherwise>
+					<td align="center">待发布</td>
+					<td align="center"></td>
+				</c:otherwise>
+			</c:choose>
 		</c:otherwise>
 	</c:choose>
 	
@@ -229,13 +244,19 @@ function jqcallVerify(){  //jquery获取复选框值
 		 | <a href="javascript:movePaper(1,${item.id})" class="pn-opt">上移</a> 
 		 | <a href="javascript:movePaper(-1,${item.id})" class="pn-opt">下移</a> 
 		 | <a href="<%=basePath%>paper/delete?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt" onclick="return confirm('您确定要删除吗？');">删除</a>
-		 | 
 		<c:choose>
-			<c:when test="${item.hasAudit == true}">
-				<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=false&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">取消发布</a>
+			<c:when test="${item.isDraft == 1}">
 			</c:when>
-			<c:otherwise>
-				<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=true&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">发布</a>
+		<c:otherwise>
+		 | 
+			<c:choose>
+				<c:when test="${item.hasAudit == true}">
+					<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=false&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">取消发布</a>
+				</c:when>
+				<c:otherwise>
+					<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=true&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">发布</a>
+				</c:otherwise>
+			</c:choose>
 			</c:otherwise>
 		</c:choose>
 		 | 

@@ -16,10 +16,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <title></title>
     <link href="<%=basePath%>res/common/css/admin.css" rel="stylesheet" type="text/css"/>
     <link href="<%=basePath%>res/common/css/theme.css" rel="stylesheet" type="text/css"/>
-    <link href="<%=basePath%>res/common/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="<%=basePath%>res/common/js/AjaxUpload.js"></script>
+	<script type="text/javascript" src="<%=basePath%>res/common/js/AjaxUpload.js"></script>
 	<script src="<%=basePath%>res/common/js/jquery.js" type="text/javascript"></script>
-	<script src="<%=basePath%>res/common/js/jquery-ui.js" language="javascript" type="text/javascript" ></script>
 
 </head>
 <script>
@@ -64,7 +62,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	}
 	function changeUrl(){
 		var id = document.getElementById("siteId").value;
-		var url = document.getElementById("urlValue"+id).value;
+		var url = "";
+		if(id != 0){
+			url= document.getElementById("urlValue"+id).value;
+		}
 		document.getElementById("url").value = url;
 	}
 	function toAddPaper(title,url,orderId){
@@ -77,10 +78,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 success: function(message){ 
 				//alert(message);
 				if("succ"== message){//可用
-					$id(orderId).innerHTML = "已入库"
-					alert("入库成功，请至[外链文章]栏目中查看");
-				}else{
-					
+					$id(orderId).innerHTML = "已入文章草稿库";
+					$id(orderId).removeAttribute("href");
+					alert("入库成功，请至[文章>草稿]中查看");
+				}else if("exist" == message){
+					$id(orderId).innerHTML = "已入文章草稿库";
+					$id(orderId).removeAttribute("href");
+					alert("该文章已入库");
 				}
 		}});
 		
@@ -141,7 +145,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<div >
 			&nbsp;目标站点: 
 			<select id="siteId" name="siteId" style="height:25px;width:185px" onchange="javascript:changeUrl()">
-				<option value="0" selected="selected">--请选择抓取的目标网站--</option>
+				<c:choose>
+					<c:when test="${url== null || url=='' }">
+						<option value="0" selected>=======所有站点=======</option>
+					</c:when>
+					<c:otherwise>
+						<option value="0">=======所有站点=======</option>
+					</c:otherwise>
+				</c:choose>
 				<c:forEach items="${sites}" var="v_site">
 				<c:choose>
 					<c:when test="${v_site.url == url}">
@@ -180,17 +191,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <tbody  class="pn-ltbody">
            <c:forEach var="item" items="${links}">
 	            <tr onmouseover="this.bgColor='#eeeeee'" onmouseout="this.bgColor='#ffffff'">
-	                <td align="center" width="10%">
+	                <td align="center" width="5%">
 	                	${item.order }
 	                </td>
 	                <td width="30%">
 	                	<a style="width:200px" onclick="window.open('${item.url }')">${item.title }</a>
 	                </td>
-	                <td align="left" width="40%">
+	                <td align="left" width="50%">
 	                	<a style="width:200px" onclick="window.open('${item.url }')">${item.trimUrl }</a>
 	                </td>
-	                <td align="center" width="20%" id="a_add${item.order}">		
-	                	<a class="pn-opt" href="javascript:toAddPaper('${item.title }','${item.url }','a_add${item.order}')">入库</a>
+	                <td align="center" width="15%">		
+	                	<a class="pn-opt" onclick="window.open('${item.url }')">查看</a>
+	                	| <a  id="a_add${item.order}" class="pn-opt" href="javascript:toAddPaper('${item.title }','${item.url }','a_add${item.order}')">入文章草稿库</a>
 	                </td>
 	            </tr>
             </c:forEach>

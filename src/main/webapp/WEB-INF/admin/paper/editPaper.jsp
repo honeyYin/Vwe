@@ -144,6 +144,7 @@ function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
 			}else{
 				document.getElementById(picId).innerHTML = "<img height ='50' width = '150' src = '<%=basePath%>" + msg + "'/>";
 				document.getElementById(titleImgId).value = msg;
+				var de= document.getElementById(spanId);
 				document.getElementById(spanId).innerHTML="<a href=\"javascript:deleteImg('"+type+"','"+deleId+"','"+picId+"','"+titleImgId+"','"+spanId+"')\">删除</a>";
 			}
 		
@@ -161,6 +162,8 @@ function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
 	<form class="ropt" action="<%=basePath%>paper/list" method="get">
 		<input type="hidden" id="queryTitle"  name="queryTitle" value="${queryTitle}" />
 		<input type="hidden" id="pageNo"  name="pageNo" value="${pageNo}"/>
+		<input type="hidden" id="type"  name="type" value="${type}" />
+		<input type="hidden" id="isDraft"  name="isDraft" value="${isDraft}" />
 		<input type="hidden" id="channelId"  name="channelId" value="${channelId}"/>
 		<input class="return-button" type="submit" value="返回列表" />
 	</form>
@@ -169,7 +172,7 @@ function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
 
 <div >
 
-<form id="newsForm"  name="newsForm" method="post" action="<%=basePath%>paper/edit">
+<form id="newsForm"  name="newsForm" method="post" action = "<%=basePath%>paper/edit">
 <input type="hidden" id="paperId"  name="paperId" value="${paper.id}"/>
 <input type="hidden" id="pageNo"  name="pageNo" value="${pageNo}"/>
 
@@ -234,16 +237,17 @@ function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
 	        	<c:choose>
 			        	<c:when test = "${paper.titleImg ==null || paper.titleImg== ''}">
 				        	<input type="hidden" id="otitleImg" name="otitleImg" value=""/>
-			        		<span class="pn-fhelp" id="pic">
-				        		无图片<span id = "opicDelet" ></span>
+			        		<span class="pn-fhelp" id="opic">
+				        		无图片
 				        	</span>
+				        	<span id = "opicDelet" ></span>
 			        	</c:when>
 			        	<c:otherwise>
 				        	<input type="hidden" id="otitleImg" name="otitleImg" value="${paper.titleImg }"/>
-			        		<span class="pn-fhelp" id="pic">
+			        		<span class="pn-fhelp" id="opic">
 				        		<img height ="50" width = "150" src = "<%=basePath%>${paper.titleImg}"/>
-				        		<span id = "opicDelet"><a href="javascript:deleteImg('paper',${paper.id},'opic','otitleImg','opicDelet')">删除</a></span>
 				        	</span>
+				        	<span id = "opicDelet" ><a href="javascript:deleteImg('paper',${paper.id},'opic','otitleImg','opicDelet')">删除</a></span>
 			        	</c:otherwise>
 				</c:choose>
 			
@@ -344,15 +348,16 @@ function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
 				<c:when test = "${paper.titleImg ==null || paper.titleImg== ''}">
 			        <input type="hidden" id="titleImg" name="titleImg" value=""/>
 	      			<span class="pn-fhelp" id="pic">
-			        	无图片<span id = "picDelet" ></span>
+			        	无图片
 			        </span>
+			        <span id = "picDelet" ></span>
 			    </c:when>
 			    <c:otherwise>
 			    	<input type="hidden" id="titleImg" name="titleImg" value="${paper.titleImg}"/>
 	      			<span class="pn-fhelp" id="pic">
 	      				<img height ="50" width = "150" src = "<%=basePath%>${paper.titleImg}"/>
-			        	<span id = "picDelet"><a href="javascript:deleteImg('paper',${paper.id},'pic','titleImg','picDelet')">删除</a></span>
 			        </span>
+			        <span id = "picDelet"><a href="javascript:deleteImg('paper',${paper.id},'pic','titleImg','picDelet')">删除</a></span>
 			   </c:otherwise>			        	
 			</c:choose>
 			

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -63,15 +64,22 @@ public class CrawlerController {
 								   HttpServletRequest request,
 								   Model model) {
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+		List<String> urls = Lists.newArrayList();
 		if(StringUtils.isEmpty(url) && siteId != null){
-			CrawlerSite site = siteDao.find(siteId);
-			if(site != null){
-				url = site.getUrl();
+			if(siteId == 0){
+				urls= siteDao.findAllUrls();
+			}else{
+				CrawlerSite site = siteDao.find(siteId);
+				if(site != null){
+					urls.add(site.getUrl());
+				}
 			}
+		}else{
+			urls.add(url);
 		}
 		List<LinkModel> linkModels =Lists.newArrayList();
-		if(!StringUtils.isEmpty(url)){
-			linkModels = getLinks(url,queryTitle);
+		if(!CollectionUtils.isEmpty(urls)){
+			linkModels = getLinks(urls,queryTitle);
 		}
 		List<Channel> channels = channelDao.getRootCategory();
 		model.addAttribute("channels",channels);
@@ -152,50 +160,55 @@ public class CrawlerController {
 	}
 	
     
-    private static List<LinkModel>  getLinks(String url,String keyWord){
+    private static List<LinkModel>  getLinks(List<String> urls,String keyWord){
     	List<LinkModel> results = Lists.newArrayList();
-    	print("Fetching %s...", url);
-		try{
-		        Document doc = Jsoup.connect(url).get();
-		        Elements links = doc.select("a[href]");
-		        print("\nLinks: (%d)", links.size());
-		        long order = 1l;
-		        for (Element link : links) {
-		            print(" * a: <%s>  (%s)", link.attr("abs:href"), trim(link.text(), 35));
-		            if(StringUtils.isEmpty(keyWord) || link.text().contains(keyWord)){
-		            	LinkModel model = new LinkModel();
-		            	model.setOrder(order++);
-			            model.setFromUrl(url);
-			            model.setTitle(trim(link.text(), 35));
-			            model.setUrl(link.attr("abs:href"));
-			            model.setTrimUrl(trim(link.attr("abs:href"),50));
-			            results.add(model);
-		            }
-		            
-		        }
-		        
-		        /*Elements media = doc.select("[src]");
-		        Elements imports = doc.select("link[href]");
-		
-		        print("\nMedia: (%d)", media.size());
-		        for (Element src : media) {
-		            if (src.tagName().equals("img"))
-		                print(" * %s: <%s> %sx%s (%s)",
-		                        src.tagName(), src.attr("abs:src"), src.attr("width"), src.attr("height"),
-		                        trim(src.attr("alt"), 20));
-		            else
-		                print(" * %s: <%s>", src.tagName(), src.attr("abs:src"));
-		        }
-		
-		        print("\nImports: (%d)", imports.size());
-		        for (Element link : imports) {
-		            print(" * %s <%s> (%s)", link.tagName(),link.attr("abs:href"), link.attr("rel"));
-		        }*/
-		
-		        
-		}catch(Exception e){
-			print("fail to crawler from url:%s", url);
-		}
+    	for(String url:urls){
+    		print("Fetching %s...", url);
+    		try{
+    		        Document doc = Jsoup.connect(url).get();
+    		        Elements links = doc.select("a[href]");
+    		        print("\nLinks: (%d)", links.size());
+    		        long order = 1l;
+    		        for (Element link : links) {
+    		            print(" * a: <%s>  (%s)", link.attr("abs:href"), trim(link.text(), 35));
+    		            if(StringUtils.isEmpty(keyWord) || link.text().contains(keyWord)){
+    		            	//title和链接都不能为空
+    		            	if(!StringUtils.isEmpty(link.text()) && !StringUtils.isEmpty(link.attr("abs:href"))){
+	    		            	LinkModel model = new LinkModel();
+	    		            	model.setOrder(order++);
+	    			            model.setFromUrl(url);
+	    			            model.setTitle(trim(link.text(), 40));
+	    			            model.setUrl(link.attr("abs:href"));
+	    			            model.setTrimUrl(trim(link.attr("abs:href"),70));
+	    			            results.add(model);
+    		            	}
+    		            }
+    		            
+    		        }
+    		        
+    		        /*Elements media = doc.select("[src]");
+    		        Elements imports = doc.select("link[href]");
+    		
+    		        print("\nMedia: (%d)", media.size());
+    		        for (Element src : media) {
+    		            if (src.tagName().equals("img"))
+    		                print(" * %s: <%s> %sx%s (%s)",
+    		                        src.tagName(), src.attr("abs:src"), src.attr("width"), src.attr("height"),
+    		                        trim(src.attr("alt"), 20));
+    		            else
+    		                print(" * %s: <%s>", src.tagName(), src.attr("abs:src"));
+    		        }
+    		
+    		        print("\nImports: (%d)", imports.size());
+    		        for (Element link : imports) {
+    		            print(" * %s <%s> (%s)", link.tagName(),link.attr("abs:href"), link.attr("rel"));
+    		        }*/
+    		
+    		        
+    		}catch(Exception e){
+    			print("fail to crawler from url:%s", url);
+    		}
+    	}
     	return results;
     }
     private static void print(String msg, Object... args) {
@@ -209,14 +222,4 @@ public class CrawlerController {
             return s;
     }
     
-    /**
-     * 测试
-     * @param args
-     * @throws IOException
-     */
-    public static void main(String[] args) throws IOException {
-        String url = "http://www.babytree.com/";
-        List<LinkModel> linkModels = getLinks(url,"宝宝");
-        print("size=[%s]", linkModels.size());
-    }
 }

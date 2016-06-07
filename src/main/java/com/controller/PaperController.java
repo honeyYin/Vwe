@@ -80,14 +80,16 @@ public class PaperController extends BaseController{
 	@RequestMapping(method=RequestMethod.GET,value="list")
 	public String list(Long channelId,
 							 Integer pageNo,
+							 Integer type,
+							 Integer isDraft,
 							 Model model,
 							 HttpServletRequest request) {
 		if(pageNo == null || pageNo <=0){
 			pageNo = CURRENT_PAGE_NO;
 		}
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
-		if(!StringUtils.isEmpty(queryTitle)){
-			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+		if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft!=null){
+			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle+"&type="+type+"&isDraft="+isDraft;
 		}
 		
 		//是否还有下一页，返回总条数
@@ -116,16 +118,17 @@ public class PaperController extends BaseController{
 	public String queryByCondition(Long channelId,
 							 Integer pageNo,
 							 Integer type,
+							 Integer isDraft,
 							 HttpServletRequest request,
 							 Model model) {
 		if(pageNo == null || pageNo <=0){
 			pageNo = CURRENT_PAGE_NO;
 		}
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
-		if(StringUtils.isEmpty(queryTitle) && type == null){
+		if(StringUtils.isEmpty(queryTitle) && type == null && isDraft == null){
 			return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		}
-		OperationResult<Long> mrResult = paperService.hasNextByCondition(channelId,type,queryTitle,pageNo,0);
+		OperationResult<Long> mrResult = paperService.hasNextByCondition(channelId,type,isDraft,queryTitle,pageNo,0);
 		int maxpage = Integer.valueOf(mrResult.getData().toString());
 		logger.debug("Received request to list papers");
 		
@@ -133,15 +136,16 @@ public class PaperController extends BaseController{
 			pageNo = maxpage;
 		}
 		pageNo = pageNo -1;
-		List<Paper> papers = paperService.getPapersByCondition(channelId,type,pageNo,queryTitle);
+		List<Paper> papers = paperService.getPapersByCondition(channelId,type,isDraft,pageNo,queryTitle);
 		logger.debug("papers Listing count = "+papers.size());
 		//是否还有下一页，返回总条数
-		OperationResult<Long> result = paperService.hasNextByCondition(channelId,type,queryTitle,pageNo,papers.size());
+		OperationResult<Long> result = paperService.hasNextByCondition(channelId,type,isDraft,queryTitle,pageNo,papers.size());
 		
 		List<Channel> channels = channelDao.getRootCategory();
 		model.addAttribute("channels",channels);
 		model.addAttribute("queryTitle",queryTitle);
 		model.addAttribute("type",type==null?-1:type);
+		model.addAttribute("isDraft",isDraft==null?0:isDraft);
 		model.addAttribute("channelId",channelId==null?0:channelId);
 		model.addAttribute("pageNo",pageNo==null?0:pageNo+1);
 		model.addAttribute("maxPageNo",result.getData());
@@ -156,7 +160,11 @@ public class PaperController extends BaseController{
 									HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView();
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+		Integer type = RequestUtil.intvalue(request, "type") ;
+		Integer isDraft = RequestUtil.intvalue(request, "isDraft");
 		mav.addObject("queryTitle",queryTitle);
+		mav.addObject("type",type);
+		mav.addObject("isDraft",isDraft);
 		
 		Paper paper = paperDao.find(paperId);
 		mav.addObject("paper",paperService.getPaperModel(paper));
@@ -199,6 +207,10 @@ public class PaperController extends BaseController{
 					   			  HttpServletResponse response) {
 		Paper paper =  paserPaper(null,request);
 		if(paper != null){
+			if(!StringUtils.isEmpty(paper.getUrl()) && paperService.existByUrl(paper.getUrl())){
+				return render("exist", "text/html", response);
+			}
+			paper.setIsDraft(1);//设置为草稿
 			paper =paperService.savePaper(paper,getUser(request));
 		}
 		return render("succ", "text/html", response);
@@ -215,7 +227,8 @@ public class PaperController extends BaseController{
 		
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
 		mav.addObject("queryTitle",queryTitle);
-		
+		mav.addObject("type",paper.getType());
+		mav.addObject("isDraft",paper.getIsDraft());
 		mav.addObject("channels",channels);
 		mav.addObject("paper",paperService.getPaperModel(paper));
 		mav.addObject("channelId",channelId);
@@ -235,8 +248,20 @@ public class PaperController extends BaseController{
 			savePaperSection(paper.getId(),request);
 		}
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
-		if(!StringUtils.isEmpty(queryTitle)){
-			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+		Integer type = RequestUtil.intvalue(request, "type") ;
+		Integer isDraft = RequestUtil.intvalue(request, "isDraft");
+		if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
+			String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
+			if(!StringUtils.isEmpty(queryTitle)){
+				url += "&channelId="+channelId;
+			}
+			if(type !=null){
+				url +="&type="+type;
+			}
+			if(isDraft !=null){
+				url +="&isDraft="+isDraft;
+			}
+			return url;
 		}
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
@@ -267,8 +292,20 @@ public class PaperController extends BaseController{
 		//记录操作信息
 		paperService.saveOperationRecord(paperId,OperationTypeEnum.DELETE,getUser(request));
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
-		if(!StringUtils.isEmpty(queryTitle)){
-			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+		Integer type = RequestUtil.intvalue(request, "type") ;
+		Integer isDraft = RequestUtil.intvalue(request, "isDraft");
+		if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
+			String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
+			if(!StringUtils.isEmpty(queryTitle)){
+				url += "&channelId="+channelId;
+			}
+			if(type !=null){
+				url +="&type="+type;
+			}
+			if(isDraft !=null){
+				url +="&isDraft="+isDraft;
+			}
+			return url;
 		}
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 	}
@@ -314,8 +351,20 @@ public class PaperController extends BaseController{
 			}
 		}
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
-		if(!StringUtils.isEmpty(queryTitle)){
-			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+		Integer type = RequestUtil.intvalue(request, "type") ;
+		Integer isDraft = RequestUtil.intvalue(request, "isDraft");
+		if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
+			String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
+			if(!StringUtils.isEmpty(queryTitle)){
+				url += "&channelId="+channelId;
+			}
+			if(type !=null){
+				url +="&type="+type;
+			}
+			if(isDraft !=null){
+				url +="&isDraft="+isDraft;
+			}
+			return url;
 		}
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
@@ -332,8 +381,20 @@ public class PaperController extends BaseController{
 		paperService.saveOperationRecord(paperId,OperationTypeEnum.AUDIT,getUser(request));
 		if(StringUtils.isEmpty(redirect)){
 			String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
-			if(!StringUtils.isEmpty(queryTitle)){
-				return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+			Integer type = RequestUtil.intvalue(request, "type") ;
+			Integer isDraft = RequestUtil.intvalue(request, "isDraft");
+			if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
+				String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
+				if(!StringUtils.isEmpty(queryTitle)){
+					url += "&channelId="+channelId;
+				}
+				if(type !=null){
+					url +="&type="+type;
+				}
+				if(isDraft !=null){
+					url +="&isDraft="+isDraft;
+				}
+				return url;
 			}
 			return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		}else{
@@ -357,8 +418,20 @@ public class PaperController extends BaseController{
 			}
 		}
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
-		if(!StringUtils.isEmpty(queryTitle)){
-			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+		Integer type = RequestUtil.intvalue(request, "type") ;
+		Integer isDraft = RequestUtil.intvalue(request, "isDraft");
+		if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
+			String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
+			if(!StringUtils.isEmpty(queryTitle)){
+				url += "&channelId="+channelId;
+			}
+			if(type !=null){
+				url +="&type="+type;
+			}
+			if(isDraft !=null){
+				url +="&isDraft="+isDraft;
+			}
+			return url;
 		}
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
@@ -390,8 +463,20 @@ public class PaperController extends BaseController{
 		//记录操作信息
 		paperService.saveOperationRecord(paperId,OperationTypeEnum.TO_RECOM,getUser(request));
 		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
-		if(!StringUtils.isEmpty(queryTitle)){
-			return "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+		Integer type = RequestUtil.intvalue(request, "type") ;
+		Integer isDraft = RequestUtil.intvalue(request, "isDraft");
+		if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
+			String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
+			if(!StringUtils.isEmpty(queryTitle)){
+				url += "&channelId="+channelId;
+			}
+			if(type !=null){
+				url +="&type="+type;
+			}
+			if(isDraft !=null){
+				url +="&isDraft="+isDraft;
+			}
+			return url;
 		}
 		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
 		
@@ -578,16 +663,14 @@ public class PaperController extends BaseController{
 		Integer type = RequestUtil.intvalue(request, "type");
 		if(type == null){type=0;}
 		
-		if(channel == null){
-			if(type == 1){
-				channel = channelService.findOrAddByName("草稿");
-			}else{
-				return null;
-			}
+		if(channel != null){
+			paper.setIsDraft(0);
+			paper.setChannelId(channel.getId());
+			paper.setChannelName(channel.getName());
+		}else{
+			paper.setIsDraft(1);
 		}
 		paper.setUpdateTime(new Date());
-		paper.setChannelId(channel.getId());
-		paper.setChannelName(channel.getName());
 		paper.setTitle(RequestUtil.stringvalue(request, "title"));
 		
 		

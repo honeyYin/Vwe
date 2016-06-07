@@ -113,7 +113,7 @@ public class PaperService {
 		}
 		return papers;
 	}
-	public List<Paper> getPapersByCondition(Long cateId,Integer type,Integer pageNo,String queryTitle){
+	public List<Paper> getPapersByCondition(Long cateId,Integer type,Integer isDraft,Integer pageNo,String queryTitle){
 		int limit = getPageSizeByChannel(cateId);
 		int offset = pageNo * limit;
 		StringBuffer sql = new StringBuffer("select p from Paper p where p.disabled = 0 ");
@@ -123,6 +123,11 @@ public class PaperService {
 		if(type != null && type>=0){
 			sql.append(" and p.type="+type);
 		}
+		if(isDraft == null ){
+			isDraft = 0;
+		}
+		sql.append(" and p.isDraft="+isDraft);
+		
 		if(StringUtils.isNotEmpty(queryTitle)){
 			sql.append(" and p.title like '%"+queryTitle+"%' ");
 		}
@@ -177,7 +182,7 @@ public class PaperService {
 		}
 		return result;
 	}
-	public OperationResult<Long> hasNextByCondition(Long cateId,Integer type,String queryTitle,Integer pageNo,Integer currentPageSize){
+	public OperationResult<Long> hasNextByCondition(Long cateId,Integer type,Integer isDraft,String queryTitle,Integer pageNo,Integer currentPageSize){
 		OperationResult<Long> result = new OperationResult<Long>();
 		int pageSize = getPageSizeByChannel(cateId); //获取页数大小
 		Long total = 0l;
@@ -188,6 +193,10 @@ public class PaperService {
 		if(type != null && type >= 0){
 			sql.append(" and p.type="+type);
 		}
+		if(isDraft == null ){
+			isDraft = 0;
+		}
+		sql.append(" and p.isDraft="+isDraft);
 		if(StringUtils.isNotEmpty(queryTitle)){
 			sql.append(" and p.title like '%"+queryTitle+"%' ");
 		}
@@ -367,5 +376,20 @@ public class PaperService {
 			paperDao.updatePriority(hPaper.getId(), lPaper.getPriority());
 		}
 		return result;
+	}
+	/**
+	 * url是否已存在
+	 * @param url
+	 * @return
+	 */
+	public boolean existByUrl(String url) {
+		if(StringUtils.isEmpty(url)){
+			return false;
+		}
+		List<Paper> papers = paperDao.findByUrl(url);
+		if(CollectionUtils.isEmpty(papers)){
+			return false;
+		}
+		return true;
 	}
 }

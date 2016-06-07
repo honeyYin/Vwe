@@ -58,6 +58,8 @@ function upateTop(paperId,isTop){
 	var channelId = $('#channelId')[0].value;
 	var pageNo = $('#pageNo')[0].value;
 	var queryTitle = $('#queryTitle')[0].value;
+	var type = $('#type')[0].value;
+	var isDraft = $('#isDraft')[0].value;
 	var par_data="isTop="+isTop+"&paperId="+paperId;
 	$.ajax({ 
 		 type: "GET", 
@@ -65,11 +67,10 @@ function upateTop(paperId,isTop){
 		 data: par_data, 
 		 success: function(message){ 
 			 if(message == "succ"){
-				 if(queryTitle == null || queryTitle == ""){
-					 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/list?pageNo="+pageNo+"&channelId="+channelId;
-
+				 if((queryTitle != null && queryTitle != "") || type !=null || isDraft !=null){
+					 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle+"&type="+type+"&isDraft="+isDraft;
 				 }else{
-					 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+					 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/list?pageNo="+pageNo+"&channelId="+channelId;
 				 }
 			 }else{
 				 alert("固顶文章已达上限");
@@ -148,6 +149,8 @@ function jqcallVerify(){  //jquery获取复选框值
 </form>
 <form id="tableForm" name="tableForm" method="post">
 <input type="hidden" id="queryTitle"  name="queryTitle" value="${queryTitle}" />
+<input type="hidden" id="type"  name="type" value="${type}" />
+<input type="hidden" id="isDraft"  name="isDraft" value="${isDraft}" />
 <table class="pn-ltable" style="" width="100%" cellspacing="1" cellpadding="0" border="0">
 <thead class="pn-lthead">
 <tr>
@@ -186,7 +189,15 @@ function jqcallVerify(){  //jquery获取复选框值
 				<label style="color:red"><strong>[荐]</strong></label>
 			</c:otherwise>
 		</c:choose>
-		<strong>[${item.channelName}]</strong>
+		<c:choose>
+			<c:when test="${item.channelName == null || item.channelName==''}">
+				<strong>[暂无]</strong>
+			</c:when>
+			<c:otherwise>
+				<strong>[${item.channelName}]</strong>
+			</c:otherwise>
+		</c:choose>
+		
 	</td>
 	<td align="center">
 		<c:choose>
@@ -198,34 +209,47 @@ function jqcallVerify(){  //jquery获取复选框值
 	<td align="center">${item.author}</td>
 	<td align="right">${item.viewCount}</td>
 	<c:choose>
-		<c:when test="${item.hasAudit == true}">
-			<td align="center">已发布</td>
-			<td align="center">${item.auditTime}</td>
+		<c:when test="${item.isDraft == 1}">
+			<td align="center">草稿</td>
+			<td align="center"></td>
 		</c:when>
 		<c:otherwise>
-			<td align="center">待发布</td>
-			<td align="center"></td>
+			<c:choose>
+				<c:when test="${item.hasAudit == true}">
+					<td align="center">已发布</td>
+					<td align="center">${item.auditTime}</td>
+				</c:when>
+				<c:otherwise>
+					<td align="center">待发布</td>
+					<td align="center"></td>
+				</c:otherwise>
+			</c:choose>
 		</c:otherwise>
 	</c:choose>
-	
 	<td align="center">
 		<c:choose>
 			<c:when test="${item.type ==1 }">
 				<a onclick="window.open('${item.url }')" class="pn-opt">查看</a>
 			</c:when>
 			<c:otherwise>
-				<a href="<%=basePath%>paper/detail?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt">查看</a>
+				<a href="<%=basePath%>paper/detail?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}&type=${type}&isDraft=${isDraft}" class="pn-opt">查看</a>
 			</c:otherwise>
 		</c:choose>
-		 | <a href="<%=basePath%>paper/toEdit?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt">修改</a> 
-		 | <a href="<%=basePath%>paper/delete?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt" onclick="return confirm('您确定要删除吗？');">删除</a>
-		 | 
+		 | <a href="<%=basePath%>paper/toEdit?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}&type=${type}&isDraft=${isDraft}" class="pn-opt">修改</a> 
+		 | <a href="<%=basePath%>paper/delete?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}&type=${type}&isDraft=${isDraft}" class="pn-opt" onclick="return confirm('您确定要删除吗？');">删除</a>
 		<c:choose>
-			<c:when test="${item.hasAudit == true}">
-				<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=false&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt">取消发布</a>
+			<c:when test="${item.isDraft == 1}">
 			</c:when>
-			<c:otherwise>
-				<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=true&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}" class="pn-opt">发布</a>
+		<c:otherwise>
+		 | 
+			<c:choose>
+				<c:when test="${item.hasAudit == true}">
+					<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=false&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}&type=${type}&isDraft=${isDraft}" class="pn-opt">取消发布</a>
+				</c:when>
+				<c:otherwise>
+					<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=true&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}&type=${type}&isDraft=${isDraft}" class="pn-opt">发布</a>
+				</c:otherwise>
+			</c:choose>
 			</c:otherwise>
 		</c:choose>
 		 | 
@@ -240,10 +264,10 @@ function jqcallVerify(){  //jquery获取复选框值
 		 | 
 		<c:choose>
 			<c:when test="${item.isRecom == 1}">
-				<a id ="${item.id}" href="<%=basePath%>paper/updateRecom?isRecom=0&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">取消推荐</a>
+				<a id ="${item.id}" href="<%=basePath%>paper/updateRecom?isRecom=0&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}&type=${type}&isDraft=${isDraft}" class="pn-opt">取消推荐</a>
 			</c:when>
 			<c:otherwise>
-				<a id ="${item.id}" href="<%=basePath%>paper/updateRecom?isRecom=1&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">推荐</a>
+				<a id ="${item.id}" href="<%=basePath%>paper/updateRecom?isRecom=1&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}&type=${type}&isDraft=${isDraft}" class="pn-opt">推荐</a>
 			</c:otherwise>
 		</c:choose>
 	</td>
@@ -268,6 +292,7 @@ function jqcallVerify(){  //jquery获取复选框值
 			function toPage(){
 				var channelId = document.getElementById("channelId").value;
 				var type = document.getElementById("type").value;
+				var isDraft = document.getElementById("isDraft").value;
 				var queryTitle = document.getElementById("queryTitle").value;
 				var current = document.getElementById("topageNo").value;
 				var last = document.getElementById("maxPageNo").value;
@@ -280,32 +305,33 @@ function jqcallVerify(){  //jquery获取复选框值
 					if(current>last){
 						current=last;
 					}
-					var path = "<%=request.getContextPath()%>/paper/queryByCondition?queryTitle="+queryTitle+"&pageNo="+current+"&channelId="+channelId+"&type="+type;
+					var path = "<%=request.getContextPath()%>/paper/queryByCondition?queryTitle="+queryTitle+"&pageNo="+current+"&channelId="+channelId+"&type="+type+"&isDraft="+isDraft;
 					location.href=path;
 				}
 			}
 		 	
 	</script>
 		<input type="hidden" id="channelId" name="channelId" value="${channelId}"/>
+		<input type="hidden" id="isDraft" name="isDraft" value="${isDraft}"/>
 		<input type = "hidden" id="type" name="type" value="${type}"/> 
 		<input type = "hidden" id="pageNo" name="pageNo" value="${pageNo}"/> 
 		<input type = "hidden" id="maxPageNo" name="maxPageNo" value="${maxPageNo}"/> 
 		共  ${maxPageNo} 页 
 		<input type="text" id="topageNo" name="topageNo" style="width:25px" value="${pageNo}"/>
 		<a href="#" onclick="toPage()">跳转</a>
-		<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=1&channelId=${channelId}&type=${type}">首页</a>
+		<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=1&channelId=${channelId}&type=${type}&isDraft=${isDraft}">首页</a>
 		<c:choose>
 		<c:when test="${pageNo <= 1}">
-			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=1&channelId=${channelId}&type=${type}">上一页</a>
+			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=1&channelId=${channelId}&type=${type}&isDraft=${isDraft}">上一页</a>
 		</c:when>
 		<c:otherwise>
-			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=${pageNo-1}&channelId=${channelId}&type=${type}">上一页</a>
+			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=${pageNo-1}&channelId=${channelId}&type=${type}&isDraft=${isDraft}">上一页</a>
 		</c:otherwise>
 		</c:choose> 
 		<c:choose>
 		<c:when test="${hasNext == true}">
-			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=${pageNo+1}&channelId=${channelId}&type=${type}">下一页</a>
-			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=${maxPageNo}&channelId=${channelId}&type=${type}">尾页</a>
+			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=${pageNo+1}&channelId=${channelId}&type=${type}&isDraft=${isDraft}">下一页</a>
+			<a href="<%=request.getContextPath()%>/paper/queryByCondition?queryTitle=${queryTitle}&pageNo=${maxPageNo}&channelId=${channelId}&type=${type}&isDraft=${isDraft}">尾页</a>
 		</c:when>
 		<c:otherwise>
 		</c:otherwise>

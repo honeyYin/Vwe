@@ -50,7 +50,6 @@ public class Paper  implements Serializable{
 	@Column	
 	private Long viewCount=0l;
 	
-	@Column(nullable = false)
 	private Long channelId;
 	
 	@Column 
@@ -72,7 +71,9 @@ public class Paper  implements Serializable{
 	//封面图url
 	@Column	
 	private String titleImg;
-	
+	//是否为草稿
+	@Column	
+	private int isDraft=0;
 	//推荐孕周
 	@Column
 	private PregStageEnum pregStage;

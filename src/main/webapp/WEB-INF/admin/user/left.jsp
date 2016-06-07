@@ -16,6 +16,9 @@
 <div class="fresh">
 		 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 		 <tr>
+	            <td height="35" align="center"><a >用户</a></td>
+	     </tr>
+		 <tr>
 		 	<td height="35" align="center"><a href="<%=basePath%>user/toResetPwd?userId=${userId}" target="rightFrame">修改密码</a></td>
 		 </tr>
 		 <tr>

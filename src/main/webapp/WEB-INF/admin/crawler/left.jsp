@@ -27,8 +27,11 @@
 	<%@include file="../date.jsp" %>
 	<div class="fresh">
 		 <table width="100%" border="0" cellspacing="0" cellpadding="0">
+		 	<tr>
+	            <td height="35" align="center"><a >一键抓取</a></td>
+	      	 </tr>
 	          <tr>
-	            <td height="35" align="center"><a href="javascript:toCrawler()" >一键抓取</a></td>
+	            <td height="35" align="center"><a href="javascript:toCrawler()" >文章抓取</a></td>
 	      	 </tr>
 	      	 <tr>
 	            <td height="35" align="center"><a href="javascript:toSites()" >站点管理</a></td>

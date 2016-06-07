@@ -24,7 +24,9 @@
     function getChannelList(channelId){
     		window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/list?pageNo=0&channelId="+channelId;
     }
-    
+    function queryDraft(){
+		window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/queryByCondition?pageNo=0&isDraft=1";
+	}
     </script>
 </head>
 <body>
@@ -40,6 +42,9 @@
 	            	<td height="35" align="center"><a href="javascript:getChannelList(${item.id})" >${item.name}</a></td>
 	            </tr>
 	      	 </c:forEach>
+	      	 <tr>
+	            	<td height="35" align="center"><a href="javascript:queryDraft()" >草稿</a></td>
+	         </tr>
 	     </table>
 	</div>
 	     <div id="tree">

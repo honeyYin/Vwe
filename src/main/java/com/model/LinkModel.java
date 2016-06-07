@@ -17,4 +17,5 @@ public class LinkModel {
 	private String trimUrl;
 	
 	private String fromUrl;
+	
 }

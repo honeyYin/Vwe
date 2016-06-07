@@ -29,6 +29,11 @@ public class CrawlerSiteDao {
 		}		
 	}
 	@SuppressWarnings("unchecked")
+	public List<String> findAllUrls(){
+		Query query =  entityManager.createQuery("select p.url from CrawlerSite p where p.disabled = 0 ");
+		return query.getResultList();	
+	}
+	@SuppressWarnings("unchecked")
 	public List<CrawlerSite> findByTitle(String title){
 		Query query =  entityManager.createQuery("select p from CrawlerSite p where p.disabled = 0 and p.title = ?1 ");
 		query.setParameter(1, title);
