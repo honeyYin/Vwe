@@ -133,7 +133,7 @@ function jqcallVerify(){  //jquery获取复选框值
 <!-- action="queryByCondition.do" -->
 <form name="form1" id ="form1"  action="<%=basePath%>paper/queryByCondition" method ="get" padding-top:5px;">
 <div>
-标题: <input type="text" id="queryTitle"  name="queryTitle" value="${queryTitle}" style="width:100px"/>
+标题: <input type="text" id="queryTitle"  name="queryTitle" value="${queryTitle}" style="width:100px" accept-charset="UTF-8"/>
 <select name="channelId">
 	<option value="0" selected="selected">--所有栏目--</option>
 	<c:forEach items="${channels}" var="v_channel">

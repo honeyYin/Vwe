@@ -1,8 +1,9 @@
-<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8" contentType="text/html; charset=utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+request.setCharacterEncoding("UTF-8");
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -168,7 +169,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<input type="text" id="url"  name="url" value="${url}" size="75" style="margin-left:22px;height:25px;"/>
 		</div>
 		<div >
-			&nbsp;&nbsp;关键词: <input type="text" id="queryTitle"  name="queryTitle" value="${queryTitle}"  style="height:25px;width:185px"/>
+			&nbsp;&nbsp;关键词: <input type="text" id="queryTitle"  name="queryTitle" value="${queryTitle}"  style="height:25px;width:185px" accept-charset="UTF-8"/>
 			<input class="query" type="submit" value="搜索" style="margin-left:22px;"/>
 		</div>
 		<div>

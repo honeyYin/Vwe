@@ -1,6 +1,7 @@
 package com.util;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -147,7 +148,7 @@ public class RequestUtil {
 	public static String stringvalue(HttpServletRequest request, String name) {
 		try {
 			String trString = request.getCharacterEncoding();
-			if(StringUtils.isNotEmpty(trString) && trString.equals("UTF-8")){
+			if(StringUtils.isNotEmpty(trString) && trString.toUpperCase().equals("UTF-8")){
 				return request.getParameter(name);
 			}else{
 				if(StringUtils.isEmpty(request.getParameter(name))){
