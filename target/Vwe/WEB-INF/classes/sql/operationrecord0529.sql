@@ -1,0 +1,16 @@
+DROP TABLE IF EXISTS `OperationRecord`;
+CREATE TABLE `OperationRecord` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `createTime` datetime DEFAULT NULL,
+  `entity` varchar(255) CHARACTER SET UTF8 DEFAULT NULL,
+  `entityId` bigint(20) DEFAULT NULL,
+  `operatorId` bigint(20) DEFAULT NULL,
+  `operatorName` varchar(255) CHARACTER SET UTF8 DEFAULT NULL,
+  `type` varchar(255) CHARACTER SET UTF8 DEFAULT NULL,
+  `updateTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
+
+ALTER TABLE Channel DROP COLUMN titleImg;
+ALTER TABLE Paper MODIFY description VARCHAR(10240)  CHARACTER SET UTF8 DEFAULT NULL;
+ALTER TABLE PaperParagraph MODIFY content VARCHAR(10240)  CHARACTER SET UTF8 DEFAULT NULL;
