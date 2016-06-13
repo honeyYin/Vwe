@@ -372,34 +372,44 @@ public class PaperController extends BaseController{
 	@RequestMapping(method=RequestMethod.GET,value="updateAudit") 
 	public String updateAudit(@RequestParam("paperId") Long paperId,
 							  @RequestParam("hasAudit") Boolean hasAudit,
-						      Long channelId,
-						      Integer pageNo,
-						      String redirect,
-						      HttpServletRequest request) {
+						      HttpServletRequest request,
+						      HttpServletResponse response) {
+		Paper paper = paperDao.find(paperId);
+		if(paper == null){
+			return render("null", "text/html",response);
+		}
+		if(hasAudit){
+			if(paper.getIsDraft() == 1){ //草稿
+				return render("draft", "text/html",response);
+			}
+			if(paper.getType() == 1){ //外链
+				if((paper.getChannelId() == null || paper.getChannelId()<=0 ) 
+						|| StringUtils.isEmpty(paper.getTitle()) 
+						|| StringUtils.isEmpty(paper.getTitleImg())
+						|| StringUtils.isEmpty(paper.getUrl())){
+					return render("illegal", "text/html",response);
+				}
+			}else{
+				if((paper.getChannelId() == null || paper.getChannelId()<=0 ) 
+						|| StringUtils.isEmpty(paper.getTitle()) 
+						|| StringUtils.isEmpty(paper.getTitleImg())){
+					return render("illegal", "text/html",response);
+				}
+				List<PaperSection> sections = sectionDao.getSecitonByPaper(paperId);
+				if(!CollectionUtils.isEmpty(sections)){
+					for (PaperSection item:sections) {
+						if(StringUtils.isEmpty(item.getTitle())){ //板块标题不能为空
+							return render("section", "text/html",response);
+						}
+					}
+				}
+			}
+		}
 		paperDao.auditPaper(paperId,hasAudit);
 		//记录操作信息
 		paperService.saveOperationRecord(paperId,OperationTypeEnum.AUDIT,getUser(request));
-		if(StringUtils.isEmpty(redirect)){
-			String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
-			Integer type = RequestUtil.intvalue(request, "type") ;
-			Integer isDraft = RequestUtil.intvalue(request, "isDraft");
-			if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
-				String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
-				if(!StringUtils.isEmpty(queryTitle)){
-					url += "&channelId="+channelId;
-				}
-				if(type !=null){
-					url +="&type="+type;
-				}
-				if(isDraft !=null){
-					url +="&isDraft="+isDraft;
-				}
-				return url;
-			}
-			return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
-		}else{
-			return "redirect:"+redirect+"?paperId="+paperId+"&pageNo="+pageNo+"&channelId="+channelId;
-		}
+		
+		return render("succ", "text/html",response);
 		
 	}
 	@RequestMapping(method=RequestMethod.POST,value="batchAudit") 

@@ -115,6 +115,35 @@ function jqcallVerify(){  //jquery获取复选框值
 		 
 		}
 }
+//发布
+function updateAudit(paperId,hasAudit){ 
+	var channelId = $('#channelId')[0].value;
+	var pageNo = $('#pageNo')[0].value;
+	var queryTitle = $('#queryTitle')[0].value;
+	var par_data="hasAudit="+hasAudit+"&paperId="+paperId;
+	$.ajax({ 
+		 type: "GET", 
+		 url: "<%=basePath%>paper/updateAudit",  
+		 data: par_data, 
+		 success: function(message){ 
+			 if(message == "succ"){
+				 if(queryTitle == null || queryTitle == ""){
+					 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/list?pageNo="+pageNo+"&channelId="+channelId;
+
+				 }else{
+					 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle;
+				 }
+			 }else if(message == "null"){
+				 alert("文章不存在");
+			 }else if(message == "draft"){
+				 alert("草稿文章不允许发布");
+			 }else if(message == "section"){
+				 alert("板块标题不能为空");
+			 }else{
+				 alert("请先完善文章信息");
+			 }
+	}});
+}
 </script>
 </head>
 <body>
@@ -251,10 +280,10 @@ function jqcallVerify(){  //jquery获取复选框值
 		 | 
 			<c:choose>
 				<c:when test="${item.hasAudit == true}">
-					<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=false&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">取消发布</a>
+					<a id ="${item.id}" href="javascript:updateAudit(${item.id},'false')" class="pn-opt">取消发布</a>
 				</c:when>
 				<c:otherwise>
-					<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=true&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}" class="pn-opt">发布</a>
+					<a id ="${item.id}" href="javascript:updateAudit(${item.id},'true')" class="pn-opt">发布</a>
 				</c:otherwise>
 			</c:choose>
 			</c:otherwise>
