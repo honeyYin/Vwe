@@ -37,6 +37,9 @@ request.setCharacterEncoding("UTF-8");
 
 }); --%>
 function callAddNewsAction(){
+	var channelId = $('#channelId')[0].value;
+	var pageNo = $('#pageNo')[0].value;
+	
 	var type = $('#type')[0].value;
 	var title = $('#title')[0].value;
 	if(type == 1){
@@ -49,7 +52,23 @@ function callAddNewsAction(){
 		}else if(paperurl == null || paperurl ==""){
 			alert("文章链接不能为空");
 		}else{
-			$("#newsForm")[0].submit();
+			var fdStart = paperurl.indexOf("http://");
+			var fdStarts = paperurl.indexOf("https://");
+			if(fdStart != 0 && fdStarts != 0){
+				alert("文章链接请以http://或https://开头");
+			}else{
+				$.ajax({ 
+					 type: "GET", 
+					 url: "<%=basePath%>paper/add",  
+					 data: $('#newsForm').serialize(),
+					 success: function(message){ 
+						 if(message == "succ"){
+							 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/list?pageNo="+pageNo+"&channelId="+channelId;
+						 }else{
+							 alert("有必填项未填写");
+						 }
+				}});
+			}
 		}
 	}else{
 		var titleImg = $('#titleImg')[0].value;
@@ -80,7 +99,18 @@ function callAddNewsAction(){
 			if(outIllegal == 1){
 				alert("有必填项未填写");
 			}else{
-				$("#newsForm")[0].submit();
+				/* $("#newsForm")[0].submit(); */
+				$.ajax({ 
+					 type: "POST", 
+					 url: "<%=basePath%>paper/add",  
+					 data: $('#newsForm').serialize(),
+					 success: function(message){ 
+						 if(message == "succ"){
+							 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/list?pageNo="+pageNo+"&channelId="+channelId;
+						 }else{
+							 alert("有必填项未填写");
+						 }
+				}});
 			}
 		}
 	}
@@ -132,7 +162,7 @@ function addOuterPaper(type){
 
 <div  class="body-box">
 
-<form id="newsForm" name="newsForm" method="post" action="<%=basePath%>paper/add">
+<form id="newsForm" name="newsForm" method="post">
 <input type="hidden" id="pageNo"  name="pageNo" value="${pageNo}"/>
 
 <!-- 文章正文区域start -->
@@ -252,6 +282,7 @@ function addOuterPaper(type){
 		<td width="10%" class="pn-flabel pn-flabel-h"><span class='pn-frequired'>*</span>链接:</td>
 		<td colspan="1" width="40%" class="pn-fcontent">
 			<input id ="paperurl" type="text"  name="paperurl" />
+			<span>以http://或https://开头</span>
 		</td>
 	</tr>
 </table>
@@ -262,7 +293,7 @@ function addOuterPaper(type){
 <table width="100%"  cellpadding="2" cellspacing="1" border="0">
 	<tr>
 	<td colspan="4" class="pn-fbutton">
-		<input type="submit" value="提交"  class="submit" onclick= "javascript:callAddNewsAction()"/> &nbsp; 
+		<input type="button" value="提交"  class="submit" onclick= "javascript:callAddNewsAction()"/> &nbsp; 
 		<input type="reset" value="重置" class="reset"/>
 	</td>
 	</tr>

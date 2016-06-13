@@ -111,10 +111,10 @@ public class RequestUtil {
 		
 		return result;
 	}
-	public static int intvalue(HttpServletRequest request, String name){
+	public static Integer intvalue(HttpServletRequest request, String name){
 		String temp = request.getParameter(name);
 		
-		int result = 0 ;
+		Integer result = null ;
 		
 		if (StringUtils.isEmpty(temp)) {
 			return result;

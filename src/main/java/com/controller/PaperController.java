@@ -187,21 +187,23 @@ public class PaperController extends BaseController{
 		return mav;
 		
 	}
-	
 	@RequestMapping(method=RequestMethod.POST,value="add") 
 	public String add(HttpServletRequest request,
-					   Long channelId,
-					   Integer pageNo) {
+					  HttpServletResponse response) {
 		Paper paper =  paserPaper(null,request);
-		if(paper != null){
+		String msg = validateAuditPaper(paper);
+		if(StringUtils.isEmpty(msg)){
 			paper =paperService.savePaper(paper,getUser(request));
 			if(paper.getType()!= null && paper.getType() == 0){
 				savePaperSection(paper.getId(),request);
 			}
+		}else{
+			return render(msg, "text/html",response);
 		}
 		
-		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
+		return render("succ", "text/html",response);
 	}
+	
 	@RequestMapping(method=RequestMethod.POST,value="addCrawlerPaper") 
 	public String addCrawlerPaper(HttpServletRequest request,
 					   			  HttpServletResponse response) {
@@ -239,6 +241,23 @@ public class PaperController extends BaseController{
 	}
 	@RequestMapping(method=RequestMethod.POST,value="edit") 
 	public String edit(HttpServletRequest request,
+					  HttpServletResponse response) {
+		Long paperId = RequestUtil.longvalue(request,"paperId");
+		Paper paper =  paserPaper(paperId,request);
+		String msg = validateAuditPaper(paper);
+		if(StringUtils.isEmpty(msg)){
+			paper = paperService.savePaper(paper,getUser(request));
+			if(paper.getType()!= null && paper.getType() == 0){
+				savePaperSection(paper.getId(),request);
+			}
+		}else{
+			return render(msg, "text/html",response);
+		}
+		
+		return render("succ", "text/html",response);
+	}
+	@RequestMapping(method=RequestMethod.POST,value="edit1") 
+	public String edit1(HttpServletRequest request,
 					   Long channelId,
 					   Integer pageNo) {
 		Long paperId = RequestUtil.longvalue(request,"paperId");
@@ -371,79 +390,101 @@ public class PaperController extends BaseController{
 	}
 	@RequestMapping(method=RequestMethod.GET,value="updateAudit") 
 	public String updateAudit(@RequestParam("paperId") Long paperId,
-							  @RequestParam("hasAudit") Boolean hasAudit,
 						      HttpServletRequest request,
 						      HttpServletResponse response) {
 		Paper paper = paperDao.find(paperId);
-		if(paper == null){
-			return render("null", "text/html",response);
+		String msg = validateAuditPaper(paper);
+		if(StringUtils.isEmpty(msg)){
+			paperDao.auditPaper(paperId,true);
+			//记录操作信息
+			paperService.saveOperationRecord(paperId,OperationTypeEnum.AUDIT,getUser(request));
+			return render("succ", "text/html",response);
+		}else{
+			return render(msg, "text/html",response);
 		}
-		if(hasAudit){
-			if(paper.getIsDraft() == 1){ //草稿
-				return render("draft", "text/html",response);
+	}
+	@RequestMapping(method=RequestMethod.GET,value="cancleAudit") 
+	public String cancleAudit(@RequestParam("paperId") Long paperId,
+						      HttpServletRequest request,
+							    Long channelId,
+							    Integer pageNo) {
+			paperDao.auditPaper(paperId,false);
+			//记录操作信息
+			paperService.saveOperationRecord(paperId,OperationTypeEnum.AUDIT,getUser(request));
+			String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
+			Integer type = RequestUtil.intvalue(request, "type") ;
+			Integer isDraft = RequestUtil.intvalue(request, "isDraft");
+			if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
+				String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
+				if(!StringUtils.isEmpty(queryTitle)){
+					url += "&channelId="+channelId;
+				}
+				if(type !=null){
+					url +="&type="+type;
+				}
+				if(isDraft !=null){
+					url +="&isDraft="+isDraft;
+				}
+				return url;
 			}
-			if(paper.getType() == 1){ //外链
-				if((paper.getChannelId() == null || paper.getChannelId()<=0 ) 
-						|| StringUtils.isEmpty(paper.getTitle()) 
-						|| StringUtils.isEmpty(paper.getTitleImg())
-						|| StringUtils.isEmpty(paper.getUrl())){
-					return render("illegal", "text/html",response);
-				}
-			}else{
-				if((paper.getChannelId() == null || paper.getChannelId()<=0 ) 
-						|| StringUtils.isEmpty(paper.getTitle()) 
-						|| StringUtils.isEmpty(paper.getTitleImg())){
-					return render("illegal", "text/html",response);
-				}
-				List<PaperSection> sections = sectionDao.getSecitonByPaper(paperId);
+			return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
+			
+	}
+	private String validateAuditPaper(Paper paper){
+		if(paper == null){
+			return "null";
+		}
+		if(paper.getIsDraft() == 1){ //草稿
+			return "draft";
+		}
+		if(paper.getType() == 1){ //外链
+			if((paper.getChannelId() == null || paper.getChannelId()<=0 ) 
+					|| StringUtils.isEmpty(paper.getTitle()) 
+					|| StringUtils.isEmpty(paper.getTitleImg())
+					|| StringUtils.isEmpty(paper.getUrl())){
+				return "illegal";
+			}
+		}else{
+			if((paper.getChannelId() == null || paper.getChannelId()<=0 ) 
+					|| StringUtils.isEmpty(paper.getTitle()) 
+					|| StringUtils.isEmpty(paper.getTitleImg())){
+				return "illegal";
+			}
+			if(paper.getId() != null){
+				List<PaperSection> sections = sectionDao.getSecitonByPaper(paper.getId());
 				if(!CollectionUtils.isEmpty(sections)){
 					for (PaperSection item:sections) {
 						if(StringUtils.isEmpty(item.getTitle())){ //板块标题不能为空
-							return render("section", "text/html",response);
-						}
+							return "section";						}
 					}
 				}
 			}
-		}
-		paperDao.auditPaper(paperId,hasAudit);
-		//记录操作信息
-		paperService.saveOperationRecord(paperId,OperationTypeEnum.AUDIT,getUser(request));
-		
-		return render("succ", "text/html",response);
-		
+		}	
+		return "";
 	}
 	@RequestMapping(method=RequestMethod.POST,value="batchAudit") 
 	public String batchAudit(HttpServletRequest request,
-						    Long channelId,
-						    Integer pageNo) {
-		long[] wids = RequestUtil.longArrayValue(request, "ids");
-		if(wids != null && wids.length >0){
-			String string = arrToStr(wids);
-			if(!StringUtils.isEmpty(string)){
-				paperDao.batchAudit(string);
+							HttpServletResponse response) {
+		String ids = RequestUtil.stringvalue(request, "ids");
+		if(!StringUtils.isEmpty(ids)){
+			List<Long> wids = stringToArr(ids);
+			if(!CollectionUtils.isEmpty(wids)){
+				for(long id:wids){
+					Paper paper = paperDao.find(id);
+					String msg = validateAuditPaper(paper);
+					if(!StringUtils.isEmpty(msg)){
+						return render(msg+"{"+id+"}", "text/html",response);
+					}
+				}
+				paperDao.batchAudit(ids);
+				for(long id:wids){
+					//记录操作信息
+					paperService.saveOperationRecord(id,OperationTypeEnum.AUDIT,getUser(request));
+				}
 			}
-			for(int i=0;i<wids.length;i++){
-				//记录操作信息
-				paperService.saveOperationRecord(wids[i],OperationTypeEnum.AUDIT,getUser(request));
-			}
+			
 		}
-		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
-		Integer type = RequestUtil.intvalue(request, "type") ;
-		Integer isDraft = RequestUtil.intvalue(request, "isDraft");
-		if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
-			String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
-			if(!StringUtils.isEmpty(queryTitle)){
-				url += "&channelId="+channelId;
-			}
-			if(type !=null){
-				url +="&type="+type;
-			}
-			if(isDraft !=null){
-				url +="&isDraft="+isDraft;
-			}
-			return url;
-		}
-		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
+		return render("succ", "text/html",response);
 		
 	}
 	@RequestMapping(method=RequestMethod.GET,value="updateTop") 
@@ -828,5 +869,20 @@ public class PaperController extends BaseController{
 		}
 		stringBuffer.deleteCharAt(stringBuffer.length()-1);
 		return stringBuffer.toString();
+	}
+	private List<Long> stringToArr(String ids){
+		if(StringUtils.isEmpty(ids)){
+			return Lists.newArrayList();
+		}
+		String[] sidarr = ids.split(",");
+		List<Long> idArr = Lists.newArrayList();
+		for(String str:sidarr){
+			long id = Long.valueOf(str);
+			if(id>=0){
+				idArr.add(id);
+			}
+		}
+		return idArr;
+		
 	}
 }

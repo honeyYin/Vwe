@@ -44,6 +44,13 @@ int [] k = new int[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
 }); --%>
 function callupdateNewsAction(){
+
+	var channelId = $('#channelId')[0].value;
+	var pageNo = $('#pageNo')[0].value;
+	var queryTitle = $('#queryTitle')[0].value;
+	var type = $('#type')[0].value;
+	var isDraft = $('#isDraft')[0].value;
+	
 	var type = $('#type')[0].value;
 	var title = $('#title')[0].value;
 	if(type == 1){
@@ -56,7 +63,23 @@ function callupdateNewsAction(){
 		}else if(paperurl == null || paperurl ==""){
 			alert("文章链接不能为空");
 		}else{
-			$("#newsForm")[0].submit();
+			var fdStart = paperurl.indexOf("http://");
+			var fdStarts = paperurl.indexOf("https://");
+			if(fdStart != 0 && fdStarts != 0){
+				alert("文章链接请以http://或https://开头");
+			}else{
+				$.ajax({ 
+					 type: "POST", 
+					 url: "<%=basePath%>paper/edit",  
+					 data: $('#newsForm').serialize(),
+					 success: function(message){ 
+						 if(message == "succ"){
+							 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle+"&type="+type+"&isDraft="+isDraft;
+						 }else{
+							 alert("有必填项未填写");
+						 }
+				}});
+			}
 		}
 	}else{
 		var titleImg = $('#titleImg')[0].value;
@@ -87,7 +110,17 @@ function callupdateNewsAction(){
 			if(outIllegal == 1){
 				alert("有必填项未填写");
 			}else{
-				$("#newsForm")[0].submit();
+				$.ajax({ 
+					 type: "POST", 
+					 url: "<%=basePath%>paper/edit",  
+					 data: $('#newsForm').serialize(),
+					 success: function(message){ 
+						 if(message == "succ"){
+							 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle+"&type="+type+"&isDraft="+isDraft;
+						 }else{
+							 alert("有必填项未填写");
+						 }
+				}});
 			}
 		}
 	}
@@ -172,7 +205,7 @@ function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
 
 <div >
 
-<form id="newsForm"  name="newsForm" method="post" action = "<%=basePath%>paper/edit">
+<form id="newsForm"  name="newsForm" method="post" >
 <input type="hidden" id="paperId"  name="paperId" value="${paper.id}"/>
 <input type="hidden" id="pageNo"  name="pageNo" value="${pageNo}"/>
 
@@ -257,6 +290,7 @@ function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
 		<td width="10%" class="pn-flabel pn-flabel-h"><span class='pn-frequired'>*</span>链接:</td>
 		<td colspan="1" width="40%" class="pn-fcontent">
 			<input id ="paperurl" type="text"  name="paperurl" value="${paper.url }"/>
+			<span>以http://或https://开头</span>
 		</td>
 	</tr>
 	</table>
@@ -527,7 +561,7 @@ function uploanFile(buttonId,picId,titleImgId,spanId,type,deleId){
 <table width="100%"  cellpadding="2" cellspacing="1" border="0">
 <tr>
 <td colspan="4" class="pn-fbutton">
-	<input type="submit" value="提交"  class="submit" onclick="javascript:callupdateNewsAction()"/> &nbsp; 
+	<input type="button" value="提交"  class="submit" onclick="javascript:callupdateNewsAction()"/> &nbsp; 
 	<input type="reset" value="重置" class="reset"/>
 </td>
 </tr>

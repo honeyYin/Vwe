@@ -78,13 +78,13 @@ function upateTop(paperId,isTop){
 	}});
 }
 //发布
-function updateAudit(paperId,hasAudit){ 
+function updateAudit(paperId){ 
 	var channelId = $('#channelId')[0].value;
 	var pageNo = $('#pageNo')[0].value;
 	var queryTitle = $('#queryTitle')[0].value;
 	var type = $('#type')[0].value;
 	var isDraft = $('#isDraft')[0].value;
-	var par_data="hasAudit="+hasAudit+"&paperId="+paperId;
+	var par_data="paperId="+paperId;
 	$.ajax({ 
 		 type: "GET", 
 		 url: "<%=basePath%>paper/updateAudit",  
@@ -107,21 +107,58 @@ function updateAudit(paperId,hasAudit){
 			 }
 	}});
 }
-//jquery批量删除
+//批量发布文章
 function jqcallVerify(){  //jquery获取复选框值
-		var chk_value =[];
-		$('input[name="ids"]:checked').each(function(){
-			chk_value.push($(this).val());
-		});
-		if(chk_value.length==0){
-			alert("请选择您要操作的数据");
-		}else{
-				if(confirm("您确定发布吗？")) {
-				document.tableForm.action = "<%=basePath%>paper/batchAudit";   
-				document.tableForm.submit();
-		 	}
-		 
-		}
+	var channelId = $('#channelId')[0].value;
+	var pageNo = $('#pageNo')[0].value;
+	var queryTitle = $('#queryTitle')[0].value;
+	var type = $('#type')[0].value;
+	var isDraft = $('#isDraft')[0].value;
+	
+	var chk_value =[];
+	$('input[name="ids"]:checked').each(function(){
+		chk_value.push($(this).val());
+	});
+	if(chk_value.length==0){
+		alert("请选择您要操作的数据");
+	}else{
+			if(confirm("您确定发布吗？")) {
+				var ids = "";
+				for(var i=0;i<chk_value.length;i++){
+					ids += chk_value[i]+",";
+				}
+				ids = ids.substring(0,ids.length-1);
+				var par_data="ids="+ids;
+				$.ajax({ 
+					 type: "POST", 
+					 url: "<%=basePath%>paper/batchAudit",  
+					 data: par_data, 
+					 success: function(message){ 
+						 if(message == "succ"){
+							 if((queryTitle != null && queryTitle != "") || type !=null || isDraft !=null){
+								 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle+"&type="+type+"&isDraft="+isDraft;
+							 }else{
+								 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/list?pageNo="+pageNo+"&channelId="+channelId;
+							 }
+						 }else {
+								var start = message.indexOf("{");
+								var end = message.indexOf("}");
+								var	msg = message.substring(0, (start-1));
+								var	num = message.substring((start+1), end);
+							 if(msg == "null"){
+								 alert("文章"+num+"不存在");
+							 }else if(msg == "draft"){
+								 alert("草稿文章"+num+"不允许发布");
+							 }else if(msg == "section"){
+								 alert("文章"+num+"板块标题不能为空");
+							 }else{
+								 alert("请先完善文章"+num+"的信息");
+							 }
+						 }
+				}});
+			}
+	 	}
+	 
 }
 </script>
 </head>
@@ -274,10 +311,10 @@ function jqcallVerify(){  //jquery获取复选框值
 		 | 
 			<c:choose>
 				<c:when test="${item.hasAudit == true}">
-					<a id ="${item.id}" href="javascript:updateAudit(${item.id},'false')" class="pn-opt">取消发布</a>
+					<a id ="${item.id}" href="<%=basePath%>paper/cancleAudit?paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}&type=${type}&isDraft=${isDraft}" class="pn-opt">取消发布</a>
 				</c:when>
 				<c:otherwise>
-					<a id ="${item.id}" href="javascript:updateAudit(${item.id},'true')" class="pn-opt">发布</a>
+					<a id ="${item.id}" href="javascript:updateAudit(${item.id})" class="pn-opt">发布</a>
 				</c:otherwise>
 			</c:choose>
 			</c:otherwise>

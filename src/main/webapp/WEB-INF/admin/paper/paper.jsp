@@ -11,6 +11,7 @@ request.setCharacterEncoding("UTF-8");
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <title></title>
 <link href="<%=basePath%>res/common/css/admin.css" rel="stylesheet" type="text/css"/>
+<script src="<%=basePath%>res/common/js/jquery.js" type="text/javascript"></script>
 <link href="<%=basePath%>res/common/css/theme.css" rel="stylesheet" type="text/css"/>
 
 <style type="text/css">
