@@ -23,11 +23,32 @@ h1{text-align:center;font-size:18px;}
 	function callVerify(){
 			var channelId = document.getElementById("channelId").value;
 			var pageNo = document.getElementById("pageNo").value;
+			var queryTitle = document.getElementById("queryTitle").value;
+			var isDraft = document.getElementById("isDraft").value;
+			var type = document.getElementById("type").value;
 			var st =  document.getElementById("status").value;
 				if(st == '待发布'){
 					if(confirm("您确定发布吗？")) {
 						var paperId = jvForm.elements["paperId"].value;
-						window.location.href = "<%=basePath%>paper/updateAudit?redirect=/paper/detail&hasAudit=true&paperId="+paperId+"&channelId="+channelId+"&pageNo="+pageNo; 
+						var par_data="hasAudit=true&paperId="+paperId;
+						$.ajax({ 
+							 type: "GET", 
+							 url: "<%=basePath%>paper/updateAudit",  
+							 data: par_data, 
+							 success: function(message){ 
+								 if(message == "succ"){
+									 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/detail?paperId="+paperId+"&pageNo="+pageNo+"&channelId="+channelId
+											 +"&type="+type+"&queryTitle="+queryTitle+"&isDraft="+isDraft;
+								 }else if(message == "null"){
+									 alert("文章不存在");
+								 }else if(message == "draft"){
+									 alert("草稿文章不允许发布");
+								 }else if(message == "section"){
+									 alert("板块标题不能为空");
+								 }else{
+									 alert("请先完善文章信息");
+								 }
+						}});
 					}
 				}else{
 					alert("该文件已发布或该文件的状态暂不支持发布!");
@@ -38,11 +59,32 @@ h1{text-align:center;font-size:18px;}
 	function callUnVerify(){
 			var channelId = document.getElementById("channelId").value;
 			var pageNo = document.getElementById("pageNo").value;
+			var queryTitle = document.getElementById("queryTitle").value;
+			var isDraft = document.getElementById("isDraft").value;
+			var type = document.getElementById("type").value;
 			var st =  document.getElementById("status").value;
 				if(st == '已发布'){
 					if(confirm("您确定取消发布吗？")) {
 						var paperId = jvForm.elements["paperId"].value;
-						window.location.href = "<%=basePath%>paper/updateAudit?redirect=/paper/detail&hasAudit=false&paperId="+paperId+"&channelId="+channelId+"&pageNo="+pageNo;
+						var par_data="hasAudit=true&paperId="+paperId;
+						$.ajax({ 
+							 type: "GET", 
+							 url: "<%=basePath%>paper/updateAudit",  
+							 data: par_data, 
+							 success: function(message){ 
+								 if(message == "succ"){
+									 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/detail?paperId="+paperId+"&pageNo="+pageNo+"&channelId="+channelId
+											 +"&type="+type+"&queryTitle="+queryTitle+"&isDraft="+isDraft;
+								 }else if(message == "null"){
+									 alert("文章不存在");
+								 }else if(message == "draft"){
+									 alert("草稿文章不允许发布");
+								 }else if(message == "section"){
+									 alert("板块标题不能为空");
+								 }else{
+									 alert("请先完善文章信息");
+								 }
+						}});
 					}
 				}else{
 					alert("该文件的状态暂不支持取消发布!");

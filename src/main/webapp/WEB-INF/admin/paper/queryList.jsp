@@ -77,6 +77,36 @@ function upateTop(paperId,isTop){
 			 }
 	}});
 }
+//发布
+function updateAudit(paperId,hasAudit){ 
+	var channelId = $('#channelId')[0].value;
+	var pageNo = $('#pageNo')[0].value;
+	var queryTitle = $('#queryTitle')[0].value;
+	var type = $('#type')[0].value;
+	var isDraft = $('#isDraft')[0].value;
+	var par_data="hasAudit="+hasAudit+"&paperId="+paperId;
+	$.ajax({ 
+		 type: "GET", 
+		 url: "<%=basePath%>paper/updateAudit",  
+		 data: par_data, 
+		 success: function(message){ 
+			 if(message == "succ"){
+				 if((queryTitle != null && queryTitle != "") || type !=null || isDraft !=null){
+					 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId+"&queryTitle="+queryTitle+"&type="+type+"&isDraft="+isDraft;
+				 }else{
+					 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/list?pageNo="+pageNo+"&channelId="+channelId;
+				 }
+			 }else if(message == "null"){
+				 alert("文章不存在");
+			 }else if(message == "draft"){
+				 alert("草稿文章不允许发布");
+			 }else if(message == "section"){
+				 alert("板块标题不能为空");
+			 }else{
+				 alert("请先完善文章信息");
+			 }
+	}});
+}
 //jquery批量删除
 function jqcallVerify(){  //jquery获取复选框值
 		var chk_value =[];
@@ -244,10 +274,10 @@ function jqcallVerify(){  //jquery获取复选框值
 		 | 
 			<c:choose>
 				<c:when test="${item.hasAudit == true}">
-					<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=false&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}&type=${type}&isDraft=${isDraft}" class="pn-opt">取消发布</a>
+					<a id ="${item.id}" href="javascript:updateAudit(${item.id},'false')" class="pn-opt">取消发布</a>
 				</c:when>
 				<c:otherwise>
-					<a id ="${item.id}" href="<%=basePath%>paper/updateAudit?hasAudit=true&paperId=${item.id}&channelId=${channelId}&pageNo=${pageNo}&queryTitle=${queryTitle}&type=${type}&isDraft=${isDraft}" class="pn-opt">发布</a>
+					<a id ="${item.id}" href="javascript:updateAudit(${item.id},'true')" class="pn-opt">发布</a>
 				</c:otherwise>
 			</c:choose>
 			</c:otherwise>
