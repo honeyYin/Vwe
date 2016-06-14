@@ -256,35 +256,7 @@ public class PaperController extends BaseController{
 		
 		return render("succ", "text/html",response);
 	}
-	@RequestMapping(method=RequestMethod.POST,value="edit1") 
-	public String edit1(HttpServletRequest request,
-					   Long channelId,
-					   Integer pageNo) {
-		Long paperId = RequestUtil.longvalue(request,"paperId");
-		Paper paper =  paserPaper(paperId,request);
-		if(paper != null){
-			paper = paperService.savePaper(paper,getUser(request));
-			savePaperSection(paper.getId(),request);
-		}
-		String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
-		Integer type = RequestUtil.intvalue(request, "type") ;
-		Integer isDraft = RequestUtil.intvalue(request, "isDraft");
-		if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
-			String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
-			if(!StringUtils.isEmpty(queryTitle)){
-				url += "&channelId="+channelId;
-			}
-			if(type !=null){
-				url +="&type="+type;
-			}
-			if(isDraft !=null){
-				url +="&isDraft="+isDraft;
-			}
-			return url;
-		}
-		return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
-		
-	}
+	
 	@RequestMapping(method=RequestMethod.POST,value="deleteSection") 
 	public String deleteSection(@RequestParam("sectionId") Long sectionId,HttpServletResponse response) {
 		sectionDao.delete(sectionId);
@@ -314,9 +286,9 @@ public class PaperController extends BaseController{
 		Integer type = RequestUtil.intvalue(request, "type") ;
 		Integer isDraft = RequestUtil.intvalue(request, "isDraft");
 		if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
-			String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
+			String url= "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId;
 			if(!StringUtils.isEmpty(queryTitle)){
-				url += "&channelId="+channelId;
+				url += "&queryTitle="+queryTitle;
 			}
 			if(type !=null){
 				url +="&type="+type;
@@ -373,9 +345,9 @@ public class PaperController extends BaseController{
 		Integer type = RequestUtil.intvalue(request, "type") ;
 		Integer isDraft = RequestUtil.intvalue(request, "isDraft");
 		if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
-			String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
+			String url= "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId;
 			if(!StringUtils.isEmpty(queryTitle)){
-				url += "&channelId="+channelId;
+				url += "&queryTitle="+queryTitle;
 			}
 			if(type !=null){
 				url +="&type="+type;
@@ -407,28 +379,44 @@ public class PaperController extends BaseController{
 	public String cancleAudit(@RequestParam("paperId") Long paperId,
 						      HttpServletRequest request,
 							    Long channelId,
-							    Integer pageNo) {
+							    Integer pageNo,
+							    String redirect) {
 			paperDao.auditPaper(paperId,false);
 			//记录操作信息
 			paperService.saveOperationRecord(paperId,OperationTypeEnum.AUDIT,getUser(request));
 			String queryTitle = RequestUtil.stringvalue(request, "queryTitle") ;
 			Integer type = RequestUtil.intvalue(request, "type") ;
 			Integer isDraft = RequestUtil.intvalue(request, "isDraft");
-			if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
-				String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
-				if(!StringUtils.isEmpty(queryTitle)){
-					url += "&channelId="+channelId;
+			if(StringUtils.isEmpty(redirect)){
+				if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
+					String url= "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId;
+					if(!StringUtils.isEmpty(queryTitle)){
+						url += "&queryTitle="+queryTitle;
+					}
+					if(type !=null){
+						url +="&type="+type;
+					}
+					if(isDraft !=null){
+						url +="&isDraft="+isDraft;
+					}
+					return url;
 				}
-				if(type !=null){
-					url +="&type="+type;
+				return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
+			}else{
+				String redString = "redirect:"+redirect+"?paperId="+paperId+"&pageNo="+pageNo+"&channelId="+channelId;
+				if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
+					if(!StringUtils.isEmpty(queryTitle)){
+						redString += "&queryTitle="+queryTitle;
+					}
+					if(type !=null){
+						redString +="&type="+type;
+					}
+					if(isDraft !=null){
+						redString +="&isDraft="+isDraft;
+					}
 				}
-				if(isDraft !=null){
-					url +="&isDraft="+isDraft;
-				}
-				return url;
+				return redString;
 			}
-			return "redirect:/paper/list?pageNo="+pageNo+"&channelId="+channelId;
-			
 	}
 	private String validateAuditPaper(Paper paper){
 		if(paper == null){
@@ -517,9 +505,9 @@ public class PaperController extends BaseController{
 		Integer type = RequestUtil.intvalue(request, "type") ;
 		Integer isDraft = RequestUtil.intvalue(request, "isDraft");
 		if(!StringUtils.isEmpty(queryTitle) || type !=null || isDraft != null){
-			String url= "redirect:/paper/queryByCondition?pageNo="+pageNo;
+			String url= "redirect:/paper/queryByCondition?pageNo="+pageNo+"&channelId="+channelId;
 			if(!StringUtils.isEmpty(queryTitle)){
-				url += "&channelId="+channelId;
+				url += "&queryTitle="+queryTitle;
 			}
 			if(type !=null){
 				url +="&type="+type;

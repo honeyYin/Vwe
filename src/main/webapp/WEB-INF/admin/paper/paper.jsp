@@ -67,25 +67,8 @@ h1{text-align:center;font-size:18px;}
 				if(st == '已发布'){
 					if(confirm("您确定取消发布吗？")) {
 						var paperId = jvForm.elements["paperId"].value;
-						var par_data="hasAudit=true&paperId="+paperId;
-						$.ajax({ 
-							 type: "GET", 
-							 url: "<%=basePath%>paper/updateAudit",  
-							 data: par_data, 
-							 success: function(message){ 
-								 if(message == "succ"){
-									 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/detail?paperId="+paperId+"&pageNo="+pageNo+"&channelId="+channelId
-											 +"&type="+type+"&queryTitle="+queryTitle+"&isDraft="+isDraft;
-								 }else if(message == "null"){
-									 alert("文章不存在");
-								 }else if(message == "draft"){
-									 alert("草稿文章不允许发布");
-								 }else if(message == "section"){
-									 alert("板块标题不能为空");
-								 }else{
-									 alert("请先完善文章信息");
-								 }
-						}});
+						 window.parent.frames["rightFrame"].location.href = "<%=basePath%>paper/cancleAudit?paperId="+paperId+"&pageNo="+pageNo+"&channelId="+channelId
+						 +"&type="+type+"&queryTitle="+queryTitle+"&isDraft="+isDraft+"&redirect=/paper/detail";
 					}
 				}else{
 					alert("该文件的状态暂不支持取消发布!");
