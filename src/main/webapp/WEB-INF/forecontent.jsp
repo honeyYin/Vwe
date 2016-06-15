@@ -1,8 +1,9 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8" contentType="text/html; charset=utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+request.setCharacterEncoding("UTF-8");
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -12,6 +13,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <meta name="description" content="${paper.description}"/>
 <title>${paper.title}</title>
 <link rel="stylesheet"  href="<%=basePath%>res/foreground/css/style.css" type="text/css" media="all" />
+<style type="text/css">
+.div1{ width:200px; height:0px; border:#999 1px solid; float:left;margin-left:80px;}
+.div2{ width:200px; height:0px; border:#999 1px solid; float:left;margin-right:20px;}
+.div3{ float:left; height:5px; line-height:5px; margin:0px 10px 0px 10px;font-size:28px}
+</style>
 </head>
 		
 <body>
@@ -37,25 +43,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!--content --> 
 
 <div class="detail" align = "center">
-	<h1 align="center">${paper.title}</h1>
-
-	<span align="center">阅读人数:${paper.viewCount}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp发表时间：${paper.auditTime}</span>
-	
+	<h2 align="center">${paper.title}</h2>
+	<span style="padding-right:42%;padding-top:5px">${paper.viewCount}人已读</span><br />
+	<p style="text-align:left">${paper.description}</p>
+	<br/>
 	<div class="c"></div>	
 <!--article --> 
 	
-	<div id="article">
-	<p align="left">${paper.description}</p>
-	<br/>
-<div>
-		<!-- 版块区域 -->
+<div >
+<!-- 版块区域 -->
 <c:forEach items="${paper.sections}" var="section">
-	<h1>---------${section.title}-----------</h1>
+	<div class="div1"></div><div class="div3"><B>${section.title}</B></div><div class="div2"></div>
   	<c:forEach items="${section.paras}" var="para">
-  	<div >
-		<h1>---------${para.title}-----------</h1>
-		<p>${para.content }</p>
-		
+  	<div style="margin-top:10px">
+	  	<c:if  test="${para.orderNum !=-1}">
+			<div><p style="padding-right:90%"><B>${para.orderNum} ${para.title}</B></p></div>
+		</c:if>
+		<c:if test="${para.content !=null && para.content !=''}">
+			<p style="text-align:left">${para.content }</p>
+		</c:if>
 		<c:if test="${para.imgUrl !=null && para.imgUrl !=''}">
 			<img src="<%=basePath%>${para.imgUrl}"  width="850" height= "450"/>
 		</c:if>
@@ -63,21 +69,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	</c:forEach>
   	<c:forEach items="${section.outLinks}" var="outLink">
   	<div >
-		<h1>---------${outLink.title}-----------</h1><br />
-		<label >${outLink.secTitle }</label>
-		<label >人民币${outLink.prize }元</label>
-		<a src="${outLink.outerUrl}">详情</a>
+		<div><p style="padding-right:65%;padding-top:20px;"><B>>${outLink.title}</B></p></div>
+		<p style="padding-right:68%;">${outLink.secTitle }</p>
+		<p style="padding-right:78%;font-size:28px;margin-top:10px;"><font color="#FF0000">￥${outLink.prize }</font>
+		<div style="float:right;font-size:40px;margin-top:-50px;margin-right:5px"><a  href="${outLink.outerUrl}">详情</a></div>
+		</p>
+		
   	</div>
   	</c:forEach>   
 </c:forEach>
 </div>
-	</div>
-	
-	<ul id="news_nav">
-		<c:forEach items ="${rePapers}" var="v_repaper">
-	        <li><a href="<%=request.getContextPath()%>/paper/viewPaper?paperId=${v_repaper.id}">${v_repaper.title}</a> </li>
+<%-- <div style="margin-top:20px">
+	<div class="div1"></div><div class="div3"><B>你可能也需要</B></div><div class="div2"></div>
+		<c:forEach items ="${rePapers}" var="item">
+			<div style="margin-top:10px">
+				<p><img style="margin-top:10px;align:left" src="<%=basePath%>${item.titleImg}"  width="150" height= "150"/>
+					<B><a href="<%=request.getContextPath()%>/paper/viewPaper?paperId=${item.id}">${item.title}</a></B>
+					<span >${item.description }</span>
+					</p>
+			</div>
 	    </c:forEach>
-	</ul>
+</div> --%>
 </div>
 
 <div class="c"></div>

@@ -76,6 +76,11 @@ h1{text-align:center;font-size:18px;}
 			
 	}
 </script>
+<style type="text/css">
+.div1{ width:200px; height:0px; border:#999 1px solid; float:left;margin-left:10%;}
+.div2{ width:200px; height:0px; border:#999 1px solid; float:left;margin-right:10%;}
+.div3{ float:left; height:5px; line-height:5px; margin:0px 10px 0px 10px;font-size:15px}
+</style>
 </head>
 <body>
 <div class="box-positon">
@@ -90,7 +95,7 @@ h1{text-align:center;font-size:18px;}
 	</form>
 	<div class="clear"></div>
 </div>
-<div class="body-box">
+<div class="body-box" >
 <form id="jvForm" method="get" style="padding-top:5px" action="<%=basePath%>paper/toEdit">
 	<input type="hidden"  id="paperId" name="paperId" value="${paper.id}"/>
 	<input type="hidden" id="channelId"  name="channelId" value="${channelId}"/>
@@ -108,7 +113,6 @@ h1{text-align:center;font-size:18px;}
 	<input class="edit" type="submit" value="修改" style="color:gray"/>
 	<input class="front-view" type="button" value="前台预览" onclick="window.open('<%=basePath%>paper/viewPaper?paperId=${paper.id}&channelId=${channelId}&pageNo=${pageNo}')"/>
 </form>
-<form id="viewInFront"  target="_blank" method="get"></form>
 <div style="border:1px solid #ccc;">
 	<h1 align="center">${paper.title}</h1>
 	<p class="info">
@@ -118,26 +122,30 @@ h1{text-align:center;font-size:18px;}
 		&nbsp; 发布时间:  ${paper.auditTime}	
 		</c:if>	
 	</p>
-<div>
-<p>&nbsp;&nbsp;${paper.description}</p>
+<div style="margin:0px 20px 0px 20px;">
+<p>${paper.description}</p>
 		<!-- 版块区域 -->
 <c:forEach items="${paper.sections}" var="section">
-	<h1>---------${section.title}-----------</h1>
+	<h2 align="center"><B>---------------${section.title}--------------</B></h2>
   	<c:forEach items="${section.paras}" var="para">
   	<div >
-		<h1>---------${para.title}-----------</h1>
-		<p>${para.content }</p>
+		<c:if  test="${para.orderNum !=-1}">
+			<div><p style="padding-right:90%"><B>${para.orderNum} ${para.title}</B></p></div>
+		</c:if>
+		<c:if test="${para.content !=null && para.content !=''}">
+			<p style="text-align:left">${para.content }</p>
+		</c:if>
 		<c:if test="${para.imgUrl !=null && para.imgUrl !=''}">
-			<img src="<%=basePath%>${para.imgUrl}"  width="850" height= "450"/>
+			<img style="margin-left:10%" src="<%=basePath%>${para.imgUrl}"  width="650" height= "450"/>
 		</c:if>
   	</div>
   	</c:forEach>
   	<c:forEach items="${section.outLinks}" var="outLink">
   	<div >
-		<h1>---------${outLink.title}-----------</h1><br />
-		<label >${outLink.secTitle }</label>
-		<label >人民币${outLink.prize }元</label>
-		<a src="${outLink.outerUrl}">详情</a>
+		<div><p style="padding-right:65%;padding-top:20px;font-size:15px;"><B>>${outLink.title}</B></p></div>
+		<p style="padding-right:68%;font-size:10px;">${outLink.secTitle }</p>
+		<p style="padding-right:78%;font-size:20px;margin-top:10px;"><font color="#FF0000">￥${outLink.prize }</font>
+		<div style="float:right;font-size:20px;margin-top:-70px;margin-right:10px"><a  href="${outLink.outerUrl}">详情</a></div>
   	</div>
   	</c:forEach>   
 </c:forEach>
