@@ -333,6 +333,7 @@ public class PaperService {
 			for(Paper item: papers){
 				PaperTitleImgModel model = new PaperTitleImgModel();
 				model.setPaperId(item.getId());
+				model.setTitle(item.getTitle());
 				model.setType(item.getType());
 				if(item.getType() != null && item.getType() == 1){
 					model.setPaperUrl(item.getUrl());

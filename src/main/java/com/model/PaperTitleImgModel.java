@@ -11,6 +11,7 @@ import lombok.Setter;
 @Getter
 public class PaperTitleImgModel {
 
+	private String title;
 	//头图地址
 	private String titleImg;
 	

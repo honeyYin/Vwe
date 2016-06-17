@@ -17,34 +17,28 @@ request.setCharacterEncoding("UTF-8");
 .div1{ width:200px; height:0px; border:#999 1px solid; float:left;margin-left:80px;}
 .div2{ width:200px; height:0px; border:#999 1px solid; float:left;margin-right:20px;}
 .div3{ float:left; height:5px; line-height:5px; margin:0px 10px 0px 10px;font-size:28px}
+
 </style>
 </head>
 		
 <body>
 <br /><br />
-
-<div class="content">
-
+<div class="content" style="background:url(../res/foreground/images/iphone.png);align:center;height:645px;width:360px;">
+<div class="mainNav" id="wins" 
+ 	style="align:center;height:500px;width:320px;position:relative; margin-top:100px;margin-left:25px;overflow:auto;">
 <!-- mainNav -->
 
 		<c:if test="${paper.titleImg !=null && paper.titleImg !=''}">
-			<img src="<%=basePath%>${paper.titleImg}"  width="850" height= "450"/>
+			<img src="<%=basePath%>${paper.titleImg}"  width="300px" height= "200px"/>
 		</c:if>
-    <div class="mainNav">
        
-    </div>
 <div class="c"></div>
-
-
-<div >
-
-</div> 
 
 <!--content --> 
 
 <div class="detail" align = "center">
 	<h2 align="center">${paper.title}</h2>
-	<span style="padding-right:42%;padding-top:5px">${paper.viewCount}人已读</span><br />
+	<span style="padding-top:5px">${paper.viewCount}人已读</span><br />
 	<p style="text-align:left">${paper.description}</p>
 	<br/>
 	<div class="c"></div>	
@@ -57,13 +51,13 @@ request.setCharacterEncoding("UTF-8");
   	<c:forEach items="${section.paras}" var="para">
   	<div style="margin-top:10px">
 	  	<c:if  test="${para.orderNum !=-1}">
-			<div><p style="padding-right:90%"><B>${para.orderNum} ${para.title}</B></p></div>
+			<div><p style=""><B>${para.orderNum} ${para.title}</B></p></div>
 		</c:if>
 		<c:if test="${para.content !=null && para.content !=''}">
 			<p style="text-align:left">${para.content }</p>
 		</c:if>
 		<c:if test="${para.imgUrl !=null && para.imgUrl !=''}">
-			<img src="<%=basePath%>${para.imgUrl}"  width="850" height= "450"/>
+			<img src="<%=basePath%>${para.imgUrl}"  width="300px" height= "200px"/>
 		</c:if>
   	</div>
   	</c:forEach>
@@ -94,7 +88,7 @@ request.setCharacterEncoding("UTF-8");
 
 <div class="c"></div>
 <!--end link --> 
-
+</div>
 </div>
 
 </body>
