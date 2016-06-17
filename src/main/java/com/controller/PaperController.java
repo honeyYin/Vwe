@@ -746,7 +746,7 @@ public class PaperController extends BaseController{
 	 */
 	private void savePaperSection(Long paperId,HttpServletRequest request){
 		int orderNum =1;
-		for (int i = 1; i <= 10; i++) {
+		for (int i = 1; i <= 50; i++) {
 			Long sectionId = RequestUtil.longvalue(request, "sectionId"+i);
 			String sectionTitle = RequestUtil.stringvalue(request, "sectionTitle"+i);
 			if(StringUtils.isNotEmpty(sectionTitle)){
@@ -774,7 +774,7 @@ public class PaperController extends BaseController{
 	 */
 	private void savePaperPara(Long paperId,Long sectionId,int orderId,HttpServletRequest request){
 		int orderNum =1;
-		for(int i=1;i<=15;i++){
+		for(int i=1;i<=40;i++){
 			Long paraId = RequestUtil.longvalue(request, "paraId"+orderId+"-"+i);
 			String paraTitle = RequestUtil.stringvalue(request, "paraTitle"+orderId+"-"+i);
 			PaperParagraph para =null;
@@ -815,7 +815,7 @@ public class PaperController extends BaseController{
 	 */
 	private void savePaperOutLink(Long paperId,Long sectionId,int orderId,HttpServletRequest request){
 		int orderNum =1;
-		for(int i=1;i<=15;i++){
+		for(int i=1;i<=40;i++){
 			Long outLinkId = RequestUtil.longvalue(request, "outLinkId"+orderId+"-"+i);
 
 			String outTitle = RequestUtil.stringvalue(request, "outTitle"+orderId+"-"+i);
